@@ -19,7 +19,7 @@ A robust and centralized web-based solution designed to streamline the managemen
    - [📈 Reports & Analytics](#-reports--analytics)
    - [🔔 Notifications](#-notifications)
    - [🗒️ Audit Logs](#-audit-logs)
-7. [📞 Contact Us](#-contact-us)
+7. [📞 Contact Us](#-contact)
 8. [🎯 Milestones](#-milestones)
 9. [📜 License](#-license)
 10. [🤝 Contributing](#-contributing)
