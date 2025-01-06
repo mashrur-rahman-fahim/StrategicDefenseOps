@@ -1,6 +1,6 @@
 # ![Logo](path/to/logo.png) **Strategic Defense Operations and Command Resource Coordination Management System**
 
-![Sticker](https://img.shields.io/badge/Project%20Status-Active-green) ![GitHub views](https://img.shields.io/github/views/count/your-username/your-repository-name?label=Repo%20Views&color=blue)
+![Sticker](https://img.shields.io/badge/Project%20Status-Active-green) ![GitHub views](https://img.shields.io/github/views/count/mashrur-rahman-fahim/StrategicDefenseOps?label=Repo%20Views&color=blue)
 
 ## Description
 The **Strategic Defense Operations and Command Resource Coordination Management System** is a comprehensive web application designed to streamline the management and coordination of defense operations. It provides a secure platform for managing operations, resources, reports, notifications, and audit logs to ensure the efficient execution of critical tasks in defense operations.
