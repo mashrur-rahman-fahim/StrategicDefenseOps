@@ -26,7 +26,7 @@ Whether you're overseeing tactical operations or managing resources, this system
 
 ---
 
-##  Key Features
+## ✨ Key Features
 - **User Authentication & Role Management**: Secure login system with role-based access controls.
 - **Operations Dashboard**: Monitor ongoing and upcoming defense operations.
 - **Resource Management**: Track, allocate, and optimize the use of resources.
