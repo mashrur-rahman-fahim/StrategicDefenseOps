@@ -1,4 +1,4 @@
-#  ![Logo](assets/logo.webp) **Strategic Defense Operations and Command Resource Coordination Management System** 🛡️🚀
+#  ![Logo](assets/logo.webp) **🎯✨ Strategic Defense Operations and Command Resource Coordination Management System** 🛡️🚀
 
 ---
 
