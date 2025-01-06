@@ -8,16 +8,16 @@
 ## 🖋 Table of Contents
 1. [About the Project](#-about-the-project)
 2. [Key Features](#-key-features)
-3. [Screenshots](#-screenshots)
-4. [Tech Stack](#-tech-stack)
-5. [Installation](#-installation)
+3. [Screenshots](#%EF%B8%8F-screenshots)
+4. [Tech Stack](#%EF%B8%8F-tech-stack)
+5. [Installation](#%EF%B8%8F-installation)
 6. [Database Schema](#-database-schema)
 7. [Contributing](#-contributing)
 8. [Contact](#-contact)
 
 ---
 
-##  About the Project
+## 🖋 About the Project
 The **Strategic Defense Operations and Command Resource Coordination Management System** is a comprehensive platform designed to simplify and streamline defense operations. It enables users to manage missions, allocate resources, and monitor progress, all from an intuitive, user-friendly interface.
 
 Whether you're overseeing tactical operations or managing resources, this system empowers users with the tools needed to ensure mission success.
