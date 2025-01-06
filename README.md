@@ -12,10 +12,8 @@
 4. [Tech Stack](#-tech-stack)
 5. [Installation](#-installation)
 6. [Database Schema](#-database-schema)
-7. [Roadmap](#-roadmap)
-8. [Contributing](#-contributing)
-9. [License](#-license)
-10. [Contact](#-contact)
+7. [Contributing](#-contributing)
+8. [Contact](#-contact)
 
 ---
 
@@ -124,17 +122,6 @@ Here’s an overview of the database schema:
 
 ---
 
-## 🚀 Roadmap
-- [x] User Authentication
-- [x] Operations Dashboard
-- [ ] Advanced Resource Optimization
-- [ ] Real-Time Notifications
-- [ ] Role-Based Reports
-- [ ] Mobile Responsive Design
-- [ ] Deployment to Production
-
----
-
 ## 🤝 Contributing
 Contributions are welcome! Follow these steps to contribute:
 1. Fork the repository.
@@ -151,11 +138,6 @@ Contributions are welcome! Follow these steps to contribute:
    git push origin feature/your-feature-name
    ```
 5. Open a pull request.
-
----
-
-## 📜 License
-This project is licensed under the **MIT License**. See the [LICENSE](LICENSE) file for details.
 
 ---
 
