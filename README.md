@@ -149,20 +149,20 @@ We’d love to hear from you! Feel free to reach out for feedback, questions, or
 - ✉️ **Email**: [mashrur950@gmail.com](mailto:mashrur950@gmail.com)
 - 🌐 **GitHub**: [mashrur-rahman-fahim](https://github.com/mashrur-rahman-fahim)
 
----
+***
 
 ### 🧑‍💻 **Author**: Mashrur Rahman
 - ✉️ **Email**: [your.email@example.com](mailto:your.email@example.com)
 - 🌐 **GitHub**: [your-username](https://github.com/your-username)
 
----
+***
 
 ### 🧑‍💻 **Author**: Mashrur Rahman
 - ✉️ **Email**: [your.email@example.com](mailto:your.email@example.com)
 - 🌐 **GitHub**: [your-username](https://github.com/your-username)
 
 
----
+***
 
 ### 🔗 Useful Links
 - [Laravel Documentation](https://laravel.com/docs)
