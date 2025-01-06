@@ -148,9 +148,13 @@ Feel free to reach out for feedback, questions, or contributions:
 - **Email**: mashrur950@gmail.com
 - **GitHub**: [mashrur-rahman-fahim](https://github.com/mashrur-rahman-fahim)
 
+---
+
 - **Author**: Mashrur Rahman
 - **Email**: your.email@example.com
 - **GitHub**: [your-username](https://github.com/your-username)
+
+---
 
 - **Author**: Mashrur Rahman
 - **Email**: your.email@example.com
