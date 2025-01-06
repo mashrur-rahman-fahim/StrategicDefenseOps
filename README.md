@@ -1,4 +1,4 @@
-# 🎯✨ ![Logo](path/to/logo.png) **Strategic Defense Operations and Command Resource Coordination Management System** 🛡️🚀
+# 🎯✨ ![Logo](assets/logo.png) **Strategic Defense Operations and Command Resource Coordination Management System** 🛡️🚀
 
 ---
 
