@@ -27,12 +27,12 @@ A robust and centralized web-based solution designed to streamline the managemen
 ---
 
 ## 👥 Team Members
-| Name           | Roll   | Email                | Role              |
-|----------------|--------|----------------------|-------------------|
-| Mashrur Rahman | Lead   | mashrur950@gmail.com | Project Manager   |
-| [Team Member]  | Dev    | member.email@example | Backend Developer |
-| [Team Member]  | Dev    | member.email@example | Frontend Developer|
-| [Team Member]  | Dev    | member.email@example | Frontend Developer|
+| Name           | Roll   | Email                | Role                 |
+|----------------|--------|----------------------|----------------------|
+| Mashrur Rahman | Lead   | mashrur950@gmail.com | Full-stack Developer |
+| [Team Member]  | Dev    | member.email@example | Backend Developer    |
+| [Team Member]  | Dev    | member.email@example | Frontend Developer   |
+| [Team Member]  | Dev    | member.email@example | Frontend Developer   |
 
 ---
 
@@ -149,10 +149,15 @@ The intended users of this application are defense operations teams, military co
 
 ---
 
-## 📞 Contact Us
-For any inquiries or feedback, please contact us at:
-- Email: support@example.com
-- Phone: +1234567890
+## 📞 Contact
+For further inquiries or feedback, please contact:
+
+- [**Mashrur Rahman**](mailto:mashrur950@gmail.com) - Lead Developer
+- [**@@@@**](mailto:h@example.com) - Backend Developer
+- [**@@@@@**](mailto:j@example.com) - Front-end Developer
+- [**@@@@@**](mailto:j@example.com) - Front-end Developer
+  
+  
 
 ---
 
