@@ -19,14 +19,14 @@
 
 ---
 
-## 🖋 About the Project
+##  About the Project
 The **Strategic Defense Operations and Command Resource Coordination Management System** is a comprehensive platform designed to simplify and streamline defense operations. It enables users to manage missions, allocate resources, and monitor progress, all from an intuitive, user-friendly interface.
 
 Whether you're overseeing tactical operations or managing resources, this system empowers users with the tools needed to ensure mission success.
 
 ---
 
-## ✨ Key Features
+##  Key Features
 - **User Authentication & Role Management**: Secure login system with role-based access controls.
 - **Operations Dashboard**: Monitor ongoing and upcoming defense operations.
 - **Resource Management**: Track, allocate, and optimize the use of resources.
