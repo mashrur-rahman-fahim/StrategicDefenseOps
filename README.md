@@ -2,6 +2,10 @@
 
 ---
 
+A robust and centralized web-based solution designed to streamline the management of defense operations, optimize resource allocation, generate insightful analytics, and enhance decision-making through real-time updates. Built with Laravel and MySQL, this system ensures secure access, seamless coordination, and transparency for defense teams.
+
+---
+
 ## 📋 Table of Contents
 1. [👥 Team Members](#-team-members)
 2. [🎯 Objective](#-objective)
@@ -23,11 +27,12 @@
 ---
 
 ## 👥 Team Members
-| Name           | Roll   | Email               | Role              |
-|----------------|--------|---------------------|-------------------|
-| [Your Name]    | Lead   | your.email@example  | Project Manager   |
-| [Team Member]  | Dev    | member.email@example| Backend Developer |
-| [Team Member]  | Dev    | member.email@example| Frontend Developer|
+| Name           | Roll   | Email                | Role              |
+|----------------|--------|----------------------|-------------------|
+| Mashrur Rahman | Lead   | mashrur950@gmail.com | Project Manager   |
+| [Team Member]  | Dev    | member.email@example | Backend Developer |
+| [Team Member]  | Dev    | member.email@example | Frontend Developer|
+| [Team Member]  | Dev    | member.email@example | Frontend Developer|
 
 ---
 
