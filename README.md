@@ -6,16 +6,16 @@
 ---
 
 ## 🖋 Table of Contents
-1. [About the Project](#about-the-project)
-2. [Key Features](#key-features)
-3. [Screenshots](#screenshots)
-4. [Tech Stack](#tech-stack)
-5. [Installation](#installation)
-6. [Database Schema](#database-schema)
-7. [Roadmap](#roadmap)
-8. [Contributing](#contributing)
-9. [License](#license)
-10. [Contact](#contact)
+1. [About the Project](#-about-the-project)
+2. [Key Features](#-key-features)
+3. [Screenshots](#-screenshots)
+4. [Tech Stack](#-tech-stack)
+5. [Installation](#-installation)
+6. [Database Schema](#-database-schema)
+7. [Roadmap](#-roadmap)
+8. [Contributing](#-contributing)
+9. [License](#-license)
+10. [Contact](#-contact)
 
 ---
 
