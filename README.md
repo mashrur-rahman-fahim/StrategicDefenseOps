@@ -31,7 +31,7 @@ A robust and centralized web-based solution designed to streamline the managemen
 |------------------------|-------------|-----------------------------------|--------------------------------|
 | Mashrur Rahman         | 20220104108 | mashrur950@gmail.com              | Full-stack Developer  ( Lead ) |
 | Ahnuf Karim Chowdhury  | 20220104122 | ahnufkarimchowdhury@gmail.com     | Frontend Developer             |
-| Nahid Asef             | 20220104128 | nahid.cse.20220104128@aust.edu    | Frontend Developer             |
+| Nahid Asef             | 20220104128 | naas50dx@gmail.com                | Frontend Developer             |
 | Ahmayeen Adil          | 20220104121 | ajmayeen.cse.20220104121@aust.edu | Full-stack Developer           |
 
 ---
@@ -154,7 +154,7 @@ For further inquiries or feedback, please contact:
 
 - [**Mashrur Rahman**](mailto:mashrur950@gmail.com) - Lead Developer
 - [**Ahnuf Karim Chowdhury**](mailto:ahnufkarimchowdhury@gmail.com) -  Developer
-- [**Nahid Asef**](mailto:nahid.cse.20220104128@aust.edu) -  Developer
+- [**Nahid Asef**](mailto:naas50dx@gmail.com) -  Developer
 - [**Ahmayeen Adil**](mailto:ajmayeen.cse.20220104121@aust.edu) -  Developer
   
   
