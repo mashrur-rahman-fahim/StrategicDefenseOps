@@ -27,12 +27,12 @@ A robust and centralized web-based solution designed to streamline the managemen
 ---
 
 ## 👥 Team Members
-| Name                   | Roll        | Email                             | Role                          |
-|------------------------|-------------|-----------------------------------|-------------------------------|
-| Mashrur Rahman         | 20220104108 | mashrur950@gmail.com              | Full-stack Developer ( Lead ) |
-| Ahnuf Karim Chowdhury  | 20220104122 | ahnufkarimchowdhury@gmail.com     | Frontend Developer            |
-| Nahid Asef             | 20220104128 | nahid.cse.20220104128@aust.edu    | Frontend Developer            |
-| Ahmayeen Adil          | 20220104121 | ajmayeen.cse.20220104121@aust.edu | Full-stack Developer          |
+| Name                   | Roll        | Email                             | Role                           |
+|------------------------|-------------|-----------------------------------|--------------------------------|
+| Mashrur Rahman         | 20220104108 | mashrur950@gmail.com              | Full-stack Developer  ( Lead ) |
+| Ahnuf Karim Chowdhury  | 20220104122 | ahnufkarimchowdhury@gmail.com     | Frontend Developer             |
+| Nahid Asef             | 20220104128 | nahid.cse.20220104128@aust.edu    | Frontend Developer             |
+| Ahmayeen Adil          | 20220104121 | ajmayeen.cse.20220104121@aust.edu | Full-stack Developer           |
 
 ---
 
