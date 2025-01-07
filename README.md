@@ -27,12 +27,12 @@ A robust and centralized web-based solution designed to streamline the managemen
 ---
 
 ## 👥 Team Members
-| Name           | Roll   | Email                | Role                 |
-|----------------|--------|----------------------|----------------------|
-| Mashrur Rahman | Lead   | mashrur950@gmail.com | Full-stack Developer |
-| [Team Member]  | Dev    | member.email@example | Backend Developer    |
-| [Team Member]  | Dev    | member.email@example | Frontend Developer   |
-| [Team Member]  | Dev    | member.email@example | Frontend Developer   |
+| Name                   | Roll        | Email                             | Role                       |
+|------------------------|-------------|-----------------------------------|----------------------------|
+| Mashrur Rahman         | 20220104108 | mashrur950@gmail.com              | Full-stack Developer(lead) |
+| Ahnuf Karim Chowdhury  | 20220104122 | ahnufkarimchowdhury@gmail.com     | Frontend Developer         |
+| Nahid Asef             | 20220104128 | nahid.cse.20220104128@aust.edu    | Frontend Developer         |
+| Ahmayeen Adil          | 20220104121 | ajmayeen.cse.20220104121@aust.edu | Full-stack Developer       |
 
 ---
 
@@ -153,9 +153,9 @@ The intended users of this application are defense operations teams, military co
 For further inquiries or feedback, please contact:
 
 - [**Mashrur Rahman**](mailto:mashrur950@gmail.com) - Lead Developer
-- [**@@@@**](mailto:h@example.com) - Backend Developer
-- [**@@@@@**](mailto:j@example.com) - Front-end Developer
-- [**@@@@@**](mailto:j@example.com) - Front-end Developer
+- [**Ahnuf Karim Chowdhury**](mailto:ahnufkarimchowdhury@gmail.com) -  Developer
+- [**Nahid Asef**](mailto:nahid.cse.20220104128@aust.edu) -  Developer
+- [**Ahmayeen Adil**](mailto:ajmayeen.cse.20220104121@aust.edu) -  Developer
   
   
 
@@ -169,7 +169,6 @@ For further inquiries or feedback, please contact:
 ---
 
 ## 📜 License
-## License
 
 This project is licensed under the [GPL-3.0 License](https://opensource.org/licenses/GPL-3.0).
 
