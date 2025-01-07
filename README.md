@@ -48,8 +48,8 @@ The intended users of this application are defense operations teams, military co
 
 ## 💻 Tech Stack
 - **Backend**: Laravel
-- **Frontend**: [Your Chosen Framework] (e.g., React, Vue, Angular)
-- **Rendering Method**: [Server-Side Rendering (SSR) or Client-Side Rendering (CSR)]
+- **Frontend**: Next JS
+- **Rendering Method**: Client-Side Rendering (CSR)
 
 ---
 
