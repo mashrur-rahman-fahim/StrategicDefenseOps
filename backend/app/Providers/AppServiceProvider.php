@@ -7,7 +7,7 @@ use Illuminate\Support\ServiceProvider;
 class AppServiceProvider extends ServiceProvider
 {
     /**
-     * Register any application services, such as custom services you want to provide, like EmailService, UsersService etc.
+     * Register any application services.
      *
      * @return void
      */

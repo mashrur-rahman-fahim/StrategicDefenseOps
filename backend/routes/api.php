@@ -1,6 +1,7 @@
 <?php
 
-use App\Http\Controllers\TestController;
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Route;
 
 /*
 |--------------------------------------------------------------------------
@@ -12,6 +13,7 @@ use App\Http\Controllers\TestController;
 | is assigned the "api" middleware group. Enjoy building your API!
 |
 */
-Route::get('/test', [TestController::class, 'getTestHuman'])->middleware('test.middleware');
-Route::get('/test/{id}', [TestController::class, 'getTestHumanWithId']);
 
+Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
+    return $request->user();
+});
