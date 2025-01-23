@@ -19,5 +19,5 @@ Route::middleware(['auth:sanctum'])->get('/user', function (Request $request) {
     return $request->user();
 });
 Route::post('/assign-role/{role_id}',[AssignRoleController::class,'assignRole'], )
-->middleware('auth')
+->middleware('auth:sanctum')
 ;
