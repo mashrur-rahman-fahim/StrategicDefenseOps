@@ -18,5 +18,6 @@ class VerifyCsrfToken extends Middleware
         '/logout',
         '/forgot-password',
         '/reset-password',
+        '/email/verification-notification'
     ];
 }
