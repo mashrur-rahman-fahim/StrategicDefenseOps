@@ -26,3 +26,6 @@ Route::post('/temp',[AssignRoleController::class,'temp'])
 ;
 Route::post('/operator-assign',[AssignRoleController::class,'operatorAssign'])
 ->middleware('auth:sanctum');
+
+Route::post('/viewer-assign',[AssignRoleController::class,'viewerAssign'])
+->middleware('auth:sanctum');
