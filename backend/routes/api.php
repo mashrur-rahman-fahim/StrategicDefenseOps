@@ -24,3 +24,5 @@ Route::post('/manager-assign',[AssignRoleController::class,'managerAssign'], )
 Route::post('/temp',[AssignRoleController::class,'temp'])
 ->middleware('auth:sanctum')
 ;
+Route::post('/operator-assign',[AssignRoleController::class,'operatorAssign'])
+->middleware('auth:sanctum');
