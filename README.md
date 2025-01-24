@@ -54,7 +54,8 @@ The intended users of this application are defense operations teams, military co
 ---
 
 ## 🎨 UI Design
-![Figma](https://www.figma.com/design/Yj0yCxlnNI0jvJWOdml3Of/StrategicDefenseOps?node-id=0-1&p=f&t=CqUVnzrobXx0kBXt-0)
+[Figma](https://www.figma.com/design/Yj0yCxlnNI0jvJWOdml3Of/StrategicDefenseOps?node-id=0-1&p=f&t=CqUVnzrobXx0kBXt-0)
+
 
 ---
 
