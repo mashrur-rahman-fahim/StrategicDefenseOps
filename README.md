@@ -59,7 +59,7 @@ The intended users of this application are defense operations teams, military co
 ---
 
 ## 🎨 ERD (Entity Relationship Diagram)
-![ERD Preview](assets/erd.png)
+![ERD Preview](assets/ERD.png)
 
 ## ⚙️ Features
 
