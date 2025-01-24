@@ -54,9 +54,12 @@ The intended users of this application are defense operations teams, military co
 ---
 
 ## 🎨 UI Design
-[Insert Figma link here]
+[**🔗 View the ERD on Figma**](https://www.figma.com/design/Yj0yCxlnNI0jvJWOdml3Of/StrategicDefenseOps?node-id=0-1&p=f&t=CqUVnzrobXx0kBXt-0)
 
 ---
+
+## 🎨 ERD (Entity Relationship Diagram)
+![ERD Preview](assets/erd.png)
 
 ## ⚙️ Features
 
