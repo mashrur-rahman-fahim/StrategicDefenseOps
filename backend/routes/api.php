@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\AssignRoleController;
+use App\Http\Controllers\UnassignRoleController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
@@ -28,4 +29,13 @@ Route::post('/operator-assign',[AssignRoleController::class,'operatorAssign'])
 ->middleware('auth:sanctum');
 
 Route::post('/viewer-assign',[AssignRoleController::class,'viewerAssign'])
+->middleware('auth:sanctum');
+
+Route::post('/manager-unassign',[UnassignRoleController::class,'managerUnassign'])
+->middleware('auth:sanctum');
+
+Route::post('/operator-unassign',[UnassignRoleController::class,'operatorUnassign'])
+->middleware('auth:sanctum');
+
+Route::post('/viewer-unassign',[UnassignRoleController::class,'viewerUnassign'])
 ->middleware('auth:sanctum');
