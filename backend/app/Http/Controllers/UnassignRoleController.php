@@ -9,11 +9,11 @@ use Illuminate\Http\Request;
 
 class UnassignRoleController extends Controller
 {
-    private UnassignRoleService $roleUnassignService;
+    private UnassignRoleService $unassignRoleService;
 
-    public function __construct(UnassignRoleService $roleUnassignService)
+    public function __construct(UnassignRoleService $unassignRoleService)
     {
-        $this->roleUnassignService = $roleUnassignService;
+        $this->unassignRoleService = $unassignRoleService;
     }
 
     public function managerUnassign(Request $request): JsonResponse
@@ -29,7 +29,7 @@ class UnassignRoleController extends Controller
             return response()->json(['message' => 'Unauthorized'], 403);
         }
 
-        $manager = $this->roleUnassignService->unassignRole($request->managerEmail, 2, $parentId);
+        $manager = $this->unassignRoleService->unassignRole($request->managerEmail, 2, $parentId);
 
         return $manager ? response()->json([$manager]) 
                         : response()->json(['message' => 'Manager not found or not assigned'], 404);
@@ -51,11 +51,13 @@ class UnassignRoleController extends Controller
         if ($parent->role_id == 1) {
             $request->validate(['managerEmail' => 'required|email|exists:users,email']);
             $manager = User::where('email', $request->managerEmail)->where('role_id', 2)->where('parent_id', $parentId)->first();
+           
             if ($manager) {
-                $operator = $this->roleUnassignService->unassignRole($request->operatorEmail, 3, $manager->id);
+                $operator = $this->unassignRoleService->unassignRole($request->operatorEmail, 3, $manager->id);
+                return response()->json([$operator], 200);
             }
         } else {
-            $operator = $this->roleUnassignService->unassignRole($request->operatorEmail, 3, $parentId);
+            $operator = $this->unassignRoleService->unassignRole($request->operatorEmail, 3, $parentId);
         }
 
         return isset($operator) ? response()->json([$operator]) 
@@ -79,10 +81,10 @@ class UnassignRoleController extends Controller
             $request->validate(['managerEmail' => 'required|email|exists:users,email']);
             $manager = User::where('email', $request->managerEmail)->where('role_id', 2)->where('parent_id', $parentId)->first();
             if ($manager) {
-                $viewer = $this->roleUnassignService->unassignRole($request->viewerEmail, 4, $manager->id);
+                $viewer = $this->unassignRoleService->unassignRole($request->viewerEmail, 4, $manager->id);
             }
         } else {
-            $viewer = $this->roleUnassignService->unassignRole($request->viewerEmail, 4, $parentId);
+            $viewer = $this->unassignRoleService->unassignRole($request->viewerEmail, 4, $parentId);
         }
 
         return isset($viewer) ? response()->json([$viewer]) 

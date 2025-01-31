@@ -58,16 +58,15 @@ class AssignRoleController extends Controller
 
     public function temp(Request $request)
     {
-        $user = User::where('role_id', 3)
+        $user = User::where('role_id',3)
            
             ->get();
-            $user[0]->role_id=3;
-            $user[0]->parent_id=null;
-            $user[0]->save();
-       
+        
+       $user[0]->parent_id=11;
+       $user[0]->save();
 
         return response()->json([
-            $user[0]
+            $user
         ]);
     }
 }
