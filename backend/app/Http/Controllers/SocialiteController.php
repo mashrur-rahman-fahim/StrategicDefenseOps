@@ -2,8 +2,12 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\User;
+use Exception;
 use Illuminate\Http\Request;
 use Laravel\Socialite\Facades\Socialite;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Hash;
 
 class SocialiteController extends Controller
 {
@@ -12,8 +16,31 @@ class SocialiteController extends Controller
     }
 
     public function googleAuthentication(){
-        $googleUser = Socialite::driver('google')->user();
+        try{
+            $googleUser = Socialite::driver('google')->user();
 
-        dd($googleUser);
+        $user = User::where('google_id',$googleUser->id)->first();
+        if($user){
+            Auth::login($user);
+            return redirect()->route('dashboard');
+        }else{
+            $userData = User::create([
+                'name' =>  $googleUser ->name,
+                'email' =>  $googleUser ->email,
+                'password' => Hash::make('password'),
+                'role_id'=> 1,
+                'parent_id'=> null,
+            ]);
+
+            if($userData){
+                Auth::login($userData);
+                return redirect()->route('dashboard');}
+        }
+
+
+
+        }catch(Exception $e){
+             dd($e);
+        }
     }
 }
