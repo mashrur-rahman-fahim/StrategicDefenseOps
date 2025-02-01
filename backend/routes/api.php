@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\AssignRoleController;
 use App\Http\Controllers\UnassignRoleController;
+use App\Http\Controllers\UserDetailsController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
@@ -39,3 +40,6 @@ Route::post('/operator-unassign',[UnassignRoleController::class,'operatorUnassig
 
 Route::post('/viewer-unassign',[UnassignRoleController::class,'viewerUnassign'])
 ->middleware('auth:sanctum');
+
+Route::get('/me',[UserDetailsController::class,'getUserDetails'])->middleware('auth:sanctum');
+
