@@ -2,7 +2,6 @@
 
 import { useState } from 'react';
 import { Container, Row, Col, Form, Button, Card } from 'react-bootstrap';
-import axios from 'axios';
 
 export default function RegisterPage() {
   const [formData, setFormData] = useState({
@@ -14,11 +13,22 @@ export default function RegisterPage() {
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      const response = await axios.post(`${process.env.NEXT_PUBLIC_API_URL}/register`, formData);
-      console.log(response.data); // Handle success
+      const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/register`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(formData),
+      });
+      const data = await response.json();
+      console.log(data);
     } catch (error) {
-      console.error('Error:', error.response ? error.response.data : error.message);
+      console.error('Error:', error);
     }
+  };
+
+  const handleGoogleLogin = () => {
+    window.location.href = `${process.env.NEXT_PUBLIC_API_URL}/auth/google`;
   };
 
   return (
@@ -59,10 +69,11 @@ export default function RegisterPage() {
                     required
                   />
                 </Form.Group>
-                <Button type="submit" className="w-100" style={{ backgroundColor: '#0D6EFD', border: 'none' }}>
-                  Register
-                </Button>
+                <Button type="submit" className="w-100" style={{ backgroundColor: '#0D6EFD', border: 'none' }}>Register</Button>
               </Form>
+              <Button onClick={handleGoogleLogin} className="w-100 mt-3" style={{ backgroundColor: '#DB4437', border: 'none' }}>
+                Register with Google
+              </Button>
               <div className="text-center mt-3">
                 <p style={{ color: '#6C757D' }}>
                   Already have an account? <a href="/login" style={{ color: '#0D6EFD' }}>Login</a>

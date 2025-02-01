@@ -14,10 +14,14 @@ export default function LoginPage() {
     e.preventDefault();
     try {
       const response = await axios.post(`${process.env.NEXT_PUBLIC_API_URL}/login`, formData);
-      console.log(response.data);
+      console.log(response.data); 
     } catch (error) {
       console.error('Error:', error.response ? error.response.data : error.message);
     }
+  };
+
+  const handleGoogleLogin = () => {
+    window.location.href = `${process.env.NEXT_PUBLIC_API_URL}/auth/google`;
   };
 
   return (
@@ -52,6 +56,9 @@ export default function LoginPage() {
                   Login
                 </Button>
               </Form>
+              <Button onClick={handleGoogleLogin} className="w-100 mt-3" style={{ backgroundColor: '#DB4437', border: 'none' }}>
+                Login with Google
+              </Button>
               <div className="text-center mt-3">
                 <p style={{ color: '#6C757D' }}>
                   Don’t have an account? <a href="/register" style={{ color: '#0D6EFD' }}>Register</a>
