@@ -57,7 +57,7 @@ export default function LoginPage() {
                 </Button>
               </Form>
               <Button onClick={handleGoogleLogin} variant="outline-danger" className="w-100 mt-3">
-                Login with Google
+                Continue with Google
               </Button>
               <div className="text-center mt-3">
                 <p style={{ color: '#6C757D' }}>

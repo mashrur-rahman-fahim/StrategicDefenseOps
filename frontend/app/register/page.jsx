@@ -40,7 +40,7 @@ export default function RegisterPage() {
                   <Form.Control
                     type="text"
                     placeholder="Enter your full name"
-                    value={formData.fullName}
+                    value={formData.name}
                     onChange={(e) => setFormData({ ...formData, name: e.target.value })}
                     required
                   />
@@ -68,7 +68,7 @@ export default function RegisterPage() {
                 <Button type="submit" className="w-100" style={{ backgroundColor: '#0D6EFD', border: 'none' }}>Register</Button>
               </Form>
               <Button onClick={handleGoogleLogin} variant="outline-danger" className="w-100 mt-3">
-                Register with Google
+                Continue with Google
               </Button>
               <div className="text-center mt-3">
                 <p style={{ color: '#6C757D' }}>
