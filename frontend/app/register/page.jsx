@@ -71,7 +71,7 @@ export default function RegisterPage() {
                 </Form.Group>
                 <Button type="submit" className="w-100" style={{ backgroundColor: '#0D6EFD', border: 'none' }}>Register</Button>
               </Form>
-              <Button onClick={handleGoogleLogin} className="w-100 mt-3" style={{ backgroundColor: '#DB4437', border: 'none' }}>
+              <Button onClick={handleGoogleLogin} variant="outline-danger" className="w-100 mt-3">
                 Register with Google
               </Button>
               <div className="text-center mt-3">
