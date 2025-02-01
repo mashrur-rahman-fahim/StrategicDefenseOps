@@ -1,5 +1,7 @@
 <?php
 
+use App\Mail\TestEmail;
+use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -14,5 +16,10 @@ use Illuminate\Support\Facades\Route;
 */
 
 Route::get('/', function () {
-    return view('welcome');
+    return ['Laravel' => app()->version()];
 });
+Route::get('/mail',function(){
+        Mail::to('tahsinaryan888@gmail.com')->send(new TestEmail());
+});
+
+require __DIR__.'/auth.php';
