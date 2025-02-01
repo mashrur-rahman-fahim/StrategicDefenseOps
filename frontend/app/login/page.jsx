@@ -13,8 +13,8 @@ export default function LoginPage() {
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
+      console.log(formData); 
       const response = await axios.post(`${process.env.NEXT_PUBLIC_API_URL}/login`, formData);
-      console.log(response.data); 
     } catch (error) {
       console.error('Error:', error.response ? error.response.data : error.message);
     }
