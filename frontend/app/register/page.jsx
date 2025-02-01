@@ -6,7 +6,9 @@ import api from '../../utils/axios';
 
 export default function RegisterPage() {
   const [formData, setFormData] = useState({
-    fullName: '',
+    name: '',
+    role_id: 1,
+    parent_id: null,
     email: '',
     password: '',
   });
@@ -39,7 +41,7 @@ export default function RegisterPage() {
                     type="text"
                     placeholder="Enter your full name"
                     value={formData.fullName}
-                    onChange={(e) => setFormData({ ...formData, fullName: e.target.value })}
+                    onChange={(e) => setFormData({ ...formData, name: e.target.value })}
                     required
                   />
                 </Form.Group>
