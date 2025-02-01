@@ -24,8 +24,22 @@ class OperationController extends Controller
         ]);
         $validatedData['created_by']=auth()->id();
         $validatedData['updated_by']=auth()->id();
-        $operation = $this->operationService->createOperation($validatedData);
+        
+        $operation = $this->operationService->createOperation($validatedData,auth()->id());
         return response()->json($operation, 201);
        
+    }
+    public function updateOperation(Request $request,$id){
+        $validatedData=$request->validate([
+            'name'=>'nullable|string|max:200',
+            'description'=>'nullable|string',
+           'status'=>'nullable|in:ongoing,upcoming,completed',
+           'start_date'=>'nullable|date',
+           'end_date'=>'nullable|date',
+           'location'=>'nullable|string|max:200',
+           'budget'=>'nullable|numeric',
+        ]);
+        $updatedOperation = $this->operationService->updateOperation($id,$validatedData,auth()->id());
+        return response()->json($updatedOperation, 200);
     }
 }

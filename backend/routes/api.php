@@ -45,3 +45,6 @@ Route::post('/viewer-unassign', [UnassignRoleController::class, 'viewerUnassign'
 Route::get('/me', [UserDetailsController::class, 'getUserDetails'])->middleware('auth:sanctum');
 
 Route::post('/create-operation', [OperationController::class, 'createOperation'])->middleware('auth:sanctum');
+
+Route::put('/update-operation/{id}', [OperationController::class, 'updateOperation'])
+->middleware('auth:sanctum');
