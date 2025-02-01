@@ -28,6 +28,7 @@ class SocialiteController extends Controller
                 'name' =>  $googleUser ->name,
                 'email' =>  $googleUser ->email,
                 'password' => Hash::make('password'),
+                'google_id'=> $googleUser->id,
                 'role_id'=> 1,
                 'parent_id'=> null,
             ]);
