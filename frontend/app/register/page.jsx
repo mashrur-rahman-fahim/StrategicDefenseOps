@@ -2,7 +2,7 @@
 
 import { useState } from 'react';
 import { Container, Row, Col, Form, Button, Card } from 'react-bootstrap';
-import axios from 'axios';
+import api from '../../utils/axios';
 
 export default function RegisterPage() {
   const [formData, setFormData] = useState({
@@ -15,7 +15,7 @@ export default function RegisterPage() {
     e.preventDefault();
     try {
       console.log(formData);
-      const response = await axios.post(`${process.env.NEXT_PUBLIC_API_URL}/register`, formData);
+      const response = await api.post(`/register`, formData);
     } catch (error) {
       console.error('Error:', error.response ? error.response.data : error.message);
     }
