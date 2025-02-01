@@ -13,17 +13,10 @@ export default function RegisterPage() {
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/register`, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify(formData),
-      });
-      const data = await response.json();
-      console.log(data);
+      const response = await axios.post(`${process.env.NEXT_PUBLIC_API_URL}/register`, formData);
+      console.log(response.data);
     } catch (error) {
-      console.error('Error:', error);
+      console.error('Error:', error.response ? error.response.data : error.message);
     }
   };
 
