@@ -1,3 +1,9 @@
+CREATE TABLE `roles` (
+    `id` BIGINT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
+    `role_name` ENUM('admin', 'manager', 'operator', 'viewer') NOT NULL,
+    `created_at` TIMESTAMP NULL,
+    `updated_at` TIMESTAMP NULL
+);
 CREATE TABLE `users` (
     `id` INT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
     `name` VARCHAR(255) NOT NULL,
