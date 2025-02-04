@@ -1,11 +1,12 @@
 'use client';
 
 import { useState } from 'react';
-import { Container, Row, Col, Form, Button, Card } from 'react-bootstrap';
+import { Container, Row, Col, Form, Button, Card, Spinner } from 'react-bootstrap';
 import api from '../../utils/axios';
 
 export default function LoginPage() {
   const [validated, setValidated] = useState(false);
+  const [loading, setLoading] = useState(false);
   const [formData, setFormData] = useState({
     email: '',
     password: '',
@@ -20,13 +21,16 @@ export default function LoginPage() {
     }
     else {
       try {
+        setLoading(true);
         console.log(formData); 
         const response = await api.post(`/login`, formData);
       } catch (error) {
         console.error('Error:', error.response ? error.response.data : error.message);
-      }
+      } finally {
+        setLoading(false);
     }
-  };
+  }
+};
 
   const handleGoogleLogin = () => {
     window.location.href = `${process.env.NEXT_PUBLIC_API_URL}/auth/google`;
@@ -69,9 +73,22 @@ export default function LoginPage() {
                 <div className="text-end mb-3">
                   <a href="/forgot-password" className='link-primary'>Forgot Password?</a>
                 </div>
-                <Button type="submit" className="w-100" variant="primary">
-                  Login
-                </Button>
+                {loading ? (
+                  <Button className="w-100" variant="primary" disabled>
+                    <Spinner
+                      as="span"
+                      animation="border"
+                      size="sm"
+                      role="status"
+                      aria-hidden="true"
+                    />
+                    Loading...
+                  </Button>
+                ) : (
+                  <Button type="submit" className="w-100" variant="primary">
+                    Login
+                  </Button>
+                )}
               </Form>
               <Button onClick={handleGoogleLogin} variant="outline-danger" className="w-100 mt-3">
                 Continue with Google

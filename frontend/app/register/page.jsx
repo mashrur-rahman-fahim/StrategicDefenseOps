@@ -1,17 +1,18 @@
-'use client';
+"use client";
 
-import { useState } from 'react';
-import { Container, Row, Col, Form, Button, Card } from 'react-bootstrap';
-import api from '../../utils/axios';
+import { useState } from "react";
+import { Container, Row, Col, Form, Button, Card, Spinner} from "react-bootstrap";
+import api from "../../utils/axios";
 
 export default function RegisterPage() {
   const [validated, setValidated] = useState(false);
+  const [loading, setLoading] = useState(false);
   const [formData, setFormData] = useState({
-    name: '',
+    name: "",
     role_id: 1,
     parent_id: null,
-    email: '',
-    password: '',
+    email: "",
+    password: "",
   });
 
   const handleSubmit = async (e) => {
@@ -20,13 +21,18 @@ export default function RegisterPage() {
     if (form.checkValidity() === false) {
       e.preventDefault();
       e.stopPropagation();
-    }
-    else {
+    } else {
       try {
+        setLoading(true);
         console.log(formData);
         const response = await api.post(`/register`, formData);
       } catch (error) {
-        console.error('Error:', error.response ? error.response.data : error.message);
+        console.error(
+          "Error:",
+          error.response ? error.response.data : error.message
+        );
+      } finally {
+        setLoading(false);
       }
     }
   };
@@ -40,7 +46,14 @@ export default function RegisterPage() {
       <Row>
         <Col>
           <h2 className="text-center mb-4">StrategicDefenseOps</h2>
-          <Card className="shadow" style={{ width: '400px', border: 'none', backgroundColor: '#f8f9fa' }}>
+          <Card
+            className="shadow"
+            style={{
+              width: "400px",
+              border: "none",
+              backgroundColor: "#f8f9fa",
+            }}
+          >
             <Card.Body>
               <Form noValidate validated={validated} onSubmit={handleSubmit}>
                 <Form.Group controlId="name" className="mb-3">
@@ -49,7 +62,9 @@ export default function RegisterPage() {
                     type="text"
                     placeholder="Enter your full name"
                     value={formData.name}
-                    onChange={(e) => setFormData({ ...formData, name: e.target.value })}
+                    onChange={(e) =>
+                      setFormData({ ...formData, name: e.target.value })
+                    }
                     required
                   />
                   <Form.Control.Feedback type="invalid">
@@ -62,7 +77,9 @@ export default function RegisterPage() {
                     type="email"
                     placeholder="Enter your email"
                     value={formData.email}
-                    onChange={(e) => setFormData({ ...formData, email: e.target.value })}
+                    onChange={(e) =>
+                      setFormData({ ...formData, email: e.target.value })
+                    }
                     required
                   />
                   <Form.Control.Feedback type="invalid">
@@ -75,21 +92,45 @@ export default function RegisterPage() {
                     type="password"
                     placeholder="Enter your password"
                     value={formData.password}
-                    onChange={(e) => setFormData({ ...formData, password: e.target.value })}
+                    onChange={(e) =>
+                      setFormData({ ...formData, password: e.target.value })
+                    }
                     required
                   />
                   <Form.Control.Feedback type="invalid">
                     Please enter a password.
                   </Form.Control.Feedback>
                 </Form.Group>
-                <Button type="submit" className="w-100" variant="primary">Register</Button>
+                {loading ? (
+                  <Button className="w-100" variant="primary" disabled>
+                    <Spinner
+                      as="span"
+                      animation="border"
+                      size="sm"
+                      role="status"
+                      aria-hidden="true"
+                    />
+                    Loading...
+                  </Button>
+                ) : (
+                  <Button type="submit" className="w-100" variant="primary">
+                    Register
+                  </Button>
+                )}
               </Form>
-              <Button onClick={handleGoogleLogin} variant="outline-danger" className="w-100 mt-3">
+              <Button
+                onClick={handleGoogleLogin}
+                variant="outline-danger"
+                className="w-100 mt-3"
+              >
                 Continue with Google
               </Button>
               <div className="text-center mt-3">
-                <p style={{ color: '#6C757D' }}>
-                  Already have an account? <a href="/login" className='link-primary'>Login</a>
+                <p style={{ color: "#6C757D" }}>
+                  Already have an account?{" "}
+                  <a href="/login" className="link-primary">
+                    Login
+                  </a>
                 </p>
               </div>
             </Card.Body>

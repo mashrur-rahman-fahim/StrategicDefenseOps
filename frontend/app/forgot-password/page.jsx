@@ -1,11 +1,12 @@
 'use client';
 
 import { useState } from 'react';
-import { Container, Row, Col, Form, Button, Card, Alert } from 'react-bootstrap';
+import { Container, Row, Col, Form, Button, Card, Alert, Spinner } from 'react-bootstrap';
 import api from '../../utils/axios';
 
 export default function ForgotPassword() {
   const [validated, setValidated] = useState(false);
+  const [loading, setLoading] = useState(false);
   const [email, setEmail] = useState('');
   const [message, setMessage] = useState('');
   const [error, setError] = useState('');
@@ -21,14 +22,16 @@ export default function ForgotPassword() {
     }
     else {
       try {
+        setLoading(true);
         const response = await api.post(`/forgot-password`, { email });
         setMessage(response.data.message);
       } catch (error) {
         setError(error.response?.data?.message || 'Something went wrong!');
-      }
-    }
-    
-  };
+      } finally {
+        setLoading(false);
+    } 
+  }
+};
 
   return (
     <Container className="d-flex justify-content-center align-items-center vh-100">
@@ -53,9 +56,22 @@ export default function ForgotPassword() {
                     Please enter a valid email.
                   </Form.Control.Feedback>
                 </Form.Group>
-                <Button type="submit" className="w-100" variant="primary">
-                  Send Reset Link
-                </Button>
+                {loading ? (
+                  <Button className="w-100" variant="primary" disabled>
+                    <Spinner
+                      as="span"
+                      animation="border"
+                      size="sm"
+                      role="status"
+                      aria-hidden="true"
+                    />
+                    Loading...
+                  </Button>
+                ) : (
+                  <Button type="submit" className="w-100" variant="primary">
+                    Register
+                  </Button>
+                )}
               </Form>
               <div className="text-center mt-3">
                 <p style={{ color: '#6C757D' }}>
