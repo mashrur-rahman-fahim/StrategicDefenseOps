@@ -52,7 +52,10 @@ export default function LoginPage() {
                     required
                   />
                 </Form.Group>
-                <Button type="submit" className="w-100" style={{ backgroundColor: '#0D6EFD', border: 'none' }}>
+                <div className="text-end mb-3">
+                  <a href="/forgot-password" className='link-primary'>Forgot Password?</a>
+                </div>
+                <Button type="submit" className="w-100" variant="primary">
                   Login
                 </Button>
               </Form>
