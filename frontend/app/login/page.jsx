@@ -5,18 +5,26 @@ import { Container, Row, Col, Form, Button, Card } from 'react-bootstrap';
 import api from '../../utils/axios';
 
 export default function LoginPage() {
+  const [validated, setValidated] = useState(false);
   const [formData, setFormData] = useState({
     email: '',
     password: '',
   });
 
   const handleSubmit = async (e) => {
-    e.preventDefault();
-    try {
-      console.log(formData); 
-      const response = await api.post(`/login`, formData);
-    } catch (error) {
-      console.error('Error:', error.response ? error.response.data : error.message);
+    setValidated(true);
+    const form = e.currentTarget;
+    if (form.checkValidity() === false) {
+      e.preventDefault();
+      e.stopPropagation();
+    }
+    else {
+      try {
+        console.log(formData); 
+        const response = await api.post(`/login`, formData);
+      } catch (error) {
+        console.error('Error:', error.response ? error.response.data : error.message);
+      }
     }
   };
 
@@ -31,8 +39,8 @@ export default function LoginPage() {
           <h2 className="text-center mb-4">StrategicDefenseOps</h2>
           <Card className="shadow" style={{ width: '400px', border: 'none', backgroundColor: '#f8f9fa' }}>
             <Card.Body>
-              <Form onSubmit={handleSubmit}>
-                <Form.Group className="mb-3">
+              <Form noValidate validated={validated} onSubmit={handleSubmit}>
+                <Form.Group controlId="email" className="mb-3">
                   <Form.Label>Email</Form.Label>
                   <Form.Control
                     type="email"
@@ -41,8 +49,11 @@ export default function LoginPage() {
                     onChange={(e) => setFormData({ ...formData, email: e.target.value })}
                     required
                   />
+                  <Form.Control.Feedback type="invalid">
+                    Please enter a valid email.
+                  </Form.Control.Feedback>
                 </Form.Group>
-                <Form.Group className="mb-4">
+                <Form.Group controlId="password" className="mb-4">
                   <Form.Label>Password</Form.Label>
                   <Form.Control
                     type="password"
@@ -51,6 +62,9 @@ export default function LoginPage() {
                     onChange={(e) => setFormData({ ...formData, password: e.target.value })}
                     required
                   />
+                  <Form.Control.Feedback type="invalid">
+                    Please enter a password.
+                  </Form.Control.Feedback>
                 </Form.Group>
                 <div className="text-end mb-3">
                   <a href="/forgot-password" className='link-primary'>Forgot Password?</a>
@@ -64,7 +78,7 @@ export default function LoginPage() {
               </Button>
               <div className="text-center mt-3">
                 <p style={{ color: '#6C757D' }}>
-                  Don’t have an account? <a href="/register" style={{ color: '#0D6EFD' }}>Register</a>
+                  Don’t have an account? <a href="/register" className='link-primary'>Register</a>
                 </p>
               </div>
             </Card.Body>

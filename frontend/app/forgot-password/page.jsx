@@ -5,21 +5,29 @@ import { Container, Row, Col, Form, Button, Card, Alert } from 'react-bootstrap'
 import api from '../../utils/axios';
 
 export default function ForgotPassword() {
+  const [validated, setValidated] = useState(false);
   const [email, setEmail] = useState('');
   const [message, setMessage] = useState('');
   const [error, setError] = useState('');
 
   const handleForgotPassword = async (e) => {
-    e.preventDefault();
-    setMessage('');
-    setError('');
-    
-    try {
-      const response = await api.post(`/forgot-password`, { email });
-      setMessage(response.data.message);
-    } catch (error) {
-      setError(error.response?.data?.message || 'Something went wrong!');
+    // setMessage('');
+    // setError('');
+    setValidated(true);
+    const form = e.currentTarget;
+    if (form.checkValidity() === false) {
+      e.preventDefault();
+      e.stopPropagation();
     }
+    else {
+      try {
+        const response = await api.post(`/forgot-password`, { email });
+        setMessage(response.data.message);
+      } catch (error) {
+        setError(error.response?.data?.message || 'Something went wrong!');
+      }
+    }
+    
   };
 
   return (
@@ -31,8 +39,8 @@ export default function ForgotPassword() {
             <Card.Body>
               {message && <Alert variant="success">{message}</Alert>}
               {error && <Alert variant="danger">{error}</Alert>}
-              <Form onSubmit={handleForgotPassword}>
-                <Form.Group className="mb-3">
+              <Form noValidate validated={validated} onSubmit={handleForgotPassword}>
+                <Form.Group controlId="email" className="mb-3">
                   <Form.Label>Email</Form.Label>
                   <Form.Control
                     type="email"
@@ -41,6 +49,9 @@ export default function ForgotPassword() {
                     onChange={(e) => setEmail(e.target.value)}
                     required
                   />
+                  <Form.Control.Feedback type="invalid">
+                    Please enter a valid email.
+                  </Form.Control.Feedback>
                 </Form.Group>
                 <Button type="submit" className="w-100" variant="primary">
                   Send Reset Link
