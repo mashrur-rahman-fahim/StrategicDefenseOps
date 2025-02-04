@@ -42,4 +42,17 @@ class OperationController extends Controller
         $updatedOperation = $this->operationService->updateOperation($id,$validatedData,auth()->id());
         return response()->json($updatedOperation, 200);
     }
+    public function deleteOperation($id){
+        $message=$this->operationService->deleteOperation($id,auth()->id());
+        if($message){
+            return response()->json(['message'=> 'deleted successfully'],200);
+        }
+        return response()->json(['message'=> 'failed to delete'],400);
+    }
+    public function getAllOperations(){
+        $operations=$this->operationService->getAllOperations(auth()->id());
+        if($operations){
+        return response()->json($operations, 200);}
+        else {return response() ->json(['message'=> 'not found'],404);}
+    }
 }

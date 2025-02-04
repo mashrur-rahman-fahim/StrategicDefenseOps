@@ -48,3 +48,8 @@ Route::post('/create-operation', [OperationController::class, 'createOperation']
 
 Route::put('/update-operation/{id}', [OperationController::class, 'updateOperation'])
 ->middleware('auth:sanctum');
+
+Route::delete('/delete-operation/{id}',[OperationController::class,'deleteOperation'])
+->middleware('auth:sanctum');
+
+Route::get('/get-all-operations', [OperationController::class,'getAllOperations'])->middleware('auth:sanctum');
