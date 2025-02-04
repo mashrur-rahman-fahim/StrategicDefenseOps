@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\User;
 use App\Services\OperationService;
 use Illuminate\Http\Request;
 
@@ -54,5 +55,14 @@ class OperationController extends Controller
         if($operations){
         return response()->json($operations, 200);}
         else {return response() ->json(['message'=> 'not found'],404);}
+    }
+    public function searchByName($name){
+        $user=User::find(auth()->id());
+        
+        if($user->role_id==1){
+            $operations=$this->operationService->searchByName($name,auth()->id());
+            return response()->json($operations, 200);
+        }
+        return response()->json(['message'=>'not found'],404);
     }
 }

@@ -46,5 +46,16 @@ class OperationService{
                         else {return null;}
         
     }
+    public function searchByName($name,$userId){
+        $operations=DB::table('operations as o')
+        ->join('users as u','u.id','=','o.created_by')
+        ->select('o.*','o.name as operation_name','u.*','u.name as user_name')
+        ->where(function($query) use ($userId){
+                $query->where('u.parent_id',$userId)
+                ->orWhere('u.id',$userId);
+        })
+        ->where('o.name','LIKE','%'.$name.'%')->get();
+        return [count($operations),$operations];
+    }
     
 }
