@@ -48,3 +48,19 @@ CREATE TABLE `personal_access_tokens` (
     UNIQUE KEY `personal_access_tokens_token_unique` (`token`),
     KEY `personal_access_tokens_tokenable_type_tokenable_id_index` (`tokenable_type`, `tokenable_id`)
 );
+CREATE TABLE operations (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    name VARCHAR(200) NOT NULL,
+    description TEXT,
+    status ENUM('ongoing', 'upcoming', 'completed') NOT NULL,
+    start_date DATETIME NULL,
+    end_date DATETIME NULL,
+    location VARCHAR(255) NULL,
+    created_by INT UNSIGNED NOT NULL,
+    updated_by INT UNSIGNED NOT NULL,
+    budget DECIMAL(10, 2) NULL,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+    FOREIGN KEY (created_by) REFERENCES users(id) ON DELETE CASCADE,
+    FOREIGN KEY (updated_by) REFERENCES users(id) ON DELETE CASCADE
+);
