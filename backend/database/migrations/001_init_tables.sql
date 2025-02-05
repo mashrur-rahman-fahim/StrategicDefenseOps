@@ -17,7 +17,7 @@ CREATE TABLE `users` (
     `created_at` TIMESTAMP NULL,
     `updated_at` TIMESTAMP NULL,
     CONSTRAINT `users_role_id_foreign` FOREIGN KEY (`role_id`) REFERENCES `roles`(`id`) ON DELETE CASCADE,
-    CONSTRAINT `users_parent_id_foreign` FOREIGN KEY (`parent_id`) REFERENCES `users`(`id`) ON DELETE CASCADE
+    CONSTRAINT `users_parent_id_foreign` FOREIGN KEY (`parent_id`) REFERENCES `users`(`id`) ON DELETE NULL
 ) ;
 CREATE TABLE `password_resets` (
     `email` VARCHAR(255) NOT NULL PRIMARY KEY,
@@ -62,5 +62,50 @@ CREATE TABLE operations (
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
     FOREIGN KEY (created_by) REFERENCES users(id) ON DELETE CASCADE,
-    FOREIGN KEY (updated_by) REFERENCES users(id) ON DELETE CASCADE
+    FOREIGN KEY (updated_by) REFERENCES users(id) ON DELETE null,
+);
+
+
+
+
+create table weapon (
+    id BIGINT AUTO_INCREMENT PRIMARY KEY,
+    admin_id BIGINT not null,
+    weapon_name varchar(200) NOT NULL,
+    weapon description TEXT,
+    weapon_count BIGINT NOT NULL,
+    weapon_category varchar(200),
+    weapon_type varchar(200),
+    weapon_model varchar(200),
+    weapon_manufacturer varchar(200),
+    weapon_serial_number varchar(200) NOT NULL,
+    weapon_weight varchar(200),
+    weapon_caliber varchar(200),
+    weapon_range varchar(200),
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+    FOREIGN KEY (admin_id) REFERENCES users(id) on DELETE CASCADE
+);
+create table Resources(
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    name VARCHAR(200) not null,
+    resource_category int UNSIGNED not null REFERENCES resource_category(id) on DELETE CASCADE,
+    weapon_id BIGINT REFERENCES weapon(id) on DELETE CASCADE,   
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+);
+
+create table resource_category(
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    resource_category_type ENUM ('vehicle','weapon','personnel','equipment'),
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
+);
+create table operation_resources (
+    id BIGINT AUTO_INCREMENT PRIMARY KEY,
+    operation_id BIGINT not null REFERENCES  operations(id) ON DELETE CASCADE,
+    resource_id BIGINT not null REFERENCES resources(id) ON DELETE CASCADE,
+    resource_count BIGINT not null,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
 );
