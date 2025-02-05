@@ -55,3 +55,4 @@ Route::delete('/delete-operation/{id}',[OperationController::class,'deleteOperat
 Route::get('/get-all-operations', [OperationController::class,'getAllOperations'])->middleware('auth:sanctum');
 
 Route::get('/search-operations/{name}', [OperationController::class,'searchByName'])->middleware('auth:sanctum');
+
