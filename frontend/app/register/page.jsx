@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import { Container, Row, Col, Form, Button, Card, Spinner} from "react-bootstrap";
+import { Container, Row, Col, Form, Button, Card, Spinner } from "react-bootstrap";
 import api from "../../utils/axios";
 
 export default function RegisterPage() {
@@ -13,6 +13,7 @@ export default function RegisterPage() {
     parent_id: null,
     email: "",
     password: "",
+    password_confirmation: "",
   });
 
   const roles = [
@@ -23,11 +24,11 @@ export default function RegisterPage() {
   ];
 
   const handleSubmit = async (e) => {
-    setValidated(true);
     e.preventDefault();
+    setValidated(true);
     const form = e.currentTarget;
-    if (form.checkValidity() === false) {
-      e.preventDefault();
+    const isPasswordValid = formData.password === formData.password_confirmation;
+    if (form.checkValidity() === false || isPasswordValid === false) {
       e.stopPropagation();
     } else {
       try {
@@ -50,7 +51,10 @@ export default function RegisterPage() {
   };
 
   return (
-    <Container className="d-flex justify-content-center align-items-center vh-100">
+    <Container
+      className="d-flex justify-content-center align-items-center"
+      style={{ minHeight: "100vh", padding: "20px 0" }}
+    >
       <Row>
         <Col>
           <h2 className="text-center mb-4">StrategicDefenseOps</h2>
@@ -84,7 +88,10 @@ export default function RegisterPage() {
                   <Form.Select
                     value={formData.role_id}
                     onChange={(e) =>
-                      setFormData({ ...formData, role_id: parseInt(e.target.value) })
+                      setFormData({
+                        ...formData,
+                        role_id: parseInt(e.target.value),
+                      })
                     }
                     required
                   >
@@ -110,7 +117,7 @@ export default function RegisterPage() {
                     Please provide a valid email.
                   </Form.Control.Feedback>
                 </Form.Group>
-                <Form.Group controlId="password" className="mb-4">
+                <Form.Group controlId="password" className="mb-3">
                   <Form.Label>Password</Form.Label>
                   <Form.Control
                     type="password"
@@ -119,10 +126,30 @@ export default function RegisterPage() {
                     onChange={(e) =>
                       setFormData({ ...formData, password: e.target.value })
                     }
+                    minLength={8}
                     required
                   />
                   <Form.Control.Feedback type="invalid">
-                    Please enter a password.
+                    Password must be at least 8 characters.
+                  </Form.Control.Feedback>
+                </Form.Group>
+                <Form.Group controlId="password_confirmation" className="mb-4">
+                  <Form.Label>Confirm Password</Form.Label>
+                  <Form.Control
+                    type="password"
+                    placeholder="Confirm your password"
+                    value={formData.password_confirmation}
+                    onChange={(e) =>
+                      setFormData({
+                        ...formData,
+                        password_confirmation: e.target.value,
+                      })
+                    }
+                    isInvalid={validated && formData.password !== formData.password_confirmation}
+                    required
+                  />
+                  <Form.Control.Feedback type="invalid">
+                    Passwords do not match.
                   </Form.Control.Feedback>
                 </Form.Group>
                 {loading ? (
