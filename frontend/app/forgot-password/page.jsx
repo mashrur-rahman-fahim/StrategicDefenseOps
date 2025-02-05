@@ -14,10 +14,10 @@ export default function ForgotPassword() {
   const handleForgotPassword = async (e) => {
     // setMessage('');
     // setError('');
+    e.preventDefault();
     setValidated(true);
     const form = e.currentTarget;
     if (form.checkValidity() === false) {
-      e.preventDefault();
       e.stopPropagation();
     }
     else {

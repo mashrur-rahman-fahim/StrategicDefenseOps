@@ -15,8 +15,16 @@ export default function RegisterPage() {
     password: "",
   });
 
+  const roles = [
+    { id: 1, name: "Commander" },
+    { id: 2, name: "Officer" },
+    { id: 3, name: "Sergeant" },
+    { id: 4, name: "Private" },
+  ];
+
   const handleSubmit = async (e) => {
     setValidated(true);
+    e.preventDefault();
     const form = e.currentTarget;
     if (form.checkValidity() === false) {
       e.preventDefault();
@@ -70,6 +78,22 @@ export default function RegisterPage() {
                   <Form.Control.Feedback type="invalid">
                     Please enter a name.
                   </Form.Control.Feedback>
+                </Form.Group>
+                <Form.Group controlId="role" className="mb-3">
+                  <Form.Label>Role</Form.Label>
+                  <Form.Select
+                    value={formData.role_id}
+                    onChange={(e) =>
+                      setFormData({ ...formData, role_id: parseInt(e.target.value) })
+                    }
+                    required
+                  >
+                    {roles.map((role) => (
+                      <option key={role.id} value={role.id}>
+                        {role.name}
+                      </option>
+                    ))}
+                  </Form.Select>
                 </Form.Group>
                 <Form.Group controlId="email" className="mb-3">
                   <Form.Label>Email</Form.Label>

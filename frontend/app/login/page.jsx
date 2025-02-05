@@ -13,10 +13,10 @@ export default function LoginPage() {
   });
 
   const handleSubmit = async (e) => {
+    e.preventDefault();
     setValidated(true);
     const form = e.currentTarget;
     if (form.checkValidity() === false) {
-      e.preventDefault();
       e.stopPropagation();
     }
     else {
