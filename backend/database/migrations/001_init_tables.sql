@@ -70,22 +70,29 @@ CREATE TABLE operations (
 
 create table weapon (
     id BIGINT AUTO_INCREMENT PRIMARY KEY,
-    admin_id BIGINT not null,
+    authorized_by BIGINT not null,
     weapon_name varchar(200) NOT NULL,
-    weapon description TEXT,
+    weapon_description TEXT,
     weapon_count BIGINT NOT NULL,
     weapon_category varchar(200),
     weapon_type varchar(200),
     weapon_model varchar(200),
     weapon_manufacturer varchar(200),
     weapon_serial_number varchar(200) NOT NULL,
-    weapon_weight varchar(200),
-    weapon_caliber varchar(200),
-    weapon_range varchar(200),
+    weapon_weight DECIMAL(10,2),
+    weapon_range DECIMAL(10,2),
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
     FOREIGN KEY (admin_id) REFERENCES users(id) on DELETE CASCADE
 );
+
+create table resource_category(
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    resource_category ENUM ('vehicle','weapon','personnel','equipment'),
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
+);
+
 create table Resources(
     id INT AUTO_INCREMENT PRIMARY KEY,
     name VARCHAR(200) not null,
@@ -95,12 +102,6 @@ create table Resources(
     updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
 );
 
-create table resource_category(
-    id INT AUTO_INCREMENT PRIMARY KEY,
-    resource_category_type ENUM ('vehicle','weapon','personnel','equipment'),
-    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
-);
 create table operation_resources (
     id BIGINT AUTO_INCREMENT PRIMARY KEY,
     operation_id BIGINT not null REFERENCES  operations(id) ON DELETE CASCADE,

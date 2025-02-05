@@ -44,13 +44,28 @@ class User extends Authenticatable
     protected $casts = [
         'email_verified_at' => 'datetime',
     ];
-    public function roles(){
-        return $this->belongsTo(Role::class,'role_id');
+    public function role()
+    {
+        return $this->belongsTo(Role::class, 'role_id');
     }
-    public function parent(){
-        return $this->belongsTo(User::class,'parent_id');
+
+    public function parent()
+    {
+        return $this->belongsTo(User::class, 'parent_id');
     }
-    public function children(){
-        return $this->hasMany(User::class,'parent_id');
+
+    public function children()
+    {
+        return $this->hasMany(User::class, 'parent_id');
+    }
+
+    public function createdOperations()
+    {
+        return $this->hasMany(Operation::class, 'created_by');
+    }
+
+    public function updatedOperations()
+    {
+        return $this->hasMany(Operation::class, 'updated_by');
     }
 }

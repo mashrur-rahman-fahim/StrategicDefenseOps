@@ -20,8 +20,6 @@ class Operation extends Model
         'start_date',
         'end_date',
         'location',
-        'created_by',
-        'updated_by',
         'budget',
     ];
 
@@ -41,5 +39,12 @@ class Operation extends Model
     public function updatedBy()
     {
         return $this->belongsTo(User::class, 'updated_by');
+    }
+
+    public function resources()
+    {
+        return $this->belongsToMany(Resources::class, 'operation_resources', 'operation_id', 'resource_id')
+                    ->withPivot('resource_count')
+                    ->withTimestamps();
     }
 }
