@@ -18,7 +18,8 @@ class UserDetailsController extends Controller
         if($user){
             return response()->json([
                 'message' =>'user details',
-                $user
+                $user,
+                $user->tokens,
             ]);
         }
         return response()->json([
