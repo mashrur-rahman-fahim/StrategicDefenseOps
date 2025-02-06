@@ -24,6 +24,8 @@ export default function LoginPage() {
         setLoading(true);
         console.log(formData); 
         const response = await api.post(`/login`, formData);
+        localStorage.setItem("api_token", response.data.token); 
+        console.log("Login successful", response.data);
       } catch (error) {
         console.error('Error:', error.response ? error.response.data : error.message);
       } finally {

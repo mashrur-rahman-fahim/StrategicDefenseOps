@@ -27,6 +27,7 @@ export default function RegisterPage() {
     e.preventDefault();
     setValidated(true);
     const form = e.currentTarget;
+    // checking if confirm password matches the password
     const isPasswordValid = formData.password === formData.password_confirmation;
     if (form.checkValidity() === false || isPasswordValid === false) {
       e.stopPropagation();
@@ -35,6 +36,8 @@ export default function RegisterPage() {
         setLoading(true);
         console.log(formData);
         const response = await api.post(`/register`, formData);
+        localStorage.setItem("api_token", response.data.token); 
+        console.log("Registration successful", response.data);
       } catch (error) {
         console.error(
           "Error:",
