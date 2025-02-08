@@ -1,0 +1,181 @@
+/* General Styles */
+body {
+  font-family: Arial, sans-serif;
+  background-color: #121212;
+  color: #ffffff;
+  margin: 0;
+  padding: 0;
+}
+
+.dashboard {
+  padding: 20px;
+
+h2 {
+  font-size: 26px; /* Adjusted font size */
+  font-weight: 900; /* Bold */
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  text-align: left; /* Shift heading to the left */
+  margin: 30px 0;
+  padding-bottom: 10px;
+  border-bottom: 3px solid #f8f8f8;
+}
+}
+
+/* ⚡ Stats Section */
+.stats-section {
+  margin-bottom: 60px; /* Added space after Stats section */
+}
+
+.stats-grid {
+  display: flex;
+  gap: 20px;
+  justify-content: space-between;
+}
+
+.stat-card {
+  background: linear-gradient(135deg, #5100ff);
+  padding: 25px;
+  border-radius: 12px;
+  box-shadow: 0 5px 15px rgba(2, 0, 1, 0.5);
+  text-align: center;
+  flex: 1;
+  transition: 0.3s;
+}
+
+.stat-card:hover {
+  transform: scale(1.05);
+}
+
+.stat-number {
+  font-size: 26px;
+  font-weight: bold;
+  color: #fff;
+}
+
+.stat-card button {
+  background-color: #ffffff;
+  color: #000000;
+  border: none;
+  padding: 12px;
+  margin-top: 10px;
+  cursor: pointer;
+  border-radius: 8px;
+  font-weight: bold;
+}
+
+.stat-card button:hover {
+  background-color: #50d371;
+  color: white;
+}
+
+/* 🔥 Operations Table - Professional White Design */
+.operations-section {
+  margin-bottom: 80px;
+   /* Added space after Operations section */
+}
+
+.operations-table {
+  width: 100%;
+  border-collapse: collapse;
+  background: #ffffff;
+  border-radius: 10px;
+  overflow: hidden;
+}
+
+.operations-table th,
+.operations-table td {
+  padding: 15px;
+  text-align: left;
+  border-bottom: 1px solid #dddddd;
+  font-size: 16px;
+  color: #333;
+}
+
+.operations-table th {
+  background: #f4f4f4;
+  color: #000;
+  font-weight: bold;
+  text-transform: uppercase;
+}
+
+.operations-table tr:hover {
+  background: rgba(0, 0, 0, 0.05);
+  transition: 0.3s;
+}
+
+.icon {
+  cursor: pointer;
+  margin-right: 10px;
+}
+
+
+
+
+/* 🎯 Resource Usage */
+.resource-usage-section {
+  margin-top: 20px;
+  text-align: center;
+  margin-bottom: 40px; /* Added space after Resource Usage section */
+}
+
+.legend {
+  display: flex;
+  justify-content: center;
+  gap: 20px;
+  margin-bottom: 20px;
+}
+
+.legend-item {
+  width: 15px;
+  height: 15px;
+  display: inline-block;
+  margin-right: 5px;
+}
+
+.legend-item.available {
+  background: green;
+}
+
+.legend-item.in-use {
+  background: red;
+}
+
+.legend-item.maintenance {
+  background: orange;
+}
+
+/* 🔥 Pie Chart - Resource Usage */
+.resource-chart {
+  display: flex;
+  justify-content: center;
+  gap: 30px;
+  margin-top: 10px;
+}
+
+.resource-chart .chart-container {
+  position: relative;
+  width: 120px;
+  height: 120px;
+}
+
+.chart-text {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  font-size: 18px;
+  font-weight: bold;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+  .stats-grid {
+    flex-direction: column;
+  }
+
+  .operations-table th,
+  .operations-table td {
+    font-size: 14px;
+  }
+}
