@@ -33,7 +33,7 @@ class Weapon extends Model
 
     public function resources()
     {
-        return $this->hasMany(Resources::class, 'weapon_id');
+        return $this->hasOne(Resources::class, 'weapon_id');
     }
 
 }

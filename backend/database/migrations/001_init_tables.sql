@@ -1,5 +1,5 @@
 CREATE TABLE `roles` (
-    `id` BIGINT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
+    `id` INT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
     `role_name` ENUM('admin', 'manager', 'operator', 'viewer') NOT NULL,
     `created_at` TIMESTAMP NULL,
     `updated_at` TIMESTAMP NULL
@@ -11,7 +11,7 @@ CREATE TABLE `users` (
     `email_verified_at` TIMESTAMP NULL,
     `password` VARCHAR(255) NOT NULL,
     `google_id` VARCHAR(255) NULL,
-    `role_id` BIGINT UNSIGNED NOT NULL,
+    `role_id` INT UNSIGNED NOT NULL,
     `parent_id` INT UNSIGNED NULL,
     `remember_token` VARCHAR(100) NULL,
     `created_at` TIMESTAMP NULL,
@@ -25,7 +25,7 @@ CREATE TABLE `password_resets` (
     `created_at` TIMESTAMP NULL
 );
 CREATE TABLE `failed_jobs` (
-    `id` BIGINT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
+    `id` INT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
     `uuid` VARCHAR(255) NOT NULL UNIQUE,
     `connection` TEXT NOT NULL,
     `queue` TEXT NOT NULL,
@@ -34,9 +34,9 @@ CREATE TABLE `failed_jobs` (
     `failed_at` TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
 CREATE TABLE `personal_access_tokens` (
-    `id` BIGINT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
+    `id` INT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
     `tokenable_type` VARCHAR(255) NOT NULL,
-    `tokenable_id` BIGINT UNSIGNED NOT NULL,
+    `tokenable_id` INT UNSIGNED NOT NULL,
     `name` VARCHAR(255) NOT NULL,
     `token` VARCHAR(64) NOT NULL UNIQUE,
     `abilities` TEXT NULL,
@@ -68,45 +68,65 @@ CREATE TABLE operations (
 
 
 
-create table weapon (
-    id BIGINT AUTO_INCREMENT PRIMARY KEY,
-    authorized_by BIGINT not null,
+create table weapon(
+    id INT unsigned AUTO_INCREMENT PRIMARY KEY,
+    authorized_by INT unsigned not null ,
     weapon_name varchar(200) NOT NULL,
     weapon_description TEXT,
-    weapon_count BIGINT NOT NULL,
+    weapon_count INT NOT NULL,
     weapon_category varchar(200),
     weapon_type varchar(200),
     weapon_model varchar(200),
     weapon_manufacturer varchar(200),
-    weapon_serial_number varchar(200) NOT NULL,
+    weapon_serial_number varchar(200) NOT NULL UNIQUE,
     weapon_weight DECIMAL(10,2),
     weapon_range DECIMAL(10,2),
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
-    FOREIGN KEY (admin_id) REFERENCES users(id) on DELETE CASCADE
-);
+    FOREIGN KEY (authorized_by) REFERENCES users(id) ON DELETE CASCADE
+   );
+-- create table vehicle(
+--     id INT AUTO_INCREMENT PRIMARY KEY,
+--     authorized_by INT not null,
+--     vehicle_name varchar(200) NOT NULL,
+--     vehicle_description TEXT,
+--     vehicle_count INT NOT NULL,
+--     vehicle_type varchar(200),  --car
+--     vehicle_category varchar(200) ,--land,air
+--     vehicle_model varchar(200),
+--     vehicle_manufacturer varchar(200),
+--     vehicle_serial_number varchar(200) NOT NULL,
+--     vehicle_capacity int ,
+--     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+--     updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+--     FOREIGN KEY (authorized_by) REFERENCES users(id) on DELETE CASCADE
+-- )
 
 create table resource_category(
-    id INT AUTO_INCREMENT PRIMARY KEY,
+    id INT unsigned AUTO_INCREMENT PRIMARY KEY,
     resource_category ENUM ('vehicle','weapon','personnel','equipment'),
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
 );
 
 create table Resources(
-    id INT AUTO_INCREMENT PRIMARY KEY,
-    name VARCHAR(200) not null,
-    resource_category int UNSIGNED not null REFERENCES resource_category(id) on DELETE CASCADE,
-    weapon_id BIGINT REFERENCES weapon(id) on DELETE CASCADE,   
+    id INT unsigned AUTO_INCREMENT PRIMARY KEY,
+    resources_name VARCHAR(200) not null,
+    resource_category int UNSIGNED not null ,
+    weapon_id int unsigned NULL ,   
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+    FOREIGN KEY (weapon_id) REFERENCES weapon(id) ON DELETE CASCADE,
+    FOREIGN KEY (resource_category) references resource_category(id) on DELETE CASCADE
 );
 
 create table operation_resources (
-    id BIGINT AUTO_INCREMENT PRIMARY KEY,
-    operation_id BIGINT not null REFERENCES  operations(id) ON DELETE CASCADE,
-    resource_id BIGINT not null REFERENCES resources(id) ON DELETE CASCADE,
-    resource_count BIGINT not null,
+    id INT unsigned AUTO_INCREMENT PRIMARY KEY,
+    operation_id INT not null ,
+    resource_id INT unsigned not null ,
+    resource_count INT unsigned not null,
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
+    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+    FOREIGN KEY (resource_id) references resources(id) on DELETE CASCADE,
+    FOREIGN KEY (operation_id) REFERENCES operations(id) on DELETE CASCADE
 );

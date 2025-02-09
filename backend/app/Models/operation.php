@@ -21,6 +21,8 @@ class Operation extends Model
         'end_date',
         'location',
         'budget',
+        'created_by',
+        'updated_by',
     ];
 
     // Define the casts for specific attributes
@@ -47,4 +49,5 @@ class Operation extends Model
                     ->withPivot('resource_count')
                     ->withTimestamps();
     }
+    
 }

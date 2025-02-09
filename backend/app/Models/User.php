@@ -68,4 +68,7 @@ class User extends Authenticatable
     {
         return $this->hasMany(Operation::class, 'updated_by');
     }
+    public function weapon(){
+        return $this->hasMany(Weapon::class,'authorized_by');
+    }
 }
