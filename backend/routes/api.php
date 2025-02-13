@@ -2,8 +2,10 @@
 
 use App\Http\Controllers\AssignRoleController;
 use App\Http\Controllers\OperationController;
+use App\Http\Controllers\ResourcesController;
 use App\Http\Controllers\UnassignRoleController;
 use App\Http\Controllers\UserDetailsController;
+use App\Http\Controllers\WeaponController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
@@ -55,4 +57,6 @@ Route::delete('/delete-operation/{id}',[OperationController::class,'deleteOperat
 Route::get('/get-all-operations', [OperationController::class,'getAllOperations'])->middleware('auth:sanctum');
 
 Route::get('/search-operations/{name}', [OperationController::class,'searchByName'])->middleware('auth:sanctum');
+
+Route::post('/add-weapon',[WeaponController::class,'addWeapon'])->middleware('auth:sanctum');
 

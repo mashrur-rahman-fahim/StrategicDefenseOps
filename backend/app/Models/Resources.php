@@ -9,8 +9,12 @@ class Resources extends Model
 {
     use HasFactory;
     protected $fillable=[
-        'name',
+        'resources_name',
         'resource_category',
+        'weapon_id',
+        'vehicle_id',
+        'personnel_id',
+        'equipment_id',
     ];
     public function category()
     {

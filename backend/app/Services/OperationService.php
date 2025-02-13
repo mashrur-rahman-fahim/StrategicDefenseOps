@@ -11,7 +11,7 @@ class OperationService{
         if($id && ($user->role_id==1 )){
             return Operation::create($data);
         }
-        return ['message'=>'failed to create operation'];
+        return false;
         
     }
     public function updateOperation($id,$data,$userId){
@@ -23,7 +23,7 @@ class OperationService{
                 $operation->update($data);
                 return [$operation];
             }
-            return ['message'=> 'update operation failed'];
+            return false;
     }
     public function deleteOperation($id,$userId){
         $operation=Operation::find($id);

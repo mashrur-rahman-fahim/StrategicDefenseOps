@@ -74,8 +74,8 @@ create table weapon(
     weapon_name varchar(200) NOT NULL,
     weapon_description TEXT,
     weapon_count INT NOT NULL,
-    weapon_category varchar(200),
-    weapon_type varchar(200),
+    weapon_category varchar(200),--gun granade explosive
+    weapon_type varchar(200), --rifle pistol
     weapon_model varchar(200),
     weapon_manufacturer varchar(200),
     weapon_serial_number varchar(200) NOT NULL UNIQUE,
@@ -85,22 +85,50 @@ create table weapon(
     updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
     FOREIGN KEY (authorized_by) REFERENCES users(id) ON DELETE CASCADE
    );
--- create table vehicle(
---     id INT AUTO_INCREMENT PRIMARY KEY,
---     authorized_by INT not null,
---     vehicle_name varchar(200) NOT NULL,
---     vehicle_description TEXT,
---     vehicle_count INT NOT NULL,
---     vehicle_type varchar(200),  --car
---     vehicle_category varchar(200) ,--land,air
---     vehicle_model varchar(200),
---     vehicle_manufacturer varchar(200),
---     vehicle_serial_number varchar(200) NOT NULL,
---     vehicle_capacity int ,
---     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
---     updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
---     FOREIGN KEY (authorized_by) REFERENCES users(id) on DELETE CASCADE
--- )
+create table vehicle(
+    id INT unsigned AUTO_INCREMENT PRIMARY KEY,
+    authorized_by INT unsigned not null,
+    vehicle_name varchar(200) NOT NULL,
+    vehicle_description TEXT,
+    vehicle_count INT NOT NULL,
+    vehicle_type varchar(200),  --car
+    vehicle_category varchar(200) ,--land,air
+    vehicle_model varchar(200),
+    vehicle_manufacturer varchar(200),
+    vehicle_serial_number varchar(200) NOT NULL UNIQUE,
+    vehicle_capacity int ,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+    FOREIGN KEY (authorized_by) REFERENCES users(id) on DELETE CASCADE
+)
+create table personnel(
+    id INT unsigned AUTO_INCREMENT PRIMARY KEY,
+    authorized_by INT unsigned not null,
+    personnel_name varchar(200) NOT NULL,
+    personnel_description TEXT,
+    personnel_category varchar(200) NOT NULL,--medical, eng
+    personnel_type varchar(200),--doctor,nurse
+    personnel_rank varchar(200),--captain, lieutenant
+    skills varchar(200),--first aid,heavy machinery
+    personnel_serial_number varchar(200) not null UNIQUE,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+    FOREIGN KEY (authorized_by) REFERENCES users(id) on DELETE CASCADE
+)
+create table equipment(
+    id INT unsigned AUTO_INCREMENT PRIMARY KEY,
+    authorized_by INT unsigned not null,
+    equipment_name varchar(200) NOT NULL,
+    equipment_description TEXT,
+   equipment_category varchar(200),--communication
+    equipment_type varchar(200),--radio, television
+    equipment_manufacturer varchar(200),
+    equipment_serial_number varchar(200) not null unique,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+    FOREIGN KEY (authorized_by) REFERENCES users(id) on DELETE CASCADE
+ )
+
 
 create table resource_category(
     id INT unsigned AUTO_INCREMENT PRIMARY KEY,
@@ -113,10 +141,15 @@ create table Resources(
     id INT unsigned AUTO_INCREMENT PRIMARY KEY,
     resources_name VARCHAR(200) not null,
     resource_category int UNSIGNED not null ,
-    weapon_id int unsigned NULL ,   
+    weapon_id int unsigned NULL ,  
+    vehicle_id int unsigned NULL ,
+    personnel_id int unsigned NULL ,
+    equipment_id int unsigned NULL ,
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
     FOREIGN KEY (weapon_id) REFERENCES weapon(id) ON DELETE CASCADE,
+    FOREIGN KEY (vehicle_id) REFERENCES vehicle(id) ON DELETE CASCADE,
+    FOREIGN KEY (personnel_id) REFERENCES personnel(id) ON DELETE CASCADE,
     FOREIGN KEY (resource_category) references resource_category(id) on DELETE CASCADE
 );
 
