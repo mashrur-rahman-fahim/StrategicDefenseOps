@@ -17,7 +17,7 @@ CREATE TABLE `users` (
     `created_at` TIMESTAMP NULL,
     `updated_at` TIMESTAMP NULL,
     CONSTRAINT `users_role_id_foreign` FOREIGN KEY (`role_id`) REFERENCES `roles`(`id`) ON DELETE CASCADE,
-    CONSTRAINT `users_parent_id_foreign` FOREIGN KEY (`parent_id`) REFERENCES `users`(`id`) ON DELETE NULL
+    CONSTRAINT `users_parent_id_foreign` FOREIGN KEY (`parent_id`) REFERENCES `users`(`id`) ON delete set NULL
 ) ;
 CREATE TABLE `password_resets` (
     `email` VARCHAR(255) NOT NULL PRIMARY KEY,
@@ -42,27 +42,26 @@ CREATE TABLE `personal_access_tokens` (
     `abilities` TEXT NULL,
     `last_used_at` TIMESTAMP NULL,
     `expires_at` TIMESTAMP NULL,
-    `created_at` TIMESTAMP NULL,
-    `updated_at` TIMESTAMP NULL,
-    PRIMARY KEY (`id`),
+    `created_at` TIMESTAMP NULL DEFAULT CURRENT_TIMESTAMP,
+    `updated_at` TIMESTAMP NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
     UNIQUE KEY `personal_access_tokens_token_unique` (`token`),
     KEY `personal_access_tokens_tokenable_type_tokenable_id_index` (`tokenable_type`, `tokenable_id`)
-);
+) 
 CREATE TABLE operations (
-    id INT AUTO_INCREMENT PRIMARY KEY,
+    id INT unsigned AUTO_INCREMENT PRIMARY KEY,
     name VARCHAR(200) NOT NULL,
     description TEXT,
     status ENUM('ongoing', 'upcoming', 'completed') NOT NULL,
     start_date DATETIME NULL,
     end_date DATETIME NULL,
     location VARCHAR(255) NULL,
-    created_by INT UNSIGNED NOT NULL,
-    updated_by INT UNSIGNED NOT NULL,
+    created_by INT unsigned NOT NULL,
+    updated_by INT unsigned NULL,
     budget DECIMAL(10, 2) NULL,
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
     FOREIGN KEY (created_by) REFERENCES users(id) ON DELETE CASCADE,
-    FOREIGN KEY (updated_by) REFERENCES users(id) ON DELETE null,
+    FOREIGN KEY (updated_by) REFERENCES users(id) ON DELETE set NULL
 );
 
 
@@ -155,8 +154,8 @@ create table Resources(
 
 create table operation_resources (
     id INT unsigned AUTO_INCREMENT PRIMARY KEY,
-    operation_id INT not null ,
-    resource_id INT unsigned not null ,
+    operation_id  INT unsigned not null ,
+    resource_id  INT unsigned not null ,
     resource_count INT unsigned not null,
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
