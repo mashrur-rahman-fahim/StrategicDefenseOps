@@ -17,37 +17,47 @@ export default function RegisterPage() {
   });
 
   const roles = [
-    { id: 1, name: "Commander" },
-    { id: 2, name: "Officer" },
-    { id: 3, name: "Sergeant" },
-    { id: 4, name: "Private" },
+    { id: 1, name: "System Administrator" },
+    { id: 2, name: "Operations Coordinator" },
+    { id: 3, name: "Field Specialist" },
+    { id: 4, name: "Mission Observer" },
   ];
 
   const handleSubmit = async (e) => {
     e.preventDefault();
     setValidated(true);
+    
     const form = e.currentTarget;
-    // checking if confirm password matches the password
     const isPasswordValid = formData.password === formData.password_confirmation;
-    if (form.checkValidity() === false || isPasswordValid === false) {
+  
+    if (form.checkValidity() === false || !isPasswordValid) {
       e.stopPropagation();
     } else {
       try {
         setLoading(true);
-        console.log(formData);
-        const response = await api.post(`/register`, formData);
-        localStorage.setItem("api_token", response.data.token); 
+        const response = await api.post('/register', formData, {
+          headers: {
+            Authorization: `Bearer ${localStorage.getItem("api_token")}`,
+          },
+        });
+        
+  
+        console.log("Authorization Header:", api.defaults.headers.common["Authorization"]);
+
         console.log("Registration successful", response.data);
+  
+        
       } catch (error) {
-        console.error(
-          "Error:",
-          error.response ? error.response.data : error.message
-        );
-      } finally {
+        console.error("Error response:", error.response ? error.response.data : "No response received");
+        console.error("Error details:", error);
+      }
+       finally {
         setLoading(false);
       }
     }
   };
+  
+  
 
   const handleGoogleLogin = () => {
     window.location.href = `${process.env.NEXT_PUBLIC_API_URL}/auth/google`;

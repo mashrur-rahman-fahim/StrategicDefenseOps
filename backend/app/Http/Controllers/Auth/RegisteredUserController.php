@@ -44,7 +44,7 @@ class RegisteredUserController extends Controller
                  'email' => $validatedData['email'],
                  'password' => Hash::make($validatedData['password']),
                  'role_id' => $validatedData['role_id'],
-                 'parent_id' => $validatedData['parent_id'],
+                 'parent_id' => $request->parent_id,
              ]);
      
              event(new Registered($user));

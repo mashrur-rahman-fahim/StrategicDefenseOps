@@ -8,6 +8,13 @@ use App\Http\Controllers\UserDetailsController;
 use App\Http\Controllers\WeaponController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\Auth\AuthenticatedSessionController;
+use App\Http\Controllers\Auth\EmailVerificationNotificationController;
+use App\Http\Controllers\Auth\NewPasswordController;
+use App\Http\Controllers\Auth\PasswordResetLinkController;
+use App\Http\Controllers\Auth\RegisteredUserController;
+use App\Http\Controllers\Auth\VerifyEmailController;
+
 
 /*
 |--------------------------------------------------------------------------
@@ -23,6 +30,11 @@ use Illuminate\Support\Facades\Route;
 Route::middleware(['auth:sanctum'])->get('/user', function (Request $request) {
     return $request->user();
 });
+Route::post('/register', [RegisteredUserController::class, 'store'])
+    ->middleware('guest')
+    ->name('register');
+
+
 Route::post('/manager-assign', [AssignRoleController::class, 'managerAssign'], )
     ->middleware('auth:sanctum')
 ;
