@@ -3,7 +3,7 @@ import React, { useState } from "react";
 import "./dashboard.css";
 
 const Dashboard = () => {
-  // State to manage operations
+
   const [operations, setOperations] = useState([
     {
       id: 1,
@@ -25,7 +25,7 @@ const Dashboard = () => {
     },
   ]);
 
-  // State to manage new operation input
+
   const [newOperation, setNewOperation] = useState({
     name: "",
     status: "ongoing",
@@ -33,7 +33,85 @@ const Dashboard = () => {
     endDate: "",
   });
 
-  // Function to toggle visibility for a specific operation
+
+  const [editing, setEditing] = useState(null);
+
+
+  const [error, setError] = useState("");
+
+ 
+  const isValidDate = (date) => {
+    const regex = /^\d{2}\/\d{2}\/\d{2}$/; 
+    if (!regex.test(date)) return false;
+
+    const [day, month, year] = date.split("/");
+    const parsedDate = new Date(`20${year}-${month}-${day}`);
+    return parsedDate instanceof Date && !isNaN(parsedDate);
+  };
+
+
+  const addOperation = () => {
+    if (!newOperation.name || !newOperation.startDate || !newOperation.endDate) {
+      setError("All fields are required.");
+      return;
+    }
+
+    if (!isValidDate(newOperation.startDate)) {
+      setError("Invalid start date. Please use DD/MM/YY format.");
+      return;
+    }
+
+    if (!isValidDate(newOperation.endDate)) {
+      setError("Invalid end date. Please use DD/MM/YY format.");
+      return;
+    }
+
+    const newOp = {
+      id: operations.length + 1,
+      name: newOperation.name,
+      status: newOperation.status,
+      startDate: newOperation.startDate,
+      endDate: newOperation.endDate,
+      visible: true,
+      selected: false,
+    };
+
+
+    setOperations((prev) => [...prev, newOp]);
+
+
+    setNewOperation({ name: "", status: "ongoing", startDate: "", endDate: "" });
+    setError(""); 
+  };
+
+  
+  const updateOperation = () => {
+    if (!editing.name || !editing.startDate || !editing.endDate) {
+      setError("All fields are required.");
+      return;
+    }
+
+    if (!isValidDate(editing.startDate)) {
+      setError("Invalid start date. Please use DD/MM/YY format.");
+      return;
+    }
+
+    if (!isValidDate(editing.endDate)) {
+      setError("Invalid end date. Please use DD/MM/YY format.");
+      return;
+    }
+
+
+    setOperations((prev) =>
+      prev.map((op) => (op.id === editing.id ? { ...op, ...editing } : op))
+    );
+
+
+    setEditing(null);
+    setError(""); 
+  };
+
+
   const toggleVisibility = (id) => {
     setOperations((prev) =>
       prev.map((op) =>
@@ -42,7 +120,7 @@ const Dashboard = () => {
     );
   };
 
-  // Function to handle checkbox selection
+
   const handleSelect = (id) => {
     setOperations((prev) =>
       prev.map((op) =>
@@ -51,25 +129,23 @@ const Dashboard = () => {
     );
   };
 
-  // Function to delete selected operations
+
   const deleteSelectedOperations = () => {
     setOperations((prev) => prev.filter((op) => !op.selected));
   };
 
-  // Function to add a new operation
-  const addOperation = () => {
-    if (newOperation.name && newOperation.startDate && newOperation.endDate) {
-      const newOp = {
-        id: operations.length + 1, // Simple ID generation
-        name: newOperation.name,
-        status: newOperation.status,
-        startDate: newOperation.startDate,
-        endDate: newOperation.endDate,
-        visible: true,
-        selected: false,
-      };
-      setOperations((prev) => [...prev, newOp]);
-      setNewOperation({ name: "", status: "ongoing", startDate: "", endDate: "" }); // Reset input
+
+  const deleteOperation = (id) => {
+    setOperations((prev) => prev.filter((op) => op.id !== id));
+  };
+
+
+  const toggleEditing = (id) => {
+    if (editing && editing.id === id) {
+      setEditing(null); 
+    } else {
+      const operationToEdit = operations.find((op) => op.id === id);
+      setEditing({ ...operationToEdit }); 
     }
   };
 
@@ -80,12 +156,12 @@ const Dashboard = () => {
         <div className="stats-grid">
           <div className="stat-card">
             <h3>Active Operations</h3>
-            <p className="stat-number">4</p>
+            <p className="stat-number">{operations.filter(op => op.status === 'ongoing').length}</p>
             <button>Check</button>
           </div>
           <div className="stat-card">
             <h3>Upcoming Operations</h3>
-            <p className="stat-number">1</p>
+            <p className="stat-number">{operations.filter(op => op.status === 'upcoming').length}</p>
             <button>Check</button>
           </div>
           <div className="stat-card">
@@ -96,24 +172,23 @@ const Dashboard = () => {
         </div>
       </div>
 
-      {/* Operations Section */}
       <div className="operations-section">
         <h2>Operations</h2>
+
+        {/* Error Message */}
+        {error && <div className="error-message">{error}</div>}
+
         {/* Add New Operation Form */}
         <div className="add-operation">
           <input
             type="text"
             placeholder="Operation Name"
             value={newOperation.name}
-            onChange={(e) =>
-              setNewOperation({ ...newOperation, name: e.target.value })
-            }
+            onChange={(e) => setNewOperation({ ...newOperation, name: e.target.value })}
           />
           <select
             value={newOperation.status}
-            onChange={(e) =>
-              setNewOperation({ ...newOperation, status: e.target.value })
-            }
+            onChange={(e) => setNewOperation({ ...newOperation, status: e.target.value })}
           >
             <option value="ongoing">Ongoing</option>
             <option value="upcoming">Upcoming</option>
@@ -122,17 +197,13 @@ const Dashboard = () => {
             type="text"
             placeholder="Start Date (DD/MM/YY)"
             value={newOperation.startDate}
-            onChange={(e) =>
-              setNewOperation({ ...newOperation, startDate: e.target.value })
-            }
+            onChange={(e) => setNewOperation({ ...newOperation, startDate: e.target.value })}
           />
           <input
             type="text"
             placeholder="End Date (DD/MM/YY)"
             value={newOperation.endDate}
-            onChange={(e) =>
-              setNewOperation({ ...newOperation, endDate: e.target.value })
-            }
+            onChange={(e) => setNewOperation({ ...newOperation, endDate: e.target.value })}
           />
           <button onClick={addOperation}>Add Operation</button>
         </div>
@@ -164,20 +235,50 @@ const Dashboard = () => {
                 <td>{op.visible ? op.startDate : "**"}</td>
                 <td>{op.visible ? op.endDate : "**"}</td>
                 <td>
-                  <span
-                    className="icon"
-                    onClick={() => toggleVisibility(op.id)}
-                    style={{ cursor: "pointer" }}
-                  >
+                  <span onClick={() => toggleVisibility(op.id)} aria-label="Toggle visibility">
                     {op.visible ? "👁️" : "👁️‍🗨️"}
                   </span>
-                  <span className="icon">✏️</span>
-                  <span className="icon">🗑️</span>
+                  <span onClick={() => toggleEditing(op.id)} aria-label="Edit operation">
+                    ✏️
+                  </span>
+                  <span onClick={() => deleteOperation(op.id)} aria-label="Delete operation">
+                    🗑️
+                  </span>
                 </td>
               </tr>
             ))}
           </tbody>
         </table>
+
+        {/* Edit Operation Form */}
+        {editing && (
+          <div className="edit-operation">
+            <h3>Edit Operation</h3>
+            <input
+              type="text"
+              value={editing.name}
+              onChange={(e) => setEditing({ ...editing, name: e.target.value })}
+            />
+            <select
+              value={editing.status}
+              onChange={(e) => setEditing({ ...editing, status: e.target.value })}
+            >
+              <option value="ongoing">Ongoing</option>
+              <option value="upcoming">Upcoming</option>
+            </select>
+            <input
+              type="text"
+              value={editing.startDate}
+              onChange={(e) => setEditing({ ...editing, startDate: e.target.value })}
+            />
+            <input
+              type="text"
+              value={editing.endDate}
+              onChange={(e) => setEditing({ ...editing, endDate: e.target.value })}
+            />
+            <button onClick={updateOperation}>Update Operation</button>
+          </div>
+        )}
 
         {/* Delete Selected Button */}
         <button
@@ -185,11 +286,10 @@ const Dashboard = () => {
           onClick={deleteSelectedOperations}
           disabled={!operations.some((op) => op.selected)}
         >
-          Delete Selected
-        </button>
+          Delete
+        </button>      
       </div>
 
-      {/* Resource Usage Section */}
       <div className="resource-usage-section">
         <h2>Resource Usage</h2>
         <div className="legend">
@@ -210,6 +310,7 @@ const Dashboard = () => {
         </div>
       </div>
     </div>
+    
   );
 };
 

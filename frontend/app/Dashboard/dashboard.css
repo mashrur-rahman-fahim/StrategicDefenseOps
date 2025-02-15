@@ -1,30 +1,31 @@
-
+/* Global styles */
 body {
   font-family: Arial, sans-serif;
   background-color: #121212;
   color: #ffffff;
   margin: 0;
   padding: 0;
+  
 }
 
 .dashboard {
   padding: 20px;
+}
 
 h2 {
-  font-size: 26px;
-  font-weight: 900; 
+  font-size: 62px; 
+  font-weight: 900;
   text-transform: uppercase;
   letter-spacing: 1px;
-  text-align: left; 
+  text-align: left;
   margin: 30px 0;
   padding-bottom: 10px;
   border-bottom: 3px solid #f8f8f8;
 }
-}
 
-/* Stats Section */
+
 .stats-section {
-  margin-bottom: 60px; 
+  margin-bottom: 60px;
 }
 
 .stats-grid {
@@ -48,7 +49,7 @@ h2 {
 }
 
 .stat-number {
-  font-size: 26px;
+  font-size: 30px; /* Increased font size */
   font-weight: bold;
   color: #fff;
 }
@@ -68,11 +69,10 @@ h2 {
   background-color: #50d371;
   color: white;
 }
-
-/* Operations Table */
 .operations-section {
+
   margin-bottom: 80px;
-   
+
 }
 
 .operations-table {
@@ -97,6 +97,7 @@ h2 {
   color: #000;
   font-weight: bold;
   text-transform: uppercase;
+  font-size: 18px;
 }
 
 .operations-table tr:hover {
@@ -110,13 +111,61 @@ h2 {
 }
 
 
+.delete-selected {
+  background-color: rgba(76, 31, 255, 0.666);
+  color: rgb(0, 0, 0);
+  padding: 10px;
+  border-radius: 4px;
+  font-weight: bold;
+  cursor: pointer;
+}
+
+.delete-selected:hover {
+  background-color: #d13030;
+}
 
 
-/* Resource Usage */
+.add-operation,
+.edit-operation {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  margin-bottom: 20px;
+}
+
+.add-operation input,
+.edit-operation input,
+.add-operation select,
+.edit-operation select {
+  padding: 10px;
+  font-size: 14px;
+  border-radius: 8px;
+  border: 1px solid #ddd;
+}
+
+.add-operation button,
+.edit-operation button {
+  background-color: #5100ff;
+  color: #fff;
+  border: none;
+  padding: 12px;
+  border-radius: 8px;
+  cursor: pointer;
+  font-weight: bold;
+  transition: 0.3s;
+}
+
+.add-operation button:hover,
+.edit-operation button:hover {
+  background-color: #50d371;
+  color: white;
+}
+
+
 .resource-usage-section {
   margin-top: 20px;
   text-align: center;
-  margin-bottom: 40px; 
+  margin-bottom: 40px;
 }
 
 .legend {
@@ -145,7 +194,7 @@ h2 {
   background: orange;
 }
 
-/*  Pie Chart - Resource Usage */
+
 .resource-chart {
   display: flex;
   justify-content: center;
@@ -178,4 +227,29 @@ h2 {
   .operations-table td {
     font-size: 14px;
   }
+
+  .add-operation,
+  .edit-operation {
+    gap: 8px;
+  }
+
+  .add-operation input,
+  .edit-operation input,
+  .add-operation select,
+  .edit-operation select {
+    font-size: 12px;
+  }
+}
+
+
+.error-message {
+  background-color: #f8d7da;
+  color: #721c24;
+  border: 1px solid #f5c6cb;
+  padding: 15px;
+  border-radius: 8px;
+  margin-bottom: 20px;
+  font-size: 16px;
+  font-weight: bold;
+  text-align: center;
 }
