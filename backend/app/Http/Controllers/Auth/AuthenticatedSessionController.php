@@ -30,7 +30,7 @@ class AuthenticatedSessionController extends Controller
             $expiresAt = Carbon::now()->addMinutes(config('session.lifetime'));
 
             // Create the API token with an expiration time
-            $token = $user->createToken('API Token', [], $expiresAt);
+            $token = $user->createToken('api_token', [], $expiresAt);
 
             // Save the expiration time in the database
             $token->accessToken->expires_at = $expiresAt;

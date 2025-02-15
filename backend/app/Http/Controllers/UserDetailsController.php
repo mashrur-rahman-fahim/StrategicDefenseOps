@@ -8,22 +8,34 @@ use Illuminate\Http\Request;
 
 class UserDetailsController extends Controller
 {
-    
     protected UserDetailsService $userDetailsService;
-    public function __construct(UserDetailsService $userDetailsService){
+
+    public function __construct(UserDetailsService $userDetailsService)
+    {
         $this->userDetailsService = $userDetailsService;
     }
-    public function getUserDetails(Request $request){
-        $user=$this->userDetailsService->getUserDetails(auth()->id());
-        if($user){
+
+    public function getUserDetails(Request $request)
+    {
+        $userId = auth()->id();
+
+        if (!$userId) {
             return response()->json([
-                'message' =>'user details',
-                $user,
-                $user->tokens,
-            ]);
+                'message' => 'Unauthorized'
+            ], 401);
         }
+
+        $user = $this->userDetailsService->getUserDetails($userId);
+
+        if ($user) {
+            return response()->json(
+                $user
+            );
+        }
+
         return response()->json([
-            'message'=> 'user not found'
-        ]);
+            'message' => 'User not found'
+        ], 404);
     }
 }
+

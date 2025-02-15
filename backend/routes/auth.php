@@ -38,5 +38,5 @@ Route::post('/logout', [AuthenticatedSessionController::class, 'destroy'])
     ->middleware('auth')
     ->name('logout');
 
-Route::get('/me', [UserDetailsController::class, 'getUserDetails'])->middleware('auth');
+// Route::get('/me', [UserDetailsController::class, 'getUserDetails'])->middleware('auth');
 

@@ -27,12 +27,8 @@ use App\Http\Controllers\Auth\VerifyEmailController;
 |
 */
 
-Route::middleware(['auth:sanctum'])->get('/user', function (Request $request) {
-    return $request->user();
-});
-Route::post('/register', [RegisteredUserController::class, 'store'])
-    ->middleware('guest')
-    ->name('register');
+
+
 
 
 Route::post('/manager-assign', [AssignRoleController::class, 'managerAssign'], )
@@ -56,19 +52,19 @@ Route::post('/operator-unassign', [UnassignRoleController::class, 'operatorUnass
 Route::post('/viewer-unassign', [UnassignRoleController::class, 'viewerUnassign'])
     ->middleware('auth:sanctum');
 
-Route::get('/me', [UserDetailsController::class, 'getUserDetails'])->middleware('auth:sanctum');
+Route::get('/user', [UserDetailsController::class, 'getUserDetails'])->middleware('auth:sanctum');
 
 Route::post('/create-operation', [OperationController::class, 'createOperation'])->middleware('auth:sanctum');
 
 Route::put('/update-operation/{id}', [OperationController::class, 'updateOperation'])
-->middleware('auth:sanctum');
+    ->middleware('auth:sanctum');
 
-Route::delete('/delete-operation/{id}',[OperationController::class,'deleteOperation'])
-->middleware('auth:sanctum');
+Route::delete('/delete-operation/{id}', [OperationController::class, 'deleteOperation'])
+    ->middleware('auth:sanctum');
 
-Route::get('/get-all-operations', [OperationController::class,'getAllOperations'])->middleware('auth:sanctum');
+Route::get('/get-all-operations', [OperationController::class, 'getAllOperations'])->middleware('auth:sanctum');
 
-Route::get('/search-operations/{name}', [OperationController::class,'searchByName'])->middleware('auth:sanctum');
+Route::get('/search-operations/{name}', [OperationController::class, 'searchByName'])->middleware('auth:sanctum');
 
-Route::post('/add-weapon',[WeaponController::class,'addWeapon'])->middleware('auth:sanctum');
+Route::post('/add-weapon', [WeaponController::class, 'addWeapon'])->middleware('auth:sanctum');
 
