@@ -1,11 +1,80 @@
-'use client'; // Mark this as a Client Component
-import React from "react";
+'use client';
+import React, { useState } from "react";
 import "./dashboard.css";
 
 const Dashboard = () => {
+  // State to manage operations
+  const [operations, setOperations] = useState([
+    {
+      id: 1,
+      name: "Operation Kingfish",
+      status: "ongoing",
+      startDate: "12/12/24",
+      endDate: "15/1/25",
+      visible: true,
+      selected: false,
+    },
+    {
+      id: 2,
+      name: "Operation Falcon",
+      status: "upcoming",
+      startDate: "30/1/25",
+      endDate: "21/2/25",
+      visible: true,
+      selected: false,
+    },
+  ]);
+
+  // State to manage new operation input
+  const [newOperation, setNewOperation] = useState({
+    name: "",
+    status: "ongoing",
+    startDate: "",
+    endDate: "",
+  });
+
+  // Function to toggle visibility for a specific operation
+  const toggleVisibility = (id) => {
+    setOperations((prev) =>
+      prev.map((op) =>
+        op.id === id ? { ...op, visible: !op.visible } : op
+      )
+    );
+  };
+
+  // Function to handle checkbox selection
+  const handleSelect = (id) => {
+    setOperations((prev) =>
+      prev.map((op) =>
+        op.id === id ? { ...op, selected: !op.selected } : op
+      )
+    );
+  };
+
+  // Function to delete selected operations
+  const deleteSelectedOperations = () => {
+    setOperations((prev) => prev.filter((op) => !op.selected));
+  };
+
+  // Function to add a new operation
+  const addOperation = () => {
+    if (newOperation.name && newOperation.startDate && newOperation.endDate) {
+      const newOp = {
+        id: operations.length + 1, // Simple ID generation
+        name: newOperation.name,
+        status: newOperation.status,
+        startDate: newOperation.startDate,
+        endDate: newOperation.endDate,
+        visible: true,
+        selected: false,
+      };
+      setOperations((prev) => [...prev, newOp]);
+      setNewOperation({ name: "", status: "ongoing", startDate: "", endDate: "" }); // Reset input
+    }
+  };
+
   return (
     <div className="dashboard">
-      {/* Stats Section */}
       <div className="stats-section">
         <h2>Stats</h2>
         <div className="stats-grid">
@@ -30,6 +99,45 @@ const Dashboard = () => {
       {/* Operations Section */}
       <div className="operations-section">
         <h2>Operations</h2>
+        {/* Add New Operation Form */}
+        <div className="add-operation">
+          <input
+            type="text"
+            placeholder="Operation Name"
+            value={newOperation.name}
+            onChange={(e) =>
+              setNewOperation({ ...newOperation, name: e.target.value })
+            }
+          />
+          <select
+            value={newOperation.status}
+            onChange={(e) =>
+              setNewOperation({ ...newOperation, status: e.target.value })
+            }
+          >
+            <option value="ongoing">Ongoing</option>
+            <option value="upcoming">Upcoming</option>
+          </select>
+          <input
+            type="text"
+            placeholder="Start Date (DD/MM/YY)"
+            value={newOperation.startDate}
+            onChange={(e) =>
+              setNewOperation({ ...newOperation, startDate: e.target.value })
+            }
+          />
+          <input
+            type="text"
+            placeholder="End Date (DD/MM/YY)"
+            value={newOperation.endDate}
+            onChange={(e) =>
+              setNewOperation({ ...newOperation, endDate: e.target.value })
+            }
+          />
+          <button onClick={addOperation}>Add Operation</button>
+        </div>
+
+        {/* Operations Table */}
         <table className="operations-table">
           <thead>
             <tr>
@@ -42,32 +150,43 @@ const Dashboard = () => {
             </tr>
           </thead>
           <tbody>
-            <tr>
-              <td><input type="checkbox" /></td>
-              <td>Operation Kingfish</td>
-              <td className="status ongoing">ongoing</td>
-              <td>12/12/24</td>
-              <td>15/1/25</td>
-              <td>
-                <span className="icon">👁️</span> {/* Eye Icon */}
-                <span className="icon">✏️</span> {/* Edit Icon */}
-                <span className="icon">🗑️</span> {/* Trash Icon */}
-              </td>
-            </tr>
-            <tr>
-              <td><input type="checkbox" /></td>
-              <td>Operation Falcon</td>
-              <td className="status upcoming">upcoming</td>
-              <td>30/1/25</td>
-              <td>21/2/25</td>
-              <td>
-                <span className="icon">👁️</span> {/* Eye Icon */}
-                <span className="icon">✏️</span> {/* Edit Icon */}
-                <span className="icon">🗑️</span> {/* Trash Icon */}
-              </td>
-            </tr>
+            {operations.map((op) => (
+              <tr key={op.id}>
+                <td>
+                  <input
+                    type="checkbox"
+                    checked={op.selected}
+                    onChange={() => handleSelect(op.id)}
+                  />
+                </td>
+                <td>{op.name}</td>
+                <td className={`status ${op.status}`}>{op.status}</td>
+                <td>{op.visible ? op.startDate : "**"}</td>
+                <td>{op.visible ? op.endDate : "**"}</td>
+                <td>
+                  <span
+                    className="icon"
+                    onClick={() => toggleVisibility(op.id)}
+                    style={{ cursor: "pointer" }}
+                  >
+                    {op.visible ? "👁️" : "👁️‍🗨️"}
+                  </span>
+                  <span className="icon">✏️</span>
+                  <span className="icon">🗑️</span>
+                </td>
+              </tr>
+            ))}
           </tbody>
         </table>
+
+        {/* Delete Selected Button */}
+        <button
+          className="delete-selected"
+          onClick={deleteSelectedOperations}
+          disabled={!operations.some((op) => op.selected)}
+        >
+          Delete Selected
+        </button>
       </div>
 
       {/* Resource Usage Section */}

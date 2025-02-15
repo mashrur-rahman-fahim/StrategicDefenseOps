@@ -82,7 +82,7 @@
     font-weight: 600;
   }
   
-  /* Media Queries for Responsiveness */
+
   @media (max-width: 768px) {
     .navbar {
       padding: 0 10px;

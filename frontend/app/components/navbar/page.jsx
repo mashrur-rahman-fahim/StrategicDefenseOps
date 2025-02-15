@@ -1,6 +1,6 @@
-'use client'; // Mark this as a Client Component
-//  // Mark this as a Client Component
-import React, { useState } from 'react';
+'use client'; 
+
+import React from 'react';
 import './navbar.css';
 
 const Navbar = ({ toggleSidebar }) => {

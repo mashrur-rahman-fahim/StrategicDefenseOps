@@ -1,4 +1,4 @@
-/* General Styles */
+
 body {
   font-family: Arial, sans-serif;
   background-color: #121212;
@@ -11,20 +11,20 @@ body {
   padding: 20px;
 
 h2 {
-  font-size: 26px; /* Adjusted font size */
-  font-weight: 900; /* Bold */
+  font-size: 26px;
+  font-weight: 900; 
   text-transform: uppercase;
   letter-spacing: 1px;
-  text-align: left; /* Shift heading to the left */
+  text-align: left; 
   margin: 30px 0;
   padding-bottom: 10px;
   border-bottom: 3px solid #f8f8f8;
 }
 }
 
-/* ⚡ Stats Section */
+/* Stats Section */
 .stats-section {
-  margin-bottom: 60px; /* Added space after Stats section */
+  margin-bottom: 60px; 
 }
 
 .stats-grid {
@@ -69,10 +69,10 @@ h2 {
   color: white;
 }
 
-/* 🔥 Operations Table - Professional White Design */
+/* Operations Table */
 .operations-section {
   margin-bottom: 80px;
-   /* Added space after Operations section */
+   
 }
 
 .operations-table {
@@ -112,11 +112,11 @@ h2 {
 
 
 
-/* 🎯 Resource Usage */
+/* Resource Usage */
 .resource-usage-section {
   margin-top: 20px;
   text-align: center;
-  margin-bottom: 40px; /* Added space after Resource Usage section */
+  margin-bottom: 40px; 
 }
 
 .legend {
@@ -145,7 +145,7 @@ h2 {
   background: orange;
 }
 
-/* 🔥 Pie Chart - Resource Usage */
+/*  Pie Chart - Resource Usage */
 .resource-chart {
   display: flex;
   justify-content: center;
@@ -168,7 +168,7 @@ h2 {
   font-weight: bold;
 }
 
-/* Responsive Design */
+
 @media (max-width: 768px) {
   .stats-grid {
     flex-direction: column;
