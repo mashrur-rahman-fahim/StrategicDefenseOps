@@ -1,101 +1,196 @@
 <?php
+
 namespace App\Services;
 
 use App\Models\User;
 use App\Models\Weapon;
 use DB;
+use Exception;
 
-class WeaponService{
-    public function addWeapon($data){
-        $weapon=Weapon::create($data);
-        if($weapon){
-            return $weapon;
-        }
-        return false;
-    }
-    public function deleteWeapon($weaponId,$userId){
-        $weapon=DB::select('select * from Weapon where authorized_by=? and id=?',[$weaponId,$userId]);
-        if($weapon[0]){
-            $weapon=DB::find($weapon[0]->id);
-            $weapon->delete();
-            return true;
-        }
-        return false;
-    }
-    public function updateWeapon($data,$weaponId,$userId)
+class WeaponService
+{
+    /**
+     * Add a new weapon.
+     */
+    public function addWeapon($data)
     {
-      $user=User::find($userId);
-      if($user && $user->role_id==1){
-        $weapon=DB::select('select * from weapon where authorized_by=? and id=?',[$userId,$weaponId]);
-       
-
-        if($weapon[0]){
-            
-            $weapon=Weapon::find($weapon[0]->id);
-            $weapon->update($data);
-
+        try {
+            // Attempt to create the weapon
+            $weapon = Weapon::create($data);
+            if (!$weapon) {
+                throw new Exception("Failed to add weapon");
+            }
             return $weapon;
+        } catch (Exception $e) {
+            // Log the error and return false
+            error_log("Error adding weapon: " . $e->getMessage());
+            return false;
         }
-        return false;
-      }
-      elseif($user->role_id==2){
-        
-        $adminId=DB::select('select u.parent_id from users u where u.id=?',[$user->id]);
-        if(!$adminId)return false;
-        $weapon=DB::select('select * from weapon where authorized_by=? and id=?',[$adminId,$weaponId]);
-        if($weapon[0]){
-            $weapon=Weapon::find($weapon[0]->id);
-            $weapon->update($data);
-            
-            return $weapon;
-        }
-        return false;
-        
-      }
-      
-      return false;
-        
     }
-    public function getAllWeapons($userId){
-        $user=User::find($userId);
-        if($user && $user->role_id==1){
-            $weapons=DB::select('select * from weapon where authorized_by=?',[$userId]);
-            if($weapons[0]){
+
+    /**
+     * Delete a weapon.
+     */
+    public function deleteWeapon($weaponId, $userId)
+    {
+        try {
+            // Fetch the weapon using raw SQL
+            $weapon = DB::select('SELECT * FROM weapon WHERE authorized_by = ? AND id = ?', [$userId, $weaponId]);
+            if (empty($weapon)) {
+                throw new Exception("Weapon not found or unauthorized");
+            }
+
+            // Delete the weapon using Eloquent
+            $weaponModel = Weapon::find($weapon[0]->id);
+            if (!$weaponModel) {
+                throw new Exception("Failed to find weapon for deletion");
+            }
+
+            $weaponModel->delete();
+            return true;
+        } catch (Exception $e) {
+            // Log the error and return false
+            error_log("Error deleting weapon: " . $e->getMessage());
+            return false;
+        }
+    }
+
+    /**
+     * Update a weapon.
+     */
+    public function updateWeapon($data, $weaponId, $userId)
+    {
+        try {
+            $user = User::find($userId);
+            if (!$user) {
+                throw new Exception("User not found");
+            }
+
+            if ($user->role_id == 1) {
+                // Fetch the weapon authorized by the user
+                $weapon = DB::select('SELECT * FROM weapon WHERE authorized_by = ? AND id = ?', [$userId, $weaponId]);
+                if (empty($weapon)) {
+                    throw new Exception("Weapon not found or unauthorized");
+                }
+
+                // Update the weapon using Eloquent
+                $weaponModel = Weapon::find($weapon[0]->id);
+                if (!$weaponModel) {
+                    throw new Exception("Failed to find weapon for update");
+                }
+
+                $weaponModel->update($data);
+                return $weaponModel;
+            } elseif ($user->role_id == 2) {
+                // Fetch the admin ID (parent_id) of the user
+                $adminId = DB::selectOne('SELECT parent_id FROM users WHERE id = ?', [$user->id]);
+                if (!$adminId || !$adminId->parent_id) {
+                    throw new Exception("Admin ID not found");
+                }
+
+                // Fetch the weapon authorized by the admin
+                $weapon = DB::select('SELECT * FROM weapon WHERE authorized_by = ? AND id = ?', [$adminId->parent_id, $weaponId]);
+                if (empty($weapon)) {
+                    throw new Exception("Weapon not found or unauthorized");
+                }
+
+                // Update the weapon using Eloquent
+                $weaponModel = Weapon::find($weapon[0]->id);
+                if (!$weaponModel) {
+                    throw new Exception("Failed to find weapon for update");
+                }
+
+                $weaponModel->update($data);
+                return $weaponModel;
+            }
+
+            throw new Exception("Unauthorized role");
+        } catch (Exception $e) {
+            // Log the error and return false
+            error_log("Error updating weapon: " . $e->getMessage());
+            return false;
+        }
+    }
+
+    /**
+     * Get all weapons.
+     */
+    public function getAllWeapons($userId)
+    {
+        try {
+            $user = User::find($userId);
+            if (!$user) {
+                throw new Exception("User not found");
+            }
+
+            if ($user->role_id == 1) {
+                // Fetch weapons authorized by the user
+                $weapons = DB::select('SELECT * FROM weapon WHERE authorized_by = ?', [$userId]);
+                if (empty($weapons)) {
+                    throw new Exception("No weapons found");
+                }
+                return $weapons;
+            } elseif ($user->role_id == 2) {
+                // Fetch the admin ID (parent_id) of the user
+                $adminId = DB::selectOne('SELECT parent_id FROM users WHERE id = ?', [$userId]);
+                if (!$adminId || !$adminId->parent_id) {
+                    throw new Exception("Admin ID not found");
+                }
+
+                // Fetch weapons authorized by the admin
+                $weapons = DB::select('SELECT * FROM weapon WHERE authorized_by = ?', [$adminId->parent_id]);
+                if (empty($weapons)) {
+                    throw new Exception("No weapons found");
+                }
                 return $weapons;
             }
+
+            throw new Exception("Unauthorized role");
+        } catch (Exception $e) {
+            // Log the error and return false
+            error_log("Error fetching weapons: " . $e->getMessage());
             return false;
         }
-        elseif($user->role_id==2){
-            $adminId=DB::select('select u.parent_id from users u where u.id=?',[$userId]);
-            if(!$adminId)return false;
-            $weapons=DB::select('select * from weapon where authorized_by=?',[$adminId]);
-            if($weapons[0]){
+    }
+
+    /**
+     * Get a weapon by name.
+     */
+    public function getWeaponByName($weaponName, $userId)
+    {
+        try {
+            $user = User::find($userId);
+            if (!$user) {
+                throw new Exception("User not found");
+            }
+
+            if ($user->role_id == 1) {
+                // Fetch weapons authorized by the user
+                $weapons = DB::select('SELECT * FROM weapon WHERE authorized_by = ? AND weapon_name LIKE ?', [$userId, '%' . $weaponName . '%']);
+                if (empty($weapons)) {
+                    throw new Exception("No weapons found");
+                }
+                return $weapons;
+            } elseif ($user->role_id == 2) {
+                // Fetch the admin ID (parent_id) of the user
+                $adminId = DB::selectOne('SELECT parent_id FROM users WHERE id = ?', [$userId]);
+                if (!$adminId || !$adminId->parent_id) {
+                    throw new Exception("Admin ID not found");
+                }
+
+                // Fetch weapons authorized by the admin
+                $weapons = DB::select('SELECT * FROM weapon WHERE authorized_by = ? AND weapon_name LIKE ?', [$adminId->parent_id, '%' . $weaponName . '%']);
+                if (empty($weapons)) {
+                    throw new Exception("No weapons found");
+                }
                 return $weapons;
             }
-            return false;
-        }
-        return false;
-    }
-    public function getWeaponByName($weaponName,$userId){
-        
-        $user=User::find($userId);
-        if($user && $user->role_id==1){
-            $weapon=DB::select('select * from weapon where authorized_by=? and weapon_name LIKE ?',[$userId,'%'.$weaponName.'%']);
 
-            if($weapon[0]){
-                return $weapon[0];
-            }
+            throw new Exception("Unauthorized role");
+        } catch (Exception $e) {
+            // Log the error and return false
+            error_log("Error fetching weapon by name: " . $e->getMessage());
             return false;
         }
-        elseif($user && $user->role_id==2){
-            $adminId=DB::select('select u.parent_id from users u where u.id=?',[$userId]);
-            if(!$adminId[0])return false;
-            $weapon=DB::select('select * from weapon where authorized_by=? and weapon_name LIKE ?',[$adminId,'%'.$weaponName.'%']);
-            if($weapon[0]){
-                return $weapon;
-            }
-            return false;
-        }
-
     }
 }
