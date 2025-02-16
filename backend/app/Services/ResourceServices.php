@@ -7,7 +7,7 @@ use App\Models\Weapon;
 
 class ResourceServices{
     
-    public function addResourceService($data){
+    public function addResource($data){
         $resource=Resources::create($data);
         if($resource){
             return $resource;

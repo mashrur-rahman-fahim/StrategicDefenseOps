@@ -103,6 +103,7 @@ class OperationController extends Controller
     }
     public function getAllOperations()
     {
+        
         $operations = $this->operationService->getAllOperations(auth()->id());
         if ($operations) {
             return response()->json($operations, 200);

@@ -37,11 +37,7 @@ class OperationService{
     public function getAllOperations($userId){
         $user=User::where('id',$userId)->first();
         if($user->role_id==1){
-        $operations=DB::table('operations as o')
-                        ->join('users as u','u.id','=','o.created_by')
-                        ->select('o.*','o.name as operation_name','u.*','u.name as user_name')
-                        ->where('u.parent_id',$userId)
-                        ->orWhere('u.id',$userId)->get();
+        $operations=DB::select('select * from operations o where o.created_by=? ',[$userId]);
                         return [count($operations),$operations];}
                         else {return null;}
         
