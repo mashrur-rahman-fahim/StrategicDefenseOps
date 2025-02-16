@@ -68,3 +68,11 @@ Route::get('/search-operations/{name}', [OperationController::class, 'searchByNa
 
 Route::post('/add-weapon', [WeaponController::class, 'addWeapon'])->middleware('auth:sanctum');
 
+Route::put('/update-weapon/{weaponId}', [WeaponController::class, 'updateWeapon'])->middleware('auth:sanctum');
+
+Route::delete('/delete-weapon/{weaponId}', [WeaponController::class, 'deleteWeapon'])->middleware('auth:sanctum');
+
+Route::get('/get-all-weapons', [WeaponController::class, 'getAllWeapons'])->middleware('auth:sanctum');
+
+Route::get('/search-weapons/{weaponName}', [WeaponController::class,'getWeaponByName'])->middleware('auth:sanctum');
+

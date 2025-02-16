@@ -9,7 +9,6 @@ use App\Services\WeaponService;
 use Exception;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
-use Illuminate\Validation\ValidationException;
 
 class WeaponController extends Controller
 {
@@ -43,9 +42,7 @@ class WeaponController extends Controller
             ]);
 
             // Validate resource data
-            $resourceData = $request->validate([
-                'resource_category' => 'required|integer|min:1|max:4'
-            ]);
+            $resourceData['resource_category'] =2;
 
             // Check user authorization
             $user = User::find(auth()->id());
@@ -113,7 +110,7 @@ class WeaponController extends Controller
             }
 
             // Update weapon
-            $updatedWeapon = $this->weaponService->updateWeapon($data, $weaponId);
+            $updatedWeapon = $this->weaponService->updateWeapon($data, $weaponId,auth()->id());
             if (!$updatedWeapon) {
                 return response()->json(['error' => 'Failed to update weapon'], 500);
             }
@@ -131,7 +128,7 @@ class WeaponController extends Controller
     /**
      * Delete a weapon.
      */
-    public function deleteWeapon($id)
+    public function deleteWeapon($weaponId)
     {
         try {
             // Check user authorization
@@ -141,7 +138,7 @@ class WeaponController extends Controller
             }
 
             // Delete weapon
-            $deletedWeapon = $this->weaponService->deleteWeapon($id);
+            $deletedWeapon = $this->weaponService->deleteWeapon($weaponId,auth()->id());
             if (!$deletedWeapon) {
                 return response()->json(['error' => 'Failed to delete weapon'], 500);
             }
@@ -166,7 +163,7 @@ class WeaponController extends Controller
             }
 
             // Fetch all weapons
-            $weapons = $this->weaponService->getAllWeapons();
+            $weapons = $this->weaponService->getAllWeapons(auth()->id());
             return response()->json($weapons);
         } catch (Exception $e) {
             // Handle unexpected errors
@@ -177,7 +174,7 @@ class WeaponController extends Controller
     /**
      * Get a weapon by name.
      */
-    public function getWeaponByName($name)
+    public function getWeaponByName($weaponName)
     {
         try {
             // Check user authorization
@@ -187,7 +184,7 @@ class WeaponController extends Controller
             }
 
             // Fetch weapon by name
-            $weapon = $this->weaponService->getWeaponByName($name);
+            $weapon = $this->weaponService->getWeaponByName($weaponName,auth()->id());
             if (!$weapon) {
                 return response()->json(['error' => 'Weapon not found'], 404);
             }
