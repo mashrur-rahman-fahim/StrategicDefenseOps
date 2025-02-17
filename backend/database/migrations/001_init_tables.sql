@@ -105,6 +105,7 @@ create table personnel(
     authorized_by INT unsigned not null,
     personnel_name varchar(200) NOT NULL,
     personnel_description TEXT,
+    personnel_count INT NOT NULL,
     personnel_category varchar(200) NOT NULL,--medical, eng
     personnel_type varchar(200),--doctor,nurse
     personnel_rank varchar(200),--captain, lieutenant
@@ -119,6 +120,7 @@ create table equipment(
     authorized_by INT unsigned not null,
     equipment_name varchar(200) NOT NULL,
     equipment_description TEXT,
+    equipment_count INT NOT NULL,
    equipment_category varchar(200),--communication
     equipment_type varchar(200),--radio, television
     equipment_manufacturer varchar(200),
