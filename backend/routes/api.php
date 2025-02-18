@@ -15,6 +15,8 @@ use App\Http\Controllers\Auth\PasswordResetLinkController;
 use App\Http\Controllers\Auth\RegisteredUserController;
 use App\Http\Controllers\Auth\VerifyEmailController;
 use App\Http\Controllers\VehicleController;
+use App\Http\Controllers\PersonnelController;
+use App\Http\Controllers\EquipmentController;
 
 
 /*
@@ -84,7 +86,7 @@ Route::delete('/delete-vehicle/{vehicleId}', [VehicleController::class, 'deleteV
 Route::get('/get-all-vehicles', [VehicleController::class, 'getAllVehicles'])->middleware('auth:sanctum');
 Route::get('/search-vehicles/{vehicleName}', [VehicleController::class, 'getVehicleByName'])->middleware('auth:sanctum');
 
-use App\Http\Controllers\EquipmentController;
+
 
 // Add a new equipment
 Route::post('/add-equipment', [EquipmentController::class, 'addEquipment'])->middleware('auth:sanctum');
@@ -102,7 +104,7 @@ Route::get('/get-all-equipment', [EquipmentController::class, 'getAllEquipment']
 Route::get('/search-equipment/{equipmentName}', [EquipmentController::class, 'getEquipmentByName'])->middleware('auth:sanctum');
 
 
-use App\Http\Controllers\PersonnelController;
+
 
 // Add a new personnel
 Route::post('/add-personnel', [PersonnelController::class, 'addPersonnel'])->middleware('auth:sanctum');
