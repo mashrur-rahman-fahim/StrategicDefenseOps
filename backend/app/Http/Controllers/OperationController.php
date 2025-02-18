@@ -3,7 +3,6 @@
 namespace App\Http\Controllers;
 
 use App\Models\User;
-use App\Services\OperationResourcesService;
 use App\Services\OperationService;
 use DB;
 use Exception;
@@ -13,11 +12,11 @@ class OperationController extends Controller
 {
     //
     protected OperationService $operationService;
-    protected OperationResourcesService $operationResourcesService;
-    public function __construct(OperationService $operationService, OperationResourcesService $operationResourcesService)
+
+    public function __construct(OperationService $operationService)
     {
         $this->operationService = $operationService;
-        $this->operationResourcesService = $operationResourcesService;
+       
     }
     public function createOperation(Request $request)
     {
@@ -31,29 +30,22 @@ class OperationController extends Controller
             'budget' => 'nullable|numeric',
 
         ]);
-        $usedResources = $request->validate([
-            'serial_number' => 'required|array',
-            'category' => 'required|array',
-            'count' => 'required|array',
-        ]);
+
 
         $validatedData['created_by'] = auth()->id();
         $validatedData['updated_by'] = auth()->id();
         $userId = auth()->id();
         $user = User::find($userId);
         if ($user && $user->role_id == 1) {
-            DB::beginTransaction();
+
             try {
                 $operation = $this->operationService->createOperation($validatedData);
                 if (!$operation) {
                     throw new Exception('Could not create operation');
                 }
 
-                $resource = $this->operationResourcesService->addOperationResources($usedResources, $operation->id,auth()->id());
-                if (!$resource) {
-                    throw new Exception('Could not add resources to operation');
-                }
-                DB::commit();
+
+
                 return response()->json([
                     'message' => 'Operation created successfully',
                     $operation
@@ -90,11 +82,23 @@ class OperationController extends Controller
             'location' => 'nullable|string|max:200',
             'budget' => 'nullable|numeric',
         ]);
+        $user=User::find(auth()->id());
+        if (!$user || $user->role_id > 3) {
+            return response()->json(['error' => 'Unauthorized'], 403);
+        }
+      
         $updatedOperation = $this->operationService->updateOperation($id, $validatedData, auth()->id());
+        if (!$updatedOperation) {
+            return response()->json(['error' => 'Failed to update operation'], 500);
+        }
         return response()->json($updatedOperation, 200);
     }
     public function deleteOperation($id)
     {
+        $user=User::find(auth()->id());
+        if(!$user || $user->role_id!=1){
+            return response()->json(['error' => 'Unauthorized'], 403);
+        }
         $message = $this->operationService->deleteOperation($id, auth()->id());
         if ($message) {
             return response()->json(['message' => 'deleted successfully'], 200);
