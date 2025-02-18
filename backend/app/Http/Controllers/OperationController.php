@@ -44,12 +44,12 @@ class OperationController extends Controller
         if ($user && $user->role_id == 1) {
             DB::beginTransaction();
             try {
-                $operation = $this->operationService->createOperation($validatedData, auth()->id());
+                $operation = $this->operationService->createOperation($validatedData);
                 if (!$operation) {
                     throw new Exception('Could not create operation');
                 }
 
-                $resource = $this->operationResourcesService->addOperationResources($usedResources, $operation->id);
+                $resource = $this->operationResourcesService->addOperationResources($usedResources, $operation->id,auth()->id());
                 if (!$resource) {
                     throw new Exception('Could not add resources to operation');
                 }

@@ -6,11 +6,14 @@ use App\Models\User;
 use DB;
 
 class OperationService{
-    public function createOperation($data,$id){
-        $user=User::where('id',$id)->first();
-        if($id && ($user->role_id==1 )){
-            return Operation::create($data);
-        }
+    public function createOperation($data){
+       
+      
+            $operation= Operation::create($data);
+            if($operation){
+                return $operation;
+            }
+    
         return false;
         
     }
