@@ -15,7 +15,7 @@ const RootLayout = ({ children }) => {
 }
 
 export const metadata = {
-    title: 'Laravel',
+    title: 'Strategic Defense Operations',
 }
 
 export default RootLayout
