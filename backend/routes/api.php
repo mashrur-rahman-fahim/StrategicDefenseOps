@@ -14,6 +14,9 @@ use App\Http\Controllers\Auth\NewPasswordController;
 use App\Http\Controllers\Auth\PasswordResetLinkController;
 use App\Http\Controllers\Auth\RegisteredUserController;
 use App\Http\Controllers\Auth\VerifyEmailController;
+use App\Http\Controllers\VehicleController;
+use App\Http\Controllers\PersonnelController;
+use App\Http\Controllers\EquipmentController;
 
 
 /*
@@ -67,4 +70,54 @@ Route::get('/get-all-operations', [OperationController::class, 'getAllOperations
 Route::get('/search-operations/{name}', [OperationController::class, 'searchByName'])->middleware('auth:sanctum');
 
 Route::post('/add-weapon', [WeaponController::class, 'addWeapon'])->middleware('auth:sanctum');
+
+Route::put('/update-weapon/{weaponId}', [WeaponController::class, 'updateWeapon'])->middleware('auth:sanctum');
+
+Route::delete('/delete-weapon/{weaponId}', [WeaponController::class, 'deleteWeapon'])->middleware('auth:sanctum');
+
+Route::get('/get-all-weapons', [WeaponController::class, 'getAllWeapons'])->middleware('auth:sanctum');
+
+Route::get('/search-weapons/{weaponName}', [WeaponController::class, 'getWeaponByName'])->middleware('auth:sanctum');
+
+
+Route::post('/add-vehicle', [VehicleController::class, 'addVehicle'])->middleware('auth:sanctum');
+Route::put('/update-vehicle/{vehicleId}', [VehicleController::class, 'updateVehicle'])->middleware('auth:sanctum');
+Route::delete('/delete-vehicle/{vehicleId}', [VehicleController::class, 'deleteVehicle'])->middleware('auth:sanctum');
+Route::get('/get-all-vehicles', [VehicleController::class, 'getAllVehicles'])->middleware('auth:sanctum');
+Route::get('/search-vehicles/{vehicleName}', [VehicleController::class, 'getVehicleByName'])->middleware('auth:sanctum');
+
+
+
+// Add a new equipment
+Route::post('/add-equipment', [EquipmentController::class, 'addEquipment'])->middleware('auth:sanctum');
+
+// Update an existing equipment
+Route::put('/update-equipment/{equipmentId}', [EquipmentController::class, 'updateEquipment'])->middleware('auth:sanctum');
+
+// Delete an equipment
+Route::delete('/delete-equipment/{equipmentId}', [EquipmentController::class, 'deleteEquipment'])->middleware('auth:sanctum');
+
+// Get all equipment
+Route::get('/get-all-equipment', [EquipmentController::class, 'getAllEquipment'])->middleware('auth:sanctum');
+
+// Search equipment by name
+Route::get('/search-equipment/{equipmentName}', [EquipmentController::class, 'getEquipmentByName'])->middleware('auth:sanctum');
+
+
+
+
+// Add a new personnel
+Route::post('/add-personnel', [PersonnelController::class, 'addPersonnel'])->middleware('auth:sanctum');
+
+// Update an existing personnel
+Route::put('/update-personnel/{personnelId}', [PersonnelController::class, 'updatePersonnel'])->middleware('auth:sanctum');
+
+// Delete a personnel
+Route::delete('/delete-personnel/{personnelId}', [PersonnelController::class, 'deletePersonnel'])->middleware('auth:sanctum');
+
+// Get all personnel
+Route::get('/get-all-personnel', [PersonnelController::class, 'getAllPersonnel'])->middleware('auth:sanctum');
+
+// Search personnel by name
+Route::get('/search-personnel/{personnelName}', [PersonnelController::class, 'getPersonnelByName'])->middleware('auth:sanctum');
 

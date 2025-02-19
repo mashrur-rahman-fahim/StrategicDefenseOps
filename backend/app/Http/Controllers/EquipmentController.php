@@ -3,46 +3,44 @@
 namespace App\Http\Controllers;
 
 use App\Models\User;
-use App\Models\Weapon;
+use App\Models\Equipment;
 use App\Services\ResourceServices;
-use App\Services\WeaponService;
+use App\Services\EquipmentService;
 use Exception;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Validation\ValidationException;
 
-class WeaponController extends Controller
+class EquipmentController extends Controller
 {
-    protected WeaponService $weaponService;
+    protected EquipmentService $equipmentService;
     protected ResourceServices $resourceServices;
 
-    public function __construct(WeaponService $weaponService, ResourceServices $resourceServices)
+    public function __construct(EquipmentService $equipmentService, ResourceServices $resourceServices)
     {
-        $this->weaponService = $weaponService;
+        $this->equipmentService = $equipmentService;
         $this->resourceServices = $resourceServices;
     }
 
     /**
-     * Add a new weapon.
+     * Add a new equipment.
      */
-    public function addWeapon(Request $request)
+    public function addEquipment(Request $request)
     {
         try {
-            // Validate weapon data
+            // Validate equipment data
             $data = $request->validate([
-                'weapon_name' => 'required|string|max:255',
-                'weapon_description' => 'nullable|string',
-                'weapon_count' => 'required|integer|min:1',
-                'weapon_category' => 'nullable|string|max:100',
-                'weapon_type' => 'nullable|string|max:100',
-                'weapon_model' => 'nullable|string|max:100',
-                'weapon_manufacturer' => 'nullable|string|max:150',
-                'weapon_serial_number' => 'required|string|unique:weapon,weapon_serial_number|max:100',
-                'weapon_weight' => 'nullable|numeric|min:0',
-                'weapon_range' => 'nullable|integer|min:0',
+                'equipment_name' => 'required|string|max:200',
+                'equipment_description' => 'nullable|string',
+                'equipment_count' => 'required|integer|min:1',
+                'equipment_category' => 'nullable|string|max:200',
+                'equipment_type' => 'nullable|string|max:200',
+                'equipment_manufacturer' => 'nullable|string|max:200',
+                'equipment_serial_number' => 'required|string|unique:equipment,equipment_serial_number|max:200',
             ]);
 
             // Validate resource data
-            $resourceData['resource_category'] =2;
+            $resourceData['resource_category'] = 4; // Assuming category 4 is for equipment
 
             // Check user authorization
             $user = User::find(auth()->id());
@@ -52,19 +50,19 @@ class WeaponController extends Controller
 
             // Prepare data for insertion
             $data['authorized_by'] = auth()->id();
-            $resourceData['resources_name'] = $data['weapon_name'];
+            $resourceData['resources_name'] = $data['equipment_name'];
 
             // Start database transaction
             DB::beginTransaction();
             try {
-                // Insert weapon
-                $weapon = $this->weaponService->addWeapon($data);
-                if (!$weapon) {
-                    throw new Exception("Failed to add weapon");
+                // Insert equipment
+                $equipment = $this->equipmentService->addEquipment($data);
+                if (!$equipment) {
+                    throw new Exception("Failed to add equipment");
                 }
 
-                // Link resource to weapon
-                $resourceData['weapon_id'] = $weapon->id;
+                // Link resource to equipment
+                $resourceData['equipment_id'] = $equipment->id;
                 $resource = $this->resourceServices->addResource($resourceData);
                 if (!$resource) {
                     throw new Exception("Failed to add resource");
@@ -72,10 +70,9 @@ class WeaponController extends Controller
 
                 // Commit transaction
                 DB::commit();
-
                 return response()->json([
-                    'message' => 'Weapon added successfully',
-                    'weapon' => $weapon,
+                    'message' => 'Equipment added successfully',
+                    'equipment' => $equipment,
                     'resource' => $resource,
                 ]);
             } catch (Exception $e) {
@@ -93,14 +90,17 @@ class WeaponController extends Controller
     }
 
     /**
-     * Update an existing weapon.
+     * Update an existing equipment.
      */
-    public function updateWeapon(Request $request, $weaponId)
+    public function updateEquipment(Request $request, $equipmentId)
     {
         try {
             // Validate input data
             $data = $request->validate([
-                'weapon_count' => 'nullable|integer|min:0',
+                'equipment_count' => 'nullable|integer|min:1',
+                'equipment_category' => 'nullable|string|max:200',
+                'equipment_type' => 'nullable|string|max:200',
+                'equipment_manufacturer' => 'nullable|string|max:200',
             ]);
 
             // Check user authorization
@@ -109,13 +109,13 @@ class WeaponController extends Controller
                 return response()->json(['error' => 'Unauthorized'], 403);
             }
 
-            // Update weapon
-            $updatedWeapon = $this->weaponService->updateWeapon($data, $weaponId,auth()->id());
-            if (!$updatedWeapon) {
-                return response()->json(['error' => 'Failed to update weapon'], 500);
+            // Update equipment
+            $updatedEquipment = $this->equipmentService->updateEquipment($data, $equipmentId, auth()->id());
+            if (!$updatedEquipment) {
+                return response()->json(['error' => 'Failed to update equipment'], 500);
             }
 
-            return response()->json(['weapon' => $updatedWeapon]);
+            return response()->json(['equipment' => $updatedEquipment]);
         } catch (ValidationException $e) {
             // Handle validation errors
             return response()->json(['error' => $e->errors()], 422);
@@ -126,9 +126,9 @@ class WeaponController extends Controller
     }
 
     /**
-     * Delete a weapon.
+     * Delete an equipment.
      */
-    public function deleteWeapon($weaponId)
+    public function deleteEquipment($equipmentId)
     {
         try {
             // Check user authorization
@@ -137,13 +137,13 @@ class WeaponController extends Controller
                 return response()->json(['error' => 'Unauthorized'], 403);
             }
 
-            // Delete weapon
-            $deletedWeapon = $this->weaponService->deleteWeapon($weaponId,auth()->id());
-            if (!$deletedWeapon) {
-                return response()->json(['error' => 'Failed to delete weapon'], 500);
+            // Delete equipment
+            $deletedEquipment = $this->equipmentService->deleteEquipment($equipmentId, auth()->id());
+            if (!$deletedEquipment) {
+                return response()->json(['error' => 'Failed to delete equipment'], 500);
             }
 
-            return response()->json(['weapon' => $deletedWeapon]);
+            return response()->json(['equipment' => $deletedEquipment]);
         } catch (Exception $e) {
             // Handle unexpected errors
             return response()->json(['error' => 'An unexpected error occurred: ' . $e->getMessage()], 500);
@@ -151,9 +151,9 @@ class WeaponController extends Controller
     }
 
     /**
-     * Get all weapons.
+     * Get all equipment.
      */
-    public function getAllWeapons()
+    public function getAllEquipment()
     {
         try {
             // Check user authorization
@@ -162,9 +162,9 @@ class WeaponController extends Controller
                 return response()->json(['error' => 'Unauthorized'], 403);
             }
 
-            // Fetch all weapons
-            $weapons = $this->weaponService->getAllWeapons(auth()->id());
-            return response()->json($weapons);
+            // Fetch all equipment
+            $equipment = $this->equipmentService->getAllEquipment(auth()->id());
+            return response()->json($equipment);
         } catch (Exception $e) {
             // Handle unexpected errors
             return response()->json(['error' => 'An unexpected error occurred: ' . $e->getMessage()], 500);
@@ -172,9 +172,9 @@ class WeaponController extends Controller
     }
 
     /**
-     * Get a weapon by name.
+     * Get an equipment by name.
      */
-    public function getWeaponByName($weaponName)
+    public function getEquipmentByName($equipmentName)
     {
         try {
             // Check user authorization
@@ -183,13 +183,13 @@ class WeaponController extends Controller
                 return response()->json(['error' => 'Unauthorized'], 403);
             }
 
-            // Fetch weapon by name
-            $weapon = $this->weaponService->getWeaponByName($weaponName,auth()->id());
-            if (!$weapon) {
-                return response()->json(['error' => 'Weapon not found'], 404);
+            // Fetch equipment by name
+            $equipment = $this->equipmentService->getEquipmentByName($equipmentName, auth()->id());
+            if (!$equipment) {
+                return response()->json(['error' => 'Equipment not found'], 404);
             }
 
-            return response()->json($weapon);
+            return response()->json($equipment);
         } catch (Exception $e) {
             // Handle unexpected errors
             return response()->json(['error' => 'An unexpected error occurred: ' . $e->getMessage()], 500);
