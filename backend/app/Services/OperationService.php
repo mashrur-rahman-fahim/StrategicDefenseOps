@@ -55,8 +55,14 @@ class OperationService
     public function deleteOperation($id, $userId)
     {
         $operation = DB::selectOne("select * from Operations o where o.created_by=? and o.id=?",[$userId,$id]);
+
         
         if ($operation ) {
+            $operation=Operation::find($operation->id);
+            if($operation->status=="ongoing"){
+                return false;
+            }
+          
             $operation->delete();
             return true;
         }
