@@ -1,7 +1,7 @@
 "use client";
 import { useState } from 'react';
 import Navbar from './navbar/page';
-//import Sidebar from './sidebar/page';
+import Sidebar from './sidebar/page';
 import Dashboard from './dashboard/page';
 import { useAuth } from '@/hooks/auth'
 
@@ -20,14 +20,15 @@ export default function RootLayout({ children }) {
       <body>
         {/* Navbar */}
         <Navbar toggleSidebar={toggleSidebar} user={user} logout={logout} />
+        
 
-        {/* Sidebar 
+        {/* Sidebar  */}
         <Sidebar
           isOpen={isSidebarOpen}
           toggleSidebar={toggleSidebar}
           selectedItem={selectedItem}
-          setSelectedItem={setSelectedItem}
-        />*/}
+          setSelectedItem={setSelectedItem}  />
+        
 
         
         <div className="content">
@@ -40,7 +41,6 @@ export default function RootLayout({ children }) {
               <p>Displaying resource usage information.</p>
             </div>
           )}
-
           
           {children}
         </div>
