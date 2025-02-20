@@ -2,7 +2,10 @@
 
 namespace App\Services;
 
+use App\Models\Operation;
 use App\Models\OperationResources;
+use App\Models\Resources;
+use App\Models\User;
 use DB;
 
 class OperationResourcesService
@@ -23,6 +26,25 @@ class OperationResourcesService
 
         DB::beginTransaction();
         try {
+            $user = User::find($userId);
+
+            if ($user->role_id == 1) {
+                $userId = $user->id;
+            } elseif ($user->role_id == 2) {
+                $userId = $user->parent_id;
+            } else {
+                $user = User::find($user->parent_id);
+
+                $userId = $user->parent_id;
+            }
+            if (!$user || !$userId) {
+                throw new Exception("User not found");
+            }
+            $operation = DB::selectOne("select * from operations where created_by=? and id=?", [$userId, $operationId]);
+            $operation = Operation::find($operation->id);
+            if (!$operation) {
+                throw new Exception("Operation not found");
+            }
             for ($i = 0; $i < count($datas["serial_number"]); $i++) {
 
                 if ($datas["category"][$i] == 1) {
@@ -143,6 +165,79 @@ class OperationResourcesService
             DB::rollBack();
             error_log("Error adding operation resources: " . $e->getMessage());
             return false;
+        }
+    }
+
+    public function getOperationResource($operationId, $userId)
+    {
+        DB::beginTransaction();
+        try {
+            $user = User::find($userId);
+
+            if ($user->role_id == 1) {
+                $userId = $user->id;
+            } elseif ($user->role_id == 2) {
+                $userId = $user->parent_id;
+            } else {
+                $user = User::find($user->parent_id);
+
+                $userId = $user->parent_id;
+            }
+            if (!$user || !$userId) {
+                throw new \Exception("Could not find user");
+            }
+            $operation = DB::selectOne("select * from operations where created_by=? and id=?", [$userId, $operationId]);
+            $operation = Operation::find($operation->id);
+            if (!$operation) {
+                throw new \Exception("Could not find operation");
+            }
+            $operationResources = DB::select("select * from operation_resources where operation_id=?", [$operation->id]);
+            if (!$operationResources[0]) {
+                throw new \Exception("Could not find operation resources");
+            }
+            $vehicle = [];
+            $weapon = [];
+            $personnel = [];
+            $equipment = [];
+
+            for ($i = 0; $i < count($operationResources); $i++) {
+                $operationId = $operationResources[$i]->operation_id;
+
+                $resourceId = $operationResources[$i]->resource_id;
+                $resource = Resources::find($resourceId);
+                $resourceCategory = DB::selectOne("select * from resource_category where id=?", [$resource->resource_category]);
+                $resourceCategory = $resourceCategory->resource_category;
+                if ($resourceCategory == "vehicle") {
+                    $vehicleResource = DB::selectOne("select * from vehicle where id=?", [$resource->vehicle_id]);
+                    $vehicleResource->vehicle_count = $operationResources[$i]->resource_count;
+
+                    array_push($vehicle, $vehicleResource);
+
+                } elseif ($resourceCategory == "weapon") {
+                    $weaponResource = DB::selectOne("select * from weapon where id=?", [$resource->weapon_id]);
+                    $weaponResource->weapon_count = $operationResources[$i]->resource_count;
+
+                    array_push($weapon, $weaponResource);
+                } elseif ($resourceCategory == "personnel") {
+                    $personnelResource = DB::selectOne("select * from personnel where id=?", [$resource->personnel_id]);
+                    $personnelResource->personnel_count = $operationResources[$i]->resource_count;
+
+                    array_push($personnel, $personnelResource);
+
+                } elseif ($resourceCategory == "equipment") {
+                    $equipmentResource = DB::selectOne("select * from equipment where id=?", [$resource->equipment_id]);
+                    $equipmentResource->equipment_count = $operationResources[$i]->resource_count;
+                    array_push($equipment, $equipmentResource);
+
+                }
+            }
+
+            DB::commit();
+            return ["operation" => $operation, "vehicle" => $vehicle, "weapon" => $weapon, "personnel" => $personnel, "equipment" => $equipment];
+        } catch (\Exception $e) {
+            DB::rollBack();
+            error_log("Error getting operation resources: " . $e->getMessage());
+            return [false, $e->getMessage()];
         }
     }
 }

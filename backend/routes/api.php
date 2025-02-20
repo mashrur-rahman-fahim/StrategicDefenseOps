@@ -2,18 +2,14 @@
 
 use App\Http\Controllers\AssignRoleController;
 use App\Http\Controllers\OperationController;
+
+use App\Http\Controllers\OperationResourcesController;
 use App\Http\Controllers\ResourcesController;
 use App\Http\Controllers\UnassignRoleController;
 use App\Http\Controllers\UserDetailsController;
 use App\Http\Controllers\WeaponController;
-use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
-use App\Http\Controllers\Auth\AuthenticatedSessionController;
-use App\Http\Controllers\Auth\EmailVerificationNotificationController;
-use App\Http\Controllers\Auth\NewPasswordController;
-use App\Http\Controllers\Auth\PasswordResetLinkController;
-use App\Http\Controllers\Auth\RegisteredUserController;
-use App\Http\Controllers\Auth\VerifyEmailController;
+
 use App\Http\Controllers\VehicleController;
 use App\Http\Controllers\PersonnelController;
 use App\Http\Controllers\EquipmentController;
@@ -121,3 +117,6 @@ Route::get('/get-all-personnel', [PersonnelController::class, 'getAllPersonnel']
 // Search personnel by name
 Route::get('/search-personnel/{personnelName}', [PersonnelController::class, 'getPersonnelByName'])->middleware('auth:sanctum');
 
+Route::post('/add-operation-resources/{operationId}', [OperationResourcesController::class,'createOperationResource'])->middleware('auth:sanctum');
+
+Route::get('/get-operation-resources/{operationId}',[OperationResourcesController::class,'getAllOperationResources'])->middleware('auth:sanctum');
