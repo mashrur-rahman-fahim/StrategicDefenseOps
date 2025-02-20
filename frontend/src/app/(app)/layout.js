@@ -4,7 +4,7 @@ import Navbar from './navbar/page';
 //import Sidebar from './sidebar/page';
 import Dashboard from './dashboard/page';
 import { useAuth } from '@/hooks/auth'
-//import './globals.css';
+
 
 export default function RootLayout({ children }) {
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
@@ -29,9 +29,9 @@ export default function RootLayout({ children }) {
           setSelectedItem={setSelectedItem}
         />*/}
 
-        {/* Main Content */}
+        
         <div className="content">
-          {/* Conditional Rendering Based on Selected Item */}
+         
           {selectedItem === 'dashboard' && <Dashboard />}
           
           {selectedItem === 'resourceUsage' && (
@@ -41,7 +41,7 @@ export default function RootLayout({ children }) {
             </div>
           )}
 
-          {/* Render Children (Other Pages/Components) */}
+          
           {children}
         </div>
       </body>

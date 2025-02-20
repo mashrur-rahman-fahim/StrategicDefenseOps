@@ -250,7 +250,7 @@ const Dashboard = () => {
           </tbody>
         </table>
 
-        {/* Edit Operation Form */}
+       
         {editing && (
           <div className="edit-operation">
             <h3>Edit Operation</h3>
@@ -280,7 +280,7 @@ const Dashboard = () => {
           </div>
         )}
 
-        {/* Delete Selected Button */}
+  
         <button
           className="delete-selected"
           onClick={deleteSelectedOperations}
