@@ -1,0 +1,256 @@
+/* Global styles */
+body {
+    font-family: Arial, sans-serif;
+    background-color: #121212;
+    color: #000000;
+    margin: 0;
+    padding: 0;
+    
+  }
+  
+  .dashboard {
+    padding: 20px;
+  }
+  
+  h2 {
+    font-size: 32px; 
+    font-weight: 900;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    text-align: left;
+    margin: 30px 0;
+    padding-bottom: 10px;
+    border-bottom: 3px solid #000000;
+  }
+  
+  
+  .stats-section {
+    margin-bottom: 60px;
+  }
+  
+  .stats-grid {
+    display: flex;
+    gap: 20px;
+    justify-content: space-between;
+  }
+  
+  .stat-card {
+    background: linear-gradient(135deg, #5100ff);
+    padding: 25px;
+    border-radius: 12px;
+    box-shadow: 0 5px 15px rgba(2, 0, 1, 0.5);
+    text-align: center;
+    flex: 1;
+    transition: 0.3s;
+  }
+  
+  .stat-card:hover {
+    transform: scale(1.05);
+  }
+  
+  .stat-number {
+    font-size: 30px; /* Increased font size */
+    font-weight: bold;
+    color: #fff;
+  }
+  
+  .stat-card button {
+    background-color: #ffffff;
+    color: #000000;
+    border: none;
+    padding: 12px;
+    margin-top: 10px;
+    cursor: pointer;
+    border-radius: 8px;
+    font-weight: bold;
+  }
+  
+  .stat-card button:hover {
+    background-color: #50d371;
+    color: white;
+  }
+  .operations-section {
+  
+    margin-bottom: 80px;
+  
+  }
+  
+  .operations-table {
+    width: 100%;
+    border-collapse: collapse;
+    background: #ffffff;
+    border-radius: 10px;
+    overflow: hidden;
+  }
+  
+  .operations-table th,
+  .operations-table td {
+    padding: 15px;
+    text-align: left;
+    border-bottom: 1px solid #dddddd;
+    font-size: 16px;
+    color: #333;
+  }
+  
+  .operations-table th {
+    background: #f4f4f4;
+    color: #000;
+    font-weight: bold;
+    text-transform: uppercase;
+    font-size: 18px;
+  }
+  
+  .operations-table tr:hover {
+    background: rgba(0, 0, 0, 0.05);
+    transition: 0.3s;
+  }
+  
+  .icon {
+    cursor: pointer;
+    margin-right: 10px;
+  }
+  
+  
+  .delete-selected {
+    background-color: rgba(76, 31, 255, 0.666);
+    color: rgb(0, 0, 0);
+    padding: 10px;
+    border-radius: 4px;
+    font-weight: bold;
+    cursor: pointer;
+  }
+  
+  .delete-selected:hover {
+    background-color: #d13030;
+  }
+  
+  
+  .add-operation,
+  .edit-operation {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    margin-bottom: 20px;
+  }
+  
+  .add-operation input,
+  .edit-operation input,
+  .add-operation select,
+  .edit-operation select {
+    padding: 10px;
+    font-size: 14px;
+    border-radius: 8px;
+    border: 1px solid #ddd;
+  }
+  
+  .add-operation button,
+  .edit-operation button {
+    background-color: #5100ff;
+    color: #fff;
+    border: none;
+    padding: 12px;
+    border-radius: 8px;
+    cursor: pointer;
+    font-weight: bold;
+    transition: 0.3s;
+  }
+  
+  .add-operation button:hover,
+  .edit-operation button:hover {
+    background-color: #50d371;
+    color: white;
+  }
+  
+  
+  .resource-usage-section {
+    margin-top: 20px;
+    text-align: center;
+    margin-bottom: 40px;
+  }
+  
+  .legend {
+    display: flex;
+    justify-content: center;
+    gap: 20px;
+    margin-bottom: 20px;
+  }
+  
+  .legend-item {
+    width: 15px;
+    height: 15px;
+    display: inline-block;
+    margin-right: 5px;
+  }
+  
+  .legend-item.available {
+    background: green;
+  }
+  
+  .legend-item.in-use {
+    background: red;
+  }
+  
+  .legend-item.maintenance {
+    background: orange;
+  }
+  
+  
+  .resource-chart {
+    display: flex;
+    justify-content: center;
+    gap: 30px;
+    margin-top: 10px;
+  }
+  
+  .resource-chart .chart-container {
+    position: relative;
+    width: 120px;
+    height: 120px;
+  }
+  
+  .chart-text {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    font-size: 18px;
+    font-weight: bold;
+  }
+  
+  
+  @media (max-width: 768px) {
+    .stats-grid {
+      flex-direction: column;
+    }
+  
+    .operations-table th,
+    .operations-table td {
+      font-size: 14px;
+    }
+  
+    .add-operation,
+    .edit-operation {
+      gap: 8px;
+    }
+  
+    .add-operation input,
+    .edit-operation input,
+    .add-operation select,
+    .edit-operation select {
+      font-size: 12px;
+    }
+  }
+  
+  
+  .error-message {
+    background-color: #f8d7da;
+    color: #721c24;
+    border: 1px solid #f5c6cb;
+    padding: 15px;
+    border-radius: 8px;
+    margin-bottom: 20px;
+    font-size: 16px;
+    font-weight: bold;
+    text-align: center;
+  }
+  
