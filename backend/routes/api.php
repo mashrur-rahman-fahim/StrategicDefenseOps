@@ -120,3 +120,5 @@ Route::get('/search-personnel/{personnelName}', [PersonnelController::class, 'ge
 Route::post('/add-operation-resources/{operationId}', [OperationResourcesController::class,'createOperationResource'])->middleware('auth:sanctum');
 
 Route::get('/get-operation-resources/{operationId}',[OperationResourcesController::class,'getAllOperationResources'])->middleware('auth:sanctum');
+
+Route::put('/update-operation-resources/{operationId}',[OperationResourcesController::class,'updateOperationResource'])->middleware('auth:sanctum');

@@ -240,4 +240,177 @@ class OperationResourcesService
             return [false, $e->getMessage()];
         }
     }
+    public function updateOperationResource($operationId, $userId, $datas)
+    {
+
+        DB::beginTransaction();
+        try {
+            $user = User::find($userId);
+
+            if ($user->role_id == 1) {
+                $userId = $user->id;
+            } elseif ($user->role_id == 2) {
+                $userId = $user->parent_id;
+            } else {
+                $user = User::find($user->parent_id);
+
+                $userId = $user->parent_id;
+            }
+            if (!$user || !$userId) {
+                throw new Exception("User not found");
+            }
+            $operation = DB::selectOne("select * from operations where created_by=? and id=?", [$userId, $operationId]);
+            $operation = Operation::find($operation->id);
+            if (!$operation) {
+                throw new Exception("Operation not found");
+            }
+            ;
+
+            for ($i = 0; $i < count($datas["serial_number"]); $i++) {
+
+                if ($datas["category"][$i] == 1) {
+                    $resource = DB::select("
+                select r.id,v.vehicle_count as count,v.id as vehicle_id from Resources r join Vehicle v on v.id=r.vehicle_id
+                where v.vehicle_serial_number=?", [$datas["serial_number"][$i]]);
+                    $serialNumberExist = DB::selectOne("select * from operation_resources where resource_id=? and operation_id=?", [$resource[0]->id, $operationId]);
+                    if (!$serialNumberExist) {
+
+                        throw new Exception("Serial number not found for vehicle");
+                    }
+
+                    $operationResourceCount = DB::selectOne("select resource_count from operation_resources where resource_id=? and operation_id=?", [$resource[0]->id, $operationId]);
+                    $resource[0]->count = $operationResourceCount->resource_count + $resource[0]->count;
+
+
+
+
+                    if ($resource[0] && $resource[0]->count >= $datas["count"][$i]) {
+
+                        $data["vehicle_count"] = $resource[0]->count - $datas["count"][$i];
+                        $updatedVehicle = $this->vehicleService->updateVehicle($data, $resource[0]->vehicle_id, $userId);
+                        if (!$updatedVehicle) {
+                            throw new Exception("Unable to update vehicle");
+                        }
+
+                        $operationResource = DB::update("update operation_resources set resource_count=? where resource_id=? and operation_id=?", [$datas["count"][$i], $resource[0]->id, $operationId]);
+
+
+
+
+
+                        if (!$operationResource) {
+                            throw new Exception("Unable to add operation resource");
+                        }
+                    } else {
+                        throw new Exception("Inventory insufficient");
+                    }
+
+
+                } elseif ($datas["category"][$i] == 2) {
+                    $resource = DB::select("
+                select r.id,w.weapon_count as count,w.id as weapon_id from Resources r join Weapon w on w.id=r.weapon_id
+                where w.weapon_serial_number=?", [$datas["serial_number"][$i]]);
+                    $serialNumberExist = DB::selectOne("select * from operation_resources where resource_id=? and operation_id=?", [$resource[0]->id, $operationId]);
+                    if (!$serialNumberExist) {
+
+                        throw new Exception("Serial number not found for vehicle");
+                    }
+                    $operationResourceCount = DB::selectOne("select resource_count from operation_resources where resource_id=? and operation_id=?", [$resource[0]->id, $operationId]);
+                    $resource[0]->count = $operationResourceCount->resource_count + $resource[0]->count;
+
+                    if ($resource[0] && $resource[0]->count >= $datas["count"][$i]) {
+
+                        $data["weapon_count"] = $resource[0]->count - $datas["count"][$i];
+                        $updatedWeapon = $this->weaponService->updateWeapon($data, $resource[0]->weapon_id, $userId);
+                        if (!$updatedWeapon) {
+                            throw new Exception("Unable to update weapon");
+                        }
+
+                        $operationResource = DB::update("update operation_resources set resource_count=? where resource_id=? and operation_id=?", [$datas["count"][$i], $resource[0]->id, $operationId]);
+
+                        if (!$operationResource) {
+                            throw new Exception("Unable to add operation resource");
+                        }
+                    } else {
+                        throw new Exception("Inventory insufficient");
+                    }
+
+
+                } elseif ($datas["category"][$i] == 3) {
+                    $resource = DB::select("
+                select r.id,p.personnel_count as count,p.id as personnel_id from Resources r join Personnel p on p.id=r.personnel_id
+                where p.personnel_serial_number=?", [$datas["serial_number"][$i]]);
+                    $serialNumberExist = DB::selectOne("select * from operation_resources where resource_id=? and operation_id=?", [$resource[0]->id, $operationId]);
+                    if (!$serialNumberExist) {
+
+                        throw new Exception("Serial number not found for vehicle");
+                    }
+                    $operationResourceCount = DB::selectOne("select resource_count from operation_resources where resource_id=? and operation_id=?", [$resource[0]->id, $operationId]);
+                    $resource[0]->count = $operationResourceCount->resource_count + $resource[0]->count;
+                    if ($resource[0] && $resource[0]->count >= $datas["count"][$i]) {
+
+                        $data["personnel_count"] = $resource[0]->count - $datas["count"][$i];
+                        $updatedPersonnel = $this->personnelService->updatePersonnel($data, $resource[0]->personnel_id, $userId);
+                        if (!$updatedPersonnel) {
+                            throw new Exception("Unable to update personnel");
+                        }
+
+                        $operationResource = DB::update("update operation_resources set resource_count=? where resource_id=? and operation_id=?", [$datas["count"][$i], $resource[0]->id, $operationId]);
+
+                        if (!$operationResource) {
+                            throw new Exception("Unable to add operation resource");
+                        }
+                    } else {
+                        throw new Exception("Inventory insufficient");
+                    }
+
+
+                } elseif ($datas["category"][$i] == 4) {
+                    $resource = DB::select("
+                select r.id,e.equipment_count as count,e.id as equipment_id from Resources r join Equipment e on e.id=r.equipment_id
+                where e.equipment_serial_number=?", [$datas["serial_number"][$i]]);
+                    $serialNumberExist = DB::selectOne("select * from operation_resources where resource_id=? and operation_id=?", [$resource[0]->id, $operationId]);
+                    if (!$serialNumberExist) {
+
+                        throw new Exception("Serial number not found for vehicle");
+                    }
+                    $operationResourceCount = DB::selectOne("select resource_count from operation_resources where resource_id=? and operation_id=?", [$resource[0]->id, $operationId]);
+                    $resource[0]->count = $operationResourceCount->resource_count + $resource[0]->count;
+                    if ($resource[0] && $resource[0]->count >= $datas["count"][$i]) {
+
+                        $data["equipment_count"] = $resource[0]->count - $datas["count"][$i];
+                        $updatedPersonnel = $this->equipmentService->updateEquipment($data, $resource[0]->equipment_id, $userId);
+                        if (!$updatedPersonnel) {
+                            throw new Exception("Unable to update equipment");
+                        }
+
+                        $operationResource = DB::update("update operation_resources set resource_count=? where resource_id=? and operation_id=?", [$datas["count"][$i], $resource[0]->id, $operationId]);
+
+                        if (!$operationResource) {
+                            throw new Exception("Unable to add operation resource");
+                        }
+                    } else {
+                        throw new Exception("Inventory insufficient");
+                    }
+
+                } else {
+                    throw new Exception("Invalid resource category");
+
+                }
+
+
+
+
+            }
+            DB::commit();
+            return true;
+
+        } catch (\Exception $e) {
+            DB::rollBack();
+            error_log("Error adding operation resources: " . $e->getMessage());
+            return [false, $e->getMessage()];
+        }
+
+    }
+
 }

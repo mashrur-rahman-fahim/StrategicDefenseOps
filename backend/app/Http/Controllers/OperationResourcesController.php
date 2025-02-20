@@ -36,4 +36,17 @@ class OperationResourcesController extends Controller
         
         return response()->json($operationResources);
     }
+    public function updateOperationResource(Request $request,$operationId){
+        $data=$request->validate([
+            "category" => "required|array",
+            "serial_number"=>"required|array",
+            "count"=>"required|array"
+        ]);
+        $user=User::find(auth()->id());
+        if(!$user || $user->role_id>3){
+            return response()->json(['error'=>'Unauthorized'],403);
+        }
+        $operationResource=$this->operationResourcesService->updateOperationResource($operationId,$user->id,$data);
+        return response()->json($operationResource,200);
+    }
 }
