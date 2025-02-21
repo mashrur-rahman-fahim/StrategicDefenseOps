@@ -44,6 +44,21 @@ class UserDetailsController extends Controller
         $user = $this->userDetailsService->getUserDetails($userId);
 
         if ($user) {
+            // Audit Log : successful retrieval of user details
+            Activity::create([
+                'log_name' => 'user_details_access',
+                'user_name' => $request->user()->name ?? 'Unknown',
+                'user_email' => $request->user()->email ?? 'Unknown',
+                'description' => 'Successfully retrieved user details.',
+                'subject_type' => 'App\Models\User',
+                'subject_id' => $user->id,
+                'causer_type' => 'App\Models\User',
+                'causer_id' => $userId,
+                'properties' => json_encode([
+                    'status' => 'success',
+                    'timestamp' => now()->toDateTimeString(),
+                ])
+            ]);
             return response()->json(
                 $user
             );
