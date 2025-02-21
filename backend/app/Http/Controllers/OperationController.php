@@ -4,12 +4,14 @@ namespace App\Http\Controllers;
 
 use App\Models\User;
 use App\Services\OperationService;
-use DB;
+/* use DB; */
 use Exception;
 use Illuminate\Http\Request;
 use Spatie\Activitylog\Facades\Activity;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Http\JsonResponse;
+use Illuminate\Support\Facades\DB;
+
 
 
 class OperationController extends Controller
