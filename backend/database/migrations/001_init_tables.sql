@@ -164,3 +164,20 @@ create table operation_resources (
     FOREIGN KEY (resource_id) references resources(id) on DELETE CASCADE,
     FOREIGN KEY (operation_id) REFERENCES operations(id) on DELETE CASCADE
 );
+CREATE TABLE reports (
+    id INT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
+    report_type ENUM('operation', 'resource', 'personnel', 'weapon', 'vehicle', 'equipment') NOT NULL,
+    operation_id INT UNSIGNED NULL,  
+    resource_id INT UNSIGNED NULL,   
+    generated_by INT UNSIGNED NOT NULL,
+    report_summary TEXT NOT NULL,    
+    report_details TEXT,            
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+    
+ 
+    FOREIGN KEY (operation_id) REFERENCES operations(id) ON DELETE CASCADE,
+    FOREIGN KEY (resource_id) REFERENCES resources(id) ON DELETE CASCADE,
+    FOREIGN KEY (generated_by) REFERENCES users(id) ON DELETE CASCADE
+);
+
