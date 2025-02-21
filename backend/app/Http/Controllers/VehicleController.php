@@ -23,8 +23,11 @@ class VehicleController extends Controller
         $this->resourceServices = $resourceServices;
     }
 
-    /**
-     * Add a new vehicle.
+    /* 
+     * Function : addVehicle
+     * Description : Add a new vehicle to the system.
+     * @param Request $request - Contains vehicle data for validation and insertion.
+     * @return \Illuminate\Http\JsonResponse - Returns a response with success message and vehicle data or an error message.
      */
     public function addVehicle(Request $request)
     {
@@ -110,8 +113,13 @@ class VehicleController extends Controller
         }
     }
 
-    /**
-     * Update an existing vehicle.
+
+    /* 
+     * Function : updateVehicle
+     * Description : Update an existing vehicle.
+     * @param Request $request - Contains updated vehicle data.
+     * @param int $vehicleId - The ID of the vehicle to be updated.
+     * @return \Illuminate\Http\JsonResponse - Returns updated vehicle data or an error message.
      */
     public function updateVehicle(Request $request, $vehicleId)
     {
@@ -160,8 +168,12 @@ class VehicleController extends Controller
         }
     }
 
-    /**
-     * Delete a vehicle.
+
+    /* 
+     * Function : deleteVehicle
+     * Description : Delete a vehicle.
+     * @param int $vehicleId - The ID of the vehicle to be deleted.
+     * @return \Illuminate\Http\JsonResponse - Returns success message or an error message.
      */
     public function deleteVehicle($vehicleId)
     {
@@ -199,8 +211,11 @@ class VehicleController extends Controller
         }
     }
 
-    /**
-     * Get all vehicles.
+
+    /* 
+     * Function : getAllVehicles
+     * Description : Get all vehicles.
+     * @return \Illuminate\Http\JsonResponse - Returns a list of all vehicles.
      */
     public function getAllVehicles()
     {
@@ -220,8 +235,12 @@ class VehicleController extends Controller
         }
     }
 
-    /**
-     * Get a vehicle by name.
+    
+    /* 
+     * Function : getVehicleByName
+     * Description : Get a vehicle by name.
+     * @param string $vehicleName - The name of the vehicle to fetch.
+     * @return \Illuminate\Http\JsonResponse - Returns the vehicle data or an error message if not found.
      */
     public function getVehicleByName($vehicleName)
     {
