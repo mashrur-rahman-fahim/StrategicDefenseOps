@@ -3,7 +3,7 @@
 namespace App\Services;
 use App\Models\Operation;
 use App\Models\User;
-use DB;
+use Illuminate\Support\Facades\DB;
 
 class OperationService
 {

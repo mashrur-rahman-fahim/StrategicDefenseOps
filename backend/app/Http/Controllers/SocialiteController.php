@@ -8,6 +8,7 @@ use Illuminate\Http\Request;
 use Laravel\Socialite\Facades\Socialite;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
+use Spatie\Activitylog\Facades\Activity;
 
 class SocialiteController extends Controller
 {
@@ -28,6 +29,24 @@ class SocialiteController extends Controller
             $user = User::where('google_id', $googleUser->id)->first();
             if($user){
                 Auth::login($user);
+
+                // Audit Log : existing user login
+                Activity::create([
+                    'log_name' => 'social_login',
+                    'user_name' => $user->name,
+                    'user_email' => $user->email,
+                    'role_id' => $user->role_id,
+                    'description' => 'User logged in via Google.',
+                    'subject_type' => 'App\Models\User',
+                    'subject_id' => $user->id,
+                    'causer_type' => 'App\Models\User',
+                    'causer_id' => $user->id,
+                    'properties' => json_encode([
+                        'provider' => 'google',
+                        'google_id' => $googleUser->id,
+                    ])
+                ]);
+
                 return redirect()->route('dashboard');
             } else {
                 $userData = User::create([

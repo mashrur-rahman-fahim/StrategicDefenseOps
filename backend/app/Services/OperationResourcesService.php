@@ -1,9 +1,11 @@
 <?php
 
 namespace App\Services;
-
 use App\Models\OperationResources;
-use DB;
+use Illuminate\Support\Facades\DB;
+use \Exception;
+
+
 
 class OperationResourcesService
 {

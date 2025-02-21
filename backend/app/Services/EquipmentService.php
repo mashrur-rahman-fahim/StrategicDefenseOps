@@ -4,7 +4,7 @@ namespace App\Services;
 
 use App\Models\User;
 use App\Models\Equipment;
-use DB;
+use Illuminate\Support\Facades\DB;
 use Exception;
 
 class EquipmentService
