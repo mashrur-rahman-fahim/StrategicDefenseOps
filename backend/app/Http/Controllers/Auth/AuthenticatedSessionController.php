@@ -10,8 +10,10 @@ use Illuminate\Support\Facades\Auth;
 use Carbon\Carbon;
 use Spatie\Activitylog\Facades\Activity;
 
+
 class AuthenticatedSessionController extends Controller
-{
+{   
+    
     /* 
      * Function : store
      * Description : Handles user authentication and generates an API token.
