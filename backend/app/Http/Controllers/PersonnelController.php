@@ -164,11 +164,30 @@ class PersonnelController extends Controller
                 return response()->json(['error' => 'Unauthorized'], 403);
             }
 
+           // Find the personnel to delete
+        $personnel = $this->personnelService->findPersonnelById($personnelId);
+
+        if (!$personnel) {
+            return response()->json(['error' => 'Personnel not found'], 404);
+        }
+
             // Delete personnel
             $deletedPersonnel = $this->personnelService->deletePersonnel($personnelId, auth()->id());
             if (!$deletedPersonnel) {
                 return response()->json(['error' => 'Failed to delete personnel'], 500);
             }
+
+            Activity::create([
+                'log_name' => 'personnel_deletion',
+                'user_name' => $user->name,
+                'user_email' => $user->email,
+                'role_id' => $user->role_id,
+                'description' => 'Personnel deleted with name: ' . $personnel->personnel_name,
+                'subject_type' => get_class($personnel),
+                'subject_id' => $personnel->id,
+                'causer_type' => get_class($user),
+                'causer_id' => $user->id,
+            ]);
 
             return response()->json(['personnel' => $deletedPersonnel]);
         } catch (Exception $e) {

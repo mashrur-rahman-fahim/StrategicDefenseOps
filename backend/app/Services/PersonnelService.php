@@ -109,6 +109,12 @@ class PersonnelService
         }
     }
 
+    public function findPersonnelById($id)
+    {
+        // Find the personnel by ID, or return null if not found
+        return Personnel::find($id);
+    }
+
     /**
      * Get all personnel.
      */
