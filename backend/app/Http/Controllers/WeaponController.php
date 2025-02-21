@@ -163,7 +163,7 @@ class WeaponController extends Controller
                     'updated_fields' => $validatedData
                 ])
             ]);
-            
+
             return response()->json(['weapon' => $updatedWeapon]);
 
         } catch (ValidationException $e) {
@@ -175,8 +175,11 @@ class WeaponController extends Controller
         }
     }
 
-    /**
-     * Delete a weapon.
+    /* 
+     * Function : deleteWeapon
+     * Description : Deletes a weapon based on the given ID and logs the deletion activity.
+     * @param int $id - The ID of the weapon to be deleted.
+     * @return JsonResponse - Response indicating the success or failure of the weapon deletion.
      */
     public function deleteWeapon($weaponId)
     {
@@ -192,6 +195,22 @@ class WeaponController extends Controller
             if (!$deletedWeapon) {
                 return response()->json(['error' => 'Failed to delete weapon'], 500);
             }
+            
+            // Audit Log : deleted weapon
+            Activity::create([
+                'log_name' => 'weapon_deletion',
+                'user_name' => $user->name,
+                'user_email' => $user->email,
+                'role_id' => $user->role_id,
+                'description' => 'Weapon deleted with ID: ' . $weaponId,
+                'subject_type' => 'App\Models\Weapon',
+                'subject_id' => $weaponId,
+                'causer_type' => get_class($user),
+                'causer_id' => $user->id,
+                'properties' => json_encode([
+                    'deleted_weapon_id' => $weaponId
+                ])
+            ]);
 
             return response()->json(['weapon' => $deletedWeapon]);
         } catch (Exception $e) {
