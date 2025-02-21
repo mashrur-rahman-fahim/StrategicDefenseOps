@@ -135,7 +135,20 @@ class VehicleController extends Controller
             }
 
             // Audit Log : vehicle update
-            
+            Activity::create([
+                'log_name' => 'vehicle_update',
+                'user_name' => $user->name,
+                'user_email' => $user->email,
+                'role_id' => $user->role_id,
+                'description' => 'Vehicle updated with name: ' . $updatedVehicle->vehicle_name,
+                'subject_type' => get_class($updatedVehicle),
+                'subject_id' => $updatedVehicle->id,
+                'causer_type' => get_class($user),
+                'causer_id' => $user->id,
+                'properties' => json_encode([
+                    'updated_fields' => $data
+                ])
+            ]);
 
             return response()->json(['vehicle' => $updatedVehicle]);
         } catch (ValidationException $e) {
