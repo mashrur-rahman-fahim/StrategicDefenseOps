@@ -64,6 +64,22 @@ class UserDetailsController extends Controller
             );
         }
 
+        // Audit Log : user is not found
+        Activity::create([
+            'log_name' => 'user_details_access',
+            'user_name' => $request->user()->name ?? 'Unknown',
+            'user_email' => $request->user()->email ?? 'Unknown',
+            'description' => 'Failed to retrieve user details, user not found.',
+            'subject_type' => 'App\Models\User',
+            'subject_id' => null,
+            'causer_type' => 'App\Models\User',
+            'causer_id' => $userId,
+            'properties' => json_encode([
+                'status' => 'not_found',
+                'timestamp' => now()->toDateTimeString(),
+            ])
+        ]);
+
         return response()->json([
             'message' => 'User not found'
         ], 404);
