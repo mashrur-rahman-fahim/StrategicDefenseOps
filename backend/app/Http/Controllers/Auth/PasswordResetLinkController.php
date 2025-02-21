@@ -7,6 +7,7 @@ use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Password;
 use Illuminate\Validation\ValidationException;
+use Spatie\Activitylog\Models\Activity;
 
 class PasswordResetLinkController extends Controller
 {
@@ -34,7 +35,8 @@ class PasswordResetLinkController extends Controller
                 'email' => [__($status)],
             ]);
         }
-
+        
+        
         return response()->json(['status' => __($status)]);
     }
 }
