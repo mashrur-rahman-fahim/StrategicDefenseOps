@@ -130,5 +130,5 @@ Route::put('/update-operation-resources/{operationId}',[OperationResourcesContro
 
 use App\Http\Controllers\OllamaController;
 
-Route::post('/ollama/generate', [OllamaController::class, 'generateResponse']);
+Route::post('/ollama/generate', [OllamaController::class, 'generateResponse'])->middleware('auth:sanctum');
 
