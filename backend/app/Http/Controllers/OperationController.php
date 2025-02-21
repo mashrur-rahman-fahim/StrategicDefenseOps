@@ -144,7 +144,21 @@ class OperationController extends Controller
         }
         $message = $this->operationService->deleteOperation($id, auth()->id());
         if ($message) {
-           
+            // Audit Log : deleted operation 
+            Activity::create([
+                'log_name' => 'operation_deletion',
+                'user_name' => $user->name,
+                'user_email' => $user->email,
+                'role_id' => $user->role_id,
+                'description' => 'Operation deleted with ID: ' . $id,
+                'subject_type' => 'App\Models\Operation', 
+                'subject_id' => $id,
+                'causer_type' => get_class($user), 
+                'causer_id' => $user->id,
+                'properties' => json_encode([
+                    'deleted_operation_id' => $id
+                ])
+            ]);
 
             return response()->json(['message' => 'deleted successfully'], 200);
         }
