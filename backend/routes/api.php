@@ -4,7 +4,7 @@ use App\Http\Controllers\AssignRoleController;
 use App\Http\Controllers\OperationController;
 
 use App\Http\Controllers\OperationResourcesController;
-use App\Http\Controllers\ResourcesController;
+
 use App\Http\Controllers\UnassignRoleController;
 use App\Http\Controllers\UserDetailsController;
 use App\Http\Controllers\WeaponController;
@@ -13,6 +13,8 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\VehicleController;
 use App\Http\Controllers\PersonnelController;
 use App\Http\Controllers\EquipmentController;
+
+
 
 
 /*
@@ -122,3 +124,11 @@ Route::post('/add-operation-resources/{operationId}', [OperationResourcesControl
 Route::get('/get-operation-resources/{operationId}',[OperationResourcesController::class,'getAllOperationResources'])->middleware('auth:sanctum');
 
 Route::put('/update-operation-resources/{operationId}',[OperationResourcesController::class,'updateOperationResource'])->middleware('auth:sanctum');
+
+
+
+
+use App\Http\Controllers\OllamaController;
+
+Route::post('/ollama/generate', [OllamaController::class, 'generateResponse'])->middleware('auth:sanctum');
+
