@@ -12,7 +12,6 @@ use Illuminate\Support\Facades\Auth;
 
 class OperationController extends Controller
 {
-    //
     protected OperationService $operationService;
 
     public function __construct(OperationService $operationService)
@@ -20,6 +19,13 @@ class OperationController extends Controller
         $this->operationService = $operationService;
        
     }
+
+     /* 
+     * Function : createOperation
+     * Description : Creates a new operation in the system, validates input, and logs the activity.
+     * @param Request $request - The incoming HTTP request containing the operation data.
+     * @return JsonResponse - Response indicating the success or failure of operation creation.
+     */
     public function createOperation(Request $request)
     {
         $validatedData = $request->validate([
@@ -96,7 +102,14 @@ class OperationController extends Controller
         );
 
     }
-
+    
+    /* 
+     * Function : updateOperation
+     * Description : Updates an existing operation, validating the input and logging the update activity.
+     * @param Request $request - The incoming HTTP request containing updated operation data.
+     * @param int $id - The ID of the operation to be updated.
+     * @return JsonResponse - Response indicating the success or failure of the operation update.
+     */
     public function updateOperation(Request $request, $id)
     {
         $validatedData = $request->validate([
@@ -136,6 +149,13 @@ class OperationController extends Controller
 
         return response()->json($updatedOperation, 200);
     }
+
+     /* 
+     * Function : deleteOperation
+     * Description : Deletes an operation based on the given ID and logs the deletion activity.
+     * @param int $id - The ID of the operation to be deleted.
+     * @return JsonResponse - Response indicating the success or failure of the operation deletion.
+     */
     public function deleteOperation($id)
     {
         $user=User::find(auth()->id());
@@ -164,6 +184,12 @@ class OperationController extends Controller
         }
         return response()->json(['message' => 'failed to delete'], 400);
     }
+
+    /* 
+     * Function : getAllOperations
+     * Description : Fetches all operations for the authenticated user.
+     * @return JsonResponse - List of all operations associated with the user.
+     */
     public function getAllOperations()
     {
         
@@ -174,6 +200,13 @@ class OperationController extends Controller
             return response()->json(['message' => 'not found'], 404);
         }
     }
+
+    /* 
+     * Function : searchByName
+     * Description : Searches for operations by name based on the user's role.
+     * @param string $name - The name to search for in the operation records.
+     * @return JsonResponse - List of operations that match the given name.
+     */
     public function searchByName($name)
     {
         $user = User::find(auth()->id());
