@@ -9,6 +9,8 @@ use App\Services\WeaponService;
 use Exception;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
+use Spatie\Activitylog\Facades\Activity;
+use Illuminate\Support\Facades\Auth;
 
 class WeaponController extends Controller
 {
@@ -21,8 +23,11 @@ class WeaponController extends Controller
         $this->resourceServices = $resourceServices;
     }
 
-    /**
-     * Add a new weapon.
+    /* 
+     * Function : createWeapon
+     * Description : Creates a new weapon in the system, validates input, and logs the activity.
+     * @param Request $request - The incoming HTTP request containing the weapon data.
+     * @return JsonResponse - Response indicating the success or failure of weapon creation.
      */
     public function addWeapon(Request $request)
     {
@@ -72,6 +77,30 @@ class WeaponController extends Controller
 
                 // Commit transaction
                 DB::commit();
+                
+                // Audit Log : created weapon
+                Activity::causedBy(auth()->user()) 
+                    ->performedOn($weapon)
+                    ->withProperties([
+                        'weapon_name' => $weapon->name,
+                        'status' => $weapon->status,
+                    ])
+                    ->log('Weapon created');
+                
+                Activity::create([
+                    'log_name' => 'weapon_creation', 
+                    'user_name' => $user->name, 
+                    'user_email' => $user->email, 
+                    'role_id' => $user->role_id, 
+                    'description' => 'Weapon created with name: ' . $weapon->name,
+                    'subject_type' => get_class($weapon),
+                    'subject_id' => $weapon->id,
+                    'causer_type' => get_class($user), 
+                    'causer_id' => $user->id,
+                    'properties' => json_encode([
+                        'additional_info' => 'Created weapon with price ' . $weapon->price
+                    ])
+                ]);
 
                 return response()->json([
                     'message' => 'Weapon added successfully',
