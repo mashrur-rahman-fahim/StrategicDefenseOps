@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Services\UserDetailsService;
 use Illuminate\Http\Request;
+use Spatie\Activitylog\Facades\Activity;
 
 
 class UserDetailsController extends Controller
@@ -20,6 +21,21 @@ class UserDetailsController extends Controller
         $userId = auth()->id();
 
         if (!$userId) {
+            // Audit Log : unauthorized access attempt
+            Activity::create([
+                'log_name' => 'user_details_access',
+                'user_name' => 'Unknown',  // Since the user is not authenticated
+                'user_email' => 'Unknown',
+                'description' => 'Unauthorized attempt to access user details.',
+                'subject_type' => 'App\Models\User',
+                'subject_id' => null,
+                'causer_type' => 'App\Models\User',
+                'causer_id' => null,
+                'properties' => json_encode([
+                    'status' => 'unauthorized',
+                    'timestamp' => now()->toDateTimeString(),
+                ])
+            ]);
             return response()->json([
                 'message' => 'Unauthorized'
             ], 401);
