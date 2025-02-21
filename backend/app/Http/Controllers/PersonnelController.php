@@ -72,7 +72,7 @@ class PersonnelController extends Controller
 
                 // Commit transaction
                 DB::commit();
-                
+
                 // Audit Log: Personnel added
                 Activity::causedBy(auth()->user())
                     ->performedOn($personnel)
@@ -125,6 +125,22 @@ class PersonnelController extends Controller
             if (!$updatedPersonnel) {
                 return response()->json(['error' => 'Failed to update personnel'], 500);
             }
+
+            // Audit Log : Personnel updated
+            Activity::create([
+                'log_name' => 'personnel_update',
+                'user_name' => $user->name,
+                'user_email' => $user->email,
+                'role_id' => $user->role_id,
+                'description' => 'Personnel updated with name: ' . $updatedPersonnel->personnel_name,
+                'subject_type' => get_class($updatedPersonnel),
+                'subject_id' => $updatedPersonnel->id,
+                'causer_type' => get_class($user),
+                'causer_id' => $user->id,
+                'properties' => json_encode([
+                    'updated_fields' => $data
+                ])
+            ]);
 
             return response()->json(['personnel' => $updatedPersonnel]);
         } catch (ValidationException $e) {
