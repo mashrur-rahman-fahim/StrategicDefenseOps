@@ -179,6 +179,22 @@ class EquipmentController extends Controller
                 return response()->json(['error' => 'Failed to delete equipment'], 500);
             }
 
+            // Audit Log : delete equipment
+            Activity::create([
+                'log_name' => 'equipment_deletion',
+                'user_name' => $user->name,
+                'user_email' => $user->email,
+                'role_id' => $user->role_id,
+                'description' => 'Equipment deleted with ID: ' . $equipmentId,
+                'subject_type' => get_class($equipmentId),
+                'subject_id' => $equipmentId->id,
+                'causer_type' => get_class($user),
+                'causer_id' => $user->id,
+                'properties' => json_encode([
+                    'equipment_name' => $equipmentId->equipment_name
+                ])
+            ]);
+
             return response()->json(['equipment' => $deletedEquipment]);
         } catch (Exception $e) {
             // Handle unexpected errors
