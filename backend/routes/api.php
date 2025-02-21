@@ -13,6 +13,8 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\VehicleController;
 use App\Http\Controllers\PersonnelController;
 use App\Http\Controllers\EquipmentController;
+use App\Http\Controllers\ChatbotController;
+
 
 
 /*
@@ -122,3 +124,7 @@ Route::post('/add-operation-resources/{operationId}', [OperationResourcesControl
 Route::get('/get-operation-resources/{operationId}',[OperationResourcesController::class,'getAllOperationResources'])->middleware('auth:sanctum');
 
 Route::put('/update-operation-resources/{operationId}',[OperationResourcesController::class,'updateOperationResource'])->middleware('auth:sanctum');
+
+
+Route::post('/chat', [ChatbotController::class, 'chat'])->middleware('auth:sanctum');
+
