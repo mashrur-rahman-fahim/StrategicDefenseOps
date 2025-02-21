@@ -205,6 +205,9 @@ class OperationResourcesService
 
                 $resourceId = $operationResources[$i]->resource_id;
                 $resource = Resources::find($resourceId);
+                if(!$resource) {
+                    throw new \Exception("Could not find resource");
+                }
                 $resourceCategory = DB::selectOne("select * from resource_category where id=?", [$resource->resource_category]);
                 $resourceCategory = $resourceCategory->resource_category;
                 if ($resourceCategory == "vehicle") {

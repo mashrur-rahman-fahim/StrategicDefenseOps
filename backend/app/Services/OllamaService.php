@@ -11,7 +11,10 @@ class OllamaService
 
     public function __construct(Client $client)
     {
-        $this->client = $client;
+        $this->client = new Client([
+            'timeout' =>120,
+            'connect_timeout' => 120,
+        ]);
     }
 
     public function generateResponse(string $prompt)
@@ -21,6 +24,8 @@ class OllamaService
                 'json' => [
                     'model' => 'llama3.1',
                     'prompt' => $prompt,
+                    'max_tokens'=>1
+                    
                 ],
                 'stream' => true,
             ]);

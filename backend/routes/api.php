@@ -5,11 +5,12 @@ use App\Http\Controllers\OperationController;
 
 use App\Http\Controllers\OperationResourcesController;
 
+use App\Http\Controllers\ReportController;
 use App\Http\Controllers\UnassignRoleController;
 use App\Http\Controllers\UserDetailsController;
 use App\Http\Controllers\WeaponController;
 use Illuminate\Support\Facades\Route;
-
+use App\Http\Controllers\OllamaController;
 use App\Http\Controllers\VehicleController;
 use App\Http\Controllers\PersonnelController;
 use App\Http\Controllers\EquipmentController;
@@ -125,10 +126,10 @@ Route::get('/get-operation-resources/{operationId}',[OperationResourcesControlle
 
 Route::put('/update-operation-resources/{operationId}',[OperationResourcesController::class,'updateOperationResource'])->middleware('auth:sanctum');
 
+Route::post('/generate-report/{operationId}',[ReportController::class,'generateReport'])->middleware('auth:sanctum');
 
 
 
-use App\Http\Controllers\OllamaController;
 
 Route::post('/ollama/generate', [OllamaController::class, 'generateResponse'])->middleware('auth:sanctum');
 

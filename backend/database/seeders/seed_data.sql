@@ -32,3 +32,4 @@ insert into resources (resources_name,resource_category,weapon_id) values
 
 insert into operation_resources (operation_id,resource_id,resource_count) values 
 (2,1,100)
+
