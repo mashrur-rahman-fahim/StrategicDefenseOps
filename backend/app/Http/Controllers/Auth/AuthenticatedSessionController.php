@@ -31,10 +31,10 @@ class AuthenticatedSessionController extends Controller
             }
             
             // Audit Log : User login
-            Activity::performedOn($user)  // Log activity on the user model
-            ->causedBy(Auth::user())  // Log activity caused by the currently authenticated user
+            Activity::performedOn($user)  
+            ->causedBy(Auth::user())  
             ->tap(function ($activity) use ($user) {
-                // Add custom log data
+                
                 $activity->user_name = $user->name;
                 $activity->user_email = $user->email;
                 $activity->role_id = $user->role_id;
@@ -47,7 +47,7 @@ class AuthenticatedSessionController extends Controller
                 'role_id' => $user->role_id,
             ])
             ->log('User logged in');
-            
+
 
             // Set the token expiration time (e.g., 120 minutes)
             $expiresAt = Carbon::now()->addMinutes(config('session.lifetime'));
@@ -87,10 +87,10 @@ class AuthenticatedSessionController extends Controller
             $user = Auth::user();
 
             // Audit Log : User logout
-            Activity::performedOn($user)  // Log activity on the user model
-            ->causedBy(Auth::user())  // Log activity caused by the currently authenticated user
+            Activity::performedOn($user)  
+            ->causedBy(Auth::user())  
             ->tap(function ($activity) use ($user) {
-                // Add custom log data
+                
                 $activity->user_name = $user->name;
                 $activity->user_email = $user->email;
                 $activity->role_id = $user->role_id;
