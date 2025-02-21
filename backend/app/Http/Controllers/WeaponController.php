@@ -219,8 +219,10 @@ class WeaponController extends Controller
         }
     }
 
-    /**
-     * Get all weapons.
+    /* 
+     * Function : getAllWeapons
+     * Description : Fetches all weapons for the authenticated user.
+     * @return JsonResponse - List of all weapons associated with the user.
      */
     public function getAllWeapons()
     {
@@ -240,8 +242,11 @@ class WeaponController extends Controller
         }
     }
 
-    /**
-     * Get a weapon by name.
+    /* 
+     * Function : searchByName
+     * Description : Searches for weapons by name based on the user's role.
+     * @param string $name - The name to search for in the weapon records.
+     * @return JsonResponse - List of weapons that match the given name.
      */
     public function getWeaponByName($weaponName)
     {
