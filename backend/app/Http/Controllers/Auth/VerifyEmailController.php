@@ -42,7 +42,21 @@ class VerifyEmailController extends Controller
         if ($request->user()->markEmailAsVerified()) {
             event(new Verified($request->user()));
 
-            
+            // Audit Log : when the email is successfully verified
+            Activity::create([
+                'log_name' => 'email_verification',
+                'user_name' => $request->user()->name,
+                'user_email' => $request->user()->email,
+                'description' => 'Email successfully verified.',
+                'subject_type' => 'App\Models\User',
+                'subject_id' => $request->user()->id,
+                'causer_type' => 'App\Models\User',
+                'causer_id' => $request->user()->id,
+                'properties' => json_encode([
+                    'status' => 'verified',
+                    'timestamp' => now()->toDateTimeString(),
+                ])
+            ]);
         }
 
         return redirect()->intended(
