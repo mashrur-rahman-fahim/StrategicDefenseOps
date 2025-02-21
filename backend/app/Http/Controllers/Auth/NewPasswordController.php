@@ -58,7 +58,21 @@ class NewPasswordController extends Controller
         );
 
         if ($status != Password::PASSWORD_RESET) {
-             
+            
+             // Audit Log : failed password reset attempt
+             Activity::create([
+                'log_name' => 'password_reset_failed',
+                'user_email' => $request->email,
+                'description' => 'User failed to reset their password.',
+                'subject_type' => null,
+                'subject_id' => null,
+                'causer_type' => null,
+                'causer_id' => null,
+                'properties' => json_encode([
+                    'status' => $status,
+                ])
+            ]);
+
             throw ValidationException::withMessages([
                 'email' => [__($status)],
             ]);
