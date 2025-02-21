@@ -37,6 +37,22 @@ class EmailVerificationNotificationController extends Controller
 
         $request->user()->sendEmailVerificationNotification();
 
+        // Audit Log : when the verification link is sent
+        Activity::create([
+            'log_name' => 'email_verification',
+            'user_name' => $request->user()->name,
+            'user_email' => $request->user()->email,
+            'description' => 'Verification email sent.',
+            'subject_type' => 'App\Models\User',
+            'subject_id' => $request->user()->id,
+            'causer_type' => 'App\Models\User',
+            'causer_id' => $request->user()->id,
+            'properties' => json_encode([
+                'status' => 'verification_sent',
+                'timestamp' => now()->toDateTimeString(),
+            ])
+        ]);
+
         return response()->json(['status' => 'verification-link-sent']);
     }
 }
