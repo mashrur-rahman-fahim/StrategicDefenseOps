@@ -10,6 +10,7 @@ use Exception;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Validation\ValidationException;
+use Spatie\Activitylog\Facades\Activity;
 
 class PersonnelController extends Controller
 {
@@ -71,6 +72,16 @@ class PersonnelController extends Controller
 
                 // Commit transaction
                 DB::commit();
+                
+                // Audit Log: Personnel added
+                Activity::causedBy(auth()->user())
+                    ->performedOn($personnel)
+                    ->withProperties([
+                        'personnel_name' => $personnel->personnel_name,
+                        'personnel_count' => $personnel->personnel_count,
+                    ])
+                    ->log('Personnel added');
+
                 return response()->json([
                     'message' => 'Personnel added successfully',
                     'personnel' => $personnel,
