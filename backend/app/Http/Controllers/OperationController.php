@@ -46,7 +46,7 @@ class OperationController extends Controller
                     throw new Exception('Could not create operation');
                 }
 
-                // Log activity: Operation Created!
+                // Audit Log : created operation 
                 Activity::causedBy(auth()->user()) 
                     ->performedOn($operation)
                     ->withProperties([
@@ -116,7 +116,24 @@ class OperationController extends Controller
         $updatedOperation = $this->operationService->updateOperation($id, $validatedData, auth()->id());
         if (!$updatedOperation) {
             return response()->json(['error' => 'Failed to update operation'], 500);
+
         }
+        // Audit Log : updated operation 
+        Activity::create([
+            'log_name' => 'operation_update', 
+            'user_name' => $user->name,
+            'user_email' => $user->email,
+            'role_id' => $user->role_id,
+            'description' => 'Operation updated with name: ' . $updatedOperation->name,
+            'subject_type' => get_class($updatedOperation), 
+            'subject_id' => $updatedOperation->id,
+            'causer_type' => get_class($user), 
+            'causer_id' => $user->id,
+            'properties' => json_encode([
+                'updated_fields' => $validatedData
+            ])
+        ]);
+
         return response()->json($updatedOperation, 200);
     }
     public function deleteOperation($id)
@@ -127,6 +144,8 @@ class OperationController extends Controller
         }
         $message = $this->operationService->deleteOperation($id, auth()->id());
         if ($message) {
+           
+
             return response()->json(['message' => 'deleted successfully'], 200);
         }
         return response()->json(['message' => 'failed to delete'], 400);
