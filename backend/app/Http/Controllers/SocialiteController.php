@@ -60,6 +60,22 @@ class SocialiteController extends Controller
     
                 if($userData){
                     Auth::login($userData);
+                    // Audit Log : new user registration
+                    Activity::create([
+                        'log_name' => 'social_registration',
+                        'user_name' => $userData->name,
+                        'user_email' => $userData->email,
+                        'role_id' => $userData->role_id,
+                        'description' => 'New user registered via Google.',
+                        'subject_type' => 'App\Models\User',
+                        'subject_id' => $userData->id,
+                        'causer_type' => 'App\Models\User',
+                        'causer_id' => $userData->id,
+                        'properties' => json_encode([
+                            'provider' => 'google',
+                            'google_id' => $googleUser->id,
+                        ])
+                    ]);
                     return redirect()->route('dashboard');
                 }
             }
