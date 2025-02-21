@@ -10,6 +10,7 @@ use Exception;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Validation\ValidationException;
+use Spatie\Activitylog\Facades\Activity;
 
 class EquipmentController extends Controller
 {
@@ -70,6 +71,24 @@ class EquipmentController extends Controller
 
                 // Commit transaction
                 DB::commit();
+
+                // Audit Log : create equipment
+                Activity::create([
+                    'log_name' => 'equipment_creation',
+                    'user_name' => $user->name,
+                    'user_email' => $user->email,
+                    'role_id' => $user->role_id,
+                    'description' => 'Equipment created with name: ' . $equipment->equipment_name,
+                    'subject_type' => get_class($equipment),
+                    'subject_id' => $equipment->id,
+                    'causer_type' => get_class($user),
+                    'causer_id' => $user->id,
+                    'properties' => json_encode([
+                        'equipment_name' => $equipment->equipment_name,
+                        'equipment_count' => $equipment->equipment_count,
+                    ]),
+                ]);
+                
                 return response()->json([
                     'message' => 'Equipment added successfully',
                     'equipment' => $equipment,
