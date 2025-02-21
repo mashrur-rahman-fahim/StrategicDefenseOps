@@ -42,7 +42,7 @@ class NewPasswordController extends Controller
                 event(new PasswordReset($user));
                 // Audit Log : successful password reset
                 Activity::create([
-                    'log_name' => 'password_reset',
+                    'log_name' => 'new_password_reset',
                     'user_name' => $user->name,
                     'user_email' => $user->email,
                     'description' => 'User successfully reset their password.',
@@ -58,10 +58,10 @@ class NewPasswordController extends Controller
         );
 
         if ($status != Password::PASSWORD_RESET) {
-            
+
              // Audit Log : failed password reset attempt
              Activity::create([
-                'log_name' => 'password_reset_failed',
+                'log_name' => 'new_password_reset_failed',
                 'user_email' => $request->email,
                 'description' => 'User failed to reset their password.',
                 'subject_type' => null,
