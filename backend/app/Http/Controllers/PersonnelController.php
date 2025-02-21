@@ -23,8 +23,12 @@ class PersonnelController extends Controller
         $this->resourceServices = $resourceServices;
     }
 
-    /**
-     * Add a new personnel.
+    
+   /**
+     * Function : addPersonnel
+     * Description : Add a new personnel along with a linked resource.
+     * @param Request $request - The incoming request containing personnel data.
+     * @return \Illuminate\Http\JsonResponse - The response containing the added personnel and resource or an error message.
      */
     public function addPersonnel(Request $request)
     {
@@ -101,8 +105,13 @@ class PersonnelController extends Controller
         }
     }
 
+
     /**
-     * Update an existing personnel.
+     * Function : updatePersonnel
+     * Description : Update an existing personnel's data.
+     * @param Request $request - The incoming request containing updated personnel data.
+     * @param int $personnelId - The ID of the personnel to be updated.
+     * @return \Illuminate\Http\JsonResponse - The response containing the updated personnel data or an error message.
      */
     public function updatePersonnel(Request $request, $personnelId)
     {
@@ -152,8 +161,12 @@ class PersonnelController extends Controller
         }
     }
 
-    /**
-     * Delete a personnel.
+
+   /**
+     * Function : deletePersonnel
+     * Description : Delete a personnel from the database.
+     * @param int $personnelId - The ID of the personnel to be deleted.
+     * @return \Illuminate\Http\JsonResponse - The response containing the deleted personnel or an error message.
      */
     public function deletePersonnel($personnelId)
     {
@@ -196,8 +209,11 @@ class PersonnelController extends Controller
         }
     }
 
-    /**
-     * Get all personnel.
+
+   /**
+     * Function : getAllPersonnel
+     * Description : Retrieve all personnel from the database.
+     * @return \Illuminate\Http\JsonResponse - The response containing a list of all personnel or an error message.
      */
     public function getAllPersonnel()
     {
@@ -217,8 +233,12 @@ class PersonnelController extends Controller
         }
     }
 
-    /**
-     * Get a personnel by name.
+
+   /**
+     * Function : getPersonnelByName
+     * Description : Retrieve personnel by their name.
+     * @param string $personnelName - The name of the personnel to search for.
+     * @return \Illuminate\Http\JsonResponse - The response containing the personnel data or an error message.
      */
     public function getPersonnelByName($personnelName)
     {
