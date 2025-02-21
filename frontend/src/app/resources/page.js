@@ -1,6 +1,7 @@
 'use client';
 import React from 'react';
 import { Card, Button, Row, Col, Container } from 'react-bootstrap';
+import { Icon } from "@iconify/react";
 
 export default function Resources() {
   const overviewData = {
@@ -13,24 +14,28 @@ export default function Resources() {
   const resourceCategories = [
     {
       type: "Weapons",
+      icon: "tabler:bomb-filled",
       totalAvailable: 3669,
       inUse: 369,
       underMaintenance: 40
     },
     {
       type: "Vehicles",
+      icon: "mdi:tank",
       totalAvailable: 3134,
       inUse: 269,
       underMaintenance: 10
     },
     {
       type: "Personnel",
+      icon: "fa6-solid:person-military-rifle",
       totalAvailable: 12669,
       inUse: 33032,
       underMaintenance: 404
     },
     {
       type: "Equipments",
+      icon: "mdi:medical-bag",
       totalAvailable: 7711,
       inUse: 3469,
       underMaintenance: 0
@@ -101,7 +106,8 @@ export default function Resources() {
             <Card className="shadow-sm bg-light">
               <Card.Body>
                 <div className="d-flex align-items-center mb-3">
-                  <h5 className="fw-bold mb-0">{category.type}</h5>
+                  <Icon icon={category.icon} width="24" height="24"/>
+                  <h5 className="fw-bold mb-0 ms-1">{category.type}</h5>
                 </div>
                 <div className="mb-2">
                   <div className="d-flex justify-content-between">
