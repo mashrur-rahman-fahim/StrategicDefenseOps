@@ -10,6 +10,7 @@ use Exception;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Validation\ValidationException;
+use Spatie\Activitylog\Facades\Activity;
 
 class VehicleController extends Controller
 {
@@ -72,6 +73,24 @@ class VehicleController extends Controller
 
                 // Commit transaction
                 DB::commit();
+
+                // Audit Log : vehicle creation
+                Activity::create([
+                    'log_name' => 'vehicle_creation',
+                    'user_name' => $user->name,
+                    'user_email' => $user->email,
+                    'role_id' => $user->role_id,
+                    'description' => 'Vehicle created with name: ' . $vehicle->vehicle_name,
+                    'subject_type' => get_class($vehicle),
+                    'subject_id' => $vehicle->id,
+                    'causer_type' => get_class($user),
+                    'causer_id' => $user->id,
+                    'properties' => json_encode([
+                        'vehicle_count' => $vehicle->vehicle_count,
+                        'vehicle_capacity' => $vehicle->vehicle_capacity,
+                    ])
+                ]);
+
                 return response()->json([
                     'message' => 'Vehicle added successfully',
                     'vehicle' => $vehicle,
@@ -115,6 +134,9 @@ class VehicleController extends Controller
                 return response()->json(['error' => 'Failed to update vehicle'], 500);
             }
 
+            // Audit Log : vehicle update
+            
+
             return response()->json(['vehicle' => $updatedVehicle]);
         } catch (ValidationException $e) {
             // Handle validation errors
@@ -142,6 +164,9 @@ class VehicleController extends Controller
             if (!$deletedVehicle) {
                 return response()->json(['error' => 'Failed to delete vehicle'], 500);
             }
+
+            // Audit Log : vehicle deletion ------------------------------------------
+            
 
             return response()->json(['vehicle' => $deletedVehicle]);
         } catch (Exception $e) {
