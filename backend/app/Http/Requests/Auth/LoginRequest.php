@@ -26,7 +26,7 @@ class LoginRequest extends FormRequest
     /**
      * Function: rules
      * Description: Get the validation rules that apply to the request.
-     * @param 
+     * @param NA
      * @return array<string, \Illuminate\Contracts\Validation\Rule|array|string>
      */
     public function rules(): array
@@ -40,7 +40,7 @@ class LoginRequest extends FormRequest
     /**
      * Function: authenticate
      * Description: Attempt to authenticate the request's credentials.
-     * @param 
+     * @param NA
      * @return void
      * @throws \Illuminate\Validation\ValidationException
      */
@@ -62,7 +62,7 @@ class LoginRequest extends FormRequest
     /**
      * Function: ensureIsNotRateLimited
      * Description: Ensure the login request is not rate limited.
-     * @param 
+     * @param NA
      * @return void
      * @throws \Illuminate\Validation\ValidationException
      */
@@ -87,7 +87,7 @@ class LoginRequest extends FormRequest
     /**
      * Function: throttleKey
      * Description: Get the rate limiting throttle key for the request.
-     * @param 
+     * @param NA
      * @return string
      */
     public function throttleKey(): string
