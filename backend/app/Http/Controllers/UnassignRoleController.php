@@ -6,6 +6,7 @@ use App\Models\User;
 use App\Services\UnassignRoleService;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
+use Spatie\Activitylog\Facades\Activity;
 
 class UnassignRoleController extends Controller
 {
@@ -15,7 +16,13 @@ class UnassignRoleController extends Controller
     {
         $this->unassignRoleService = $unassignRoleService;
     }
-
+    
+    /* 
+     * Function : managerUnassign
+     * Description : Unassigns a manager role from a user by the parent (manager).
+     * @param Request $request - The request object containing the manager's email.
+     * @return JsonResponse - Returns a JSON response with the unassigned manager data or an error message.
+     */
     public function managerUnassign(Request $request): JsonResponse
     {
         $request->validate([
@@ -31,10 +38,16 @@ class UnassignRoleController extends Controller
 
         $manager = $this->unassignRoleService->unassignRole($request->managerEmail, 2, $parentId);
 
-        return $manager ? response()->json([$manager]) 
+        return $manager ? response()->json([$manager]) && $this->logActivity($parentId, $manager, 'Manager') //Audit Log
                         : response()->json(['message' => 'Manager not found or not assigned'], 404);
     }
-
+    
+     /* 
+     * Function : operatorUnassign
+     * Description : Unassigns an operator role from a user by either a parent or a manager.
+     * @param Request $request - The request object containing the operator's email.
+     * @return JsonResponse - Returns a JSON response with the unassigned operator data or an error message.
+     */
     public function operatorUnassign(Request $request): JsonResponse
     {
         $request->validate([
@@ -60,10 +73,16 @@ class UnassignRoleController extends Controller
             $operator = $this->unassignRoleService->unassignRole($request->operatorEmail, 3, $parentId);
         }
 
-        return isset($operator) ? response()->json([$operator]) 
+        return isset($operator) ? response()->json([$operator]) &&  $this->logUnassignActivity($parentId, $operator, 'Operator') // Audit Log
                                 : response()->json(['message' => 'Operator not found or not assigned'], 404);
     }
-
+    
+    /* 
+     * Function : viewerUnassign
+     * Description : Unassigns a viewer role from a user by either a parent or a manager.
+     * @param Request $request - The request object containing the viewer's email.
+     * @return JsonResponse - Returns a JSON response with the unassigned viewer data or an error message.
+     */
     public function viewerUnassign(Request $request): JsonResponse
     {
         $request->validate([
@@ -87,7 +106,29 @@ class UnassignRoleController extends Controller
             $viewer = $this->unassignRoleService->unassignRole($request->viewerEmail, 4, $parentId);
         }
 
-        return isset($viewer) ? response()->json([$viewer]) 
+        return isset($viewer) ? response()->json([$viewer]) && $this->logUnassignActivity($parentId, $viewer, 'Viewer') // Audit Log
                               : response()->json(['message' => 'Viewer not found or not assigned'], 404);
+    }
+    
+     /* 
+     * Function : logUnassignActivity
+     * Description : Logs the activity of unassigning a role from a user.
+     * @param int $parentId - The ID of the parent user performing the unassignment.
+     * @param $unassignedUser - The user whose role is being unassigned.
+     * @param string $role - The role being unassigned (e.g., Manager, Operator, Viewer).
+     * @return void
+     */
+    private function logUnassignActivity($parentId, $unassignedUser, $role)
+    {
+        if ($unassignedUser) {
+            Activity::causedBy(auth()->user()) 
+                ->performedOn($unassignedUser) 
+                ->withProperties([
+                    'parent_id' => $parentId,
+                    'user_email' => $unassignedUser->email,
+                    'unassigned_role' => $role,
+                ])
+                ->log("Unassigned role {$role} from user {$unassignedUser->email} by {$parentId}");
+        }
     }
 }
