@@ -1,5 +1,6 @@
 import { Nunito } from 'next/font/google'
 import '@/app/global.css'
+import 'bootstrap/dist/css/bootstrap.min.css'
 
 const nunitoFont = Nunito({
     subsets: ['latin'],
