@@ -88,7 +88,7 @@ class EquipmentController extends Controller
                         'equipment_count' => $equipment->equipment_count,
                     ]),
                 ]);
-                
+
                 return response()->json([
                     'message' => 'Equipment added successfully',
                     'equipment' => $equipment,
@@ -133,6 +133,23 @@ class EquipmentController extends Controller
             if (!$updatedEquipment) {
                 return response()->json(['error' => 'Failed to update equipment'], 500);
             }
+
+            // Audit Log : update equipment
+            Activity::create([
+                'log_name' => 'equipment_update',
+                'user_name' => $user->name,
+                'user_email' => $user->email,
+                'role_id' => $user->role_id,
+                'description' => 'Equipment updated with ID: ' . $updatedEquipment->id,
+                'subject_type' => get_class($updatedEquipment),
+                'subject_id' => $updatedEquipment->id,
+                'causer_type' => get_class($user),
+                'causer_id' => $user->id,
+                'properties' => json_encode([
+                    'updated_fields' => $data
+                ])
+            ]);
+
 
             return response()->json(['equipment' => $updatedEquipment]);
         } catch (ValidationException $e) {
