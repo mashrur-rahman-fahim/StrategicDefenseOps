@@ -7,6 +7,8 @@ use App\Services\OperationService;
 use DB;
 use Exception;
 use Illuminate\Http\Request;
+use Spatie\Activitylog\Facades\Activity;
+use Illuminate\Support\Facades\Auth;
 
 class OperationController extends Controller
 {
@@ -43,6 +45,30 @@ class OperationController extends Controller
                 if (!$operation) {
                     throw new Exception('Could not create operation');
                 }
+
+                // Log activity: Operation Created!
+                Activity::causedBy(auth()->user()) 
+                    ->performedOn($operation)
+                    ->withProperties([
+                        'operation_name' => $operation->name,
+                        'status' => $operation->status,
+                    ])
+                    ->log('Operation created');
+                
+                Activity::create([
+                    'log_name' => 'operation_creation', 
+                    'user_name' => $user->name, 
+                    'user_email' => $user->email, 
+                    'role_id' => $user->role_id, 
+                    'description' => 'Operation created with name: ' . $operation->name,
+                    'subject_type' => get_class($operation),
+                    'subject_id' => $operation->id,
+                    'causer_type' => get_class($user), 
+                    'causer_id' => $user->id,
+                    'properties' => json_encode([
+                        'additional_info' => 'Created operation with budget ' . $operation->budget
+                    ])
+                ]);
 
 
 
