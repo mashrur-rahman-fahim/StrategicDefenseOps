@@ -1,9 +1,21 @@
 'use client';
 import React, { useEffect, useRef } from "react";
+import { useAuth } from "@/hooks/auth"; // Import authentication hook
+import { useRouter } from "next/navigation";
 import "./sidebar.css";
 
 const Sidebar = ({ isOpen, toggleSidebar, selectedItem, setSelectedItem }) => {
+  const { user } = useAuth({ middleware: "auth" }); // Ensure authentication
+  const router = useRouter();
   const sidebarRef = useRef();
+
+  useEffect(() => {
+    if (user === undefined) return; // Wait for authentication check
+
+    if (!user) {
+      router.push("/login"); // Redirect unauthenticated users
+    }
+  }, [user, router]);
 
   useEffect(() => {
     const handleClickOutside = (event) => {
@@ -18,6 +30,10 @@ const Sidebar = ({ isOpen, toggleSidebar, selectedItem, setSelectedItem }) => {
     };
   }, [isOpen, toggleSidebar]);
 
+  if (!user) {
+    return null; // Don't render sidebar if not authenticated
+  }
+
   return (
     <div ref={sidebarRef} className={`sidebar ${isOpen ? "open" : ""}`}>
       <button className="back-button" onClick={toggleSidebar}>←</button>
@@ -29,9 +45,7 @@ const Sidebar = ({ isOpen, toggleSidebar, selectedItem, setSelectedItem }) => {
           alt="Profile"
           className="profile-pic"
         />
-
-
-        <h2>Simon Riley</h2>
+        <h2>{user?.name || "User"}</h2> {/* Display logged-in user’s name */}
         <p className="rank">Lieutenant</p>
       </div>
 
@@ -49,7 +63,6 @@ const Sidebar = ({ isOpen, toggleSidebar, selectedItem, setSelectedItem }) => {
           </div>
         ))}
       </nav>
-
     </div>
   );
 };

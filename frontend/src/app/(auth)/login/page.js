@@ -10,7 +10,6 @@ import { useEffect, useState } from 'react'
 import { useRouter } from 'next/navigation'
 import AuthSessionStatus from '@/app/(auth)/AuthSessionStatus'
 
-
 const Login = () => {
     const router = useRouter()
 
@@ -24,32 +23,45 @@ const Login = () => {
     const [shouldRemember, setShouldRemember] = useState(false)
     const [errors, setErrors] = useState([])
     const [status, setStatus] = useState(null)
+    const [isLoading, setIsLoading] = useState(false)
 
     useEffect(() => {
         if (router.reset?.length > 0 && errors.length === 0) {
-            setStatus(atob(router.reset))
+            try {
+                setStatus(atob(router.reset))
+            } catch (error) {
+                console.error('Error decoding reset status:', error)
+            }
         } else {
             setStatus(null)
         }
-    })
+    }, [router.reset, errors])
 
     const submitForm = async event => {
         event.preventDefault()
+        setIsLoading(true)
 
-        login({
-            email,
-            password,
-            remember: shouldRemember,
-            setErrors,
-            setStatus,
-        })
+        try {
+            await login({
+                email,
+                password,
+                remember: shouldRemember,
+                setErrors,
+                setStatus,
+            })
+        } catch (error) {
+            console.error('Login error:', error)
+            setStatus('An unexpected error occurred. Please try again.')
+        }
+
+        setIsLoading(false)
     }
 
     return (
         <>
             <AuthSessionStatus className="mb-4" status={status} />
             <form onSubmit={submitForm}>
-                {/* Email Address */}
+                {/* Email Address with Autofill */}
                 <div>
                     <Label htmlFor="email">Email</Label>
 
@@ -61,9 +73,11 @@ const Login = () => {
                         onChange={event => setEmail(event.target.value)}
                         required
                         autoFocus
+                        autoComplete="email"
+                        aria-describedby="email-error"
                     />
 
-                    <InputError messages={errors.email} className="mt-2" />
+                    <InputError messages={errors.email} className="mt-2" id="email-error" />
                 </div>
 
                 {/* Password */}
@@ -78,43 +92,34 @@ const Login = () => {
                         onChange={event => setPassword(event.target.value)}
                         required
                         autoComplete="current-password"
+                        aria-describedby="password-error"
                     />
 
-                    <InputError
-                        messages={errors.password}
-                        className="mt-2"
-                    />
+                    <InputError messages={errors.password} className="mt-2" id="password-error" />
                 </div>
 
                 {/* Remember Me */}
                 <div className="block mt-4">
-                    <label
-                        htmlFor="remember_me"
-                        className="inline-flex items-center">
+                    <label htmlFor="remember_me" className="inline-flex items-center">
                         <input
                             id="remember_me"
                             type="checkbox"
                             name="remember"
                             className="rounded border-gray-300 text-indigo-600 shadow-sm focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50"
-                            onChange={event =>
-                                setShouldRemember(event.target.checked)
-                            }
+                            onChange={event => setShouldRemember(event.target.checked)}
                         />
-
-                        <span className="ml-2 text-sm text-gray-600">
-                            Remember me
-                        </span>
+                        <span className="ml-2 text-sm text-gray-600">Remember me</span>
                     </label>
                 </div>
 
                 <div className="flex items-center justify-end mt-4">
-                    <Link
-                        href="/forgot-password"
-                        className="underline text-sm text-gray-600 hover:text-gray-900">
+                    <Link href="/forgot-password" className="underline text-sm text-gray-600 hover:text-gray-900">
                         Forgot your password?
                     </Link>
 
-                    <Button className="ml-3">Login</Button>
+                    <Button className="ml-3" disabled={isLoading}>
+                        {isLoading ? 'Logging in...' : 'Login'}
+                    </Button>
                 </div>
             </form>
         </>

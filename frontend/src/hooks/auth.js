@@ -46,22 +46,37 @@ export const useAuth = ({ middleware, redirectIfAuthenticated } = {}) => {
                 setErrors(error.response.data.errors)
             })
     }
-
+    
     const login = async ({ setErrors, setStatus, ...props }) => {
-        await csrf()
-
-        setErrors([])
-        setStatus(null)
+        await csrf();
+        setErrors([]);
+        setStatus(null);
 
         axios
             .post('/login', props)
-            .then(() => mutate())
-            .catch(error => {
-                if (error.response.status !== 422) throw error
-
-                setErrors(error.response.data.errors)
+            .then(response => {
+                localStorage.setItem('api_token', response.data.token); // ✅ Store token
+                mutate().then(() => {
+                    axios.get('/api/user')
+                        .then(response => {
+                            if (response.data.email_verified_at) {
+                                router.push('/sidebar'); // ✅ Redirect after login
+                            } else {
+                                router.push('/verify-email');
+                            }
+                        })
+                        .catch(error => console.error('Error fetching user data:', error));
+                });
             })
-    }
+            .catch(error => {
+                if (error.response?.status === 422) {
+                    setErrors(error.response.data.errors);
+                } else {
+                    throw error;
+                }
+            });
+    };
+    
 
     const forgotPassword = async ({ setErrors, setStatus, email }) => {
         await csrf()
