@@ -182,6 +182,9 @@ class EquipmentController extends Controller
             if (!$user || $user->role_id !== 1) {
                 return response()->json(['error' => 'Unauthorized'], 403);
             }
+            
+            // Fetch the equipment object using the ID
+           $equipment = $this->equipmentService->getEquipmentById($equipmentId);
 
             // Delete equipment
             $deletedEquipment = $this->equipmentService->deleteEquipment($equipmentId, auth()->id());
@@ -196,12 +199,12 @@ class EquipmentController extends Controller
                 'user_email' => $user->email,
                 'role_id' => $user->role_id,
                 'description' => 'Equipment deleted with ID: ' . $equipmentId,
-                'subject_type' => get_class($equipmentId),
-                'subject_id' => $equipmentId->id,
+                'subject_type' => get_class($equipment),  // Using the actual equipment object
+                'subject_id' => $equipmentId,  // Using the ID of the equipment
                 'causer_type' => get_class($user),
                 'causer_id' => $user->id,
                 'properties' => json_encode([
-                    'equipment_name' => $equipmentId->equipment_name
+                    'equipment_name' => $equipment->equipment_name
                 ])
             ]);
 

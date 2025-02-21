@@ -109,6 +109,10 @@ class EquipmentService
         }
     }
 
+    public function getEquipmentById($equipmentId)
+    {
+        return Equipment::find($equipmentId);
+    }
     /**
      * Get all equipment.
      */
