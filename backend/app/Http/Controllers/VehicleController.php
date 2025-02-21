@@ -11,7 +11,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Validation\ValidationException;
 use Spatie\Activitylog\Facades\Activity;
-
+use Illuminate\Http\JsonResponse;
 class VehicleController extends Controller
 {
     protected VehicleService $vehicleService;
@@ -23,11 +23,11 @@ class VehicleController extends Controller
         $this->resourceServices = $resourceServices;
     }
 
-    /* 
+    /**
      * Function : addVehicle
      * Description : Add a new vehicle to the system.
      * @param Request $request - Contains vehicle data for validation and insertion.
-     * @return \Illuminate\Http\JsonResponse - Returns a response with success message and vehicle data or an error message.
+     * @return JsonResponse - Returns a response with success message and vehicle data or an error message.
      */
     public function addVehicle(Request $request)
     {
@@ -114,12 +114,12 @@ class VehicleController extends Controller
     }
 
 
-    /* 
+    /**
      * Function : updateVehicle
      * Description : Update an existing vehicle.
      * @param Request $request - Contains updated vehicle data.
      * @param int $vehicleId - The ID of the vehicle to be updated.
-     * @return \Illuminate\Http\JsonResponse - Returns updated vehicle data or an error message.
+     * @return JsonResponse - Returns updated vehicle data or an error message.
      */
     public function updateVehicle(Request $request, $vehicleId)
     {
@@ -169,11 +169,11 @@ class VehicleController extends Controller
     }
 
 
-    /* 
+    /** 
      * Function : deleteVehicle
      * Description : Delete a vehicle.
      * @param int $vehicleId - The ID of the vehicle to be deleted.
-     * @return \Illuminate\Http\JsonResponse - Returns success message or an error message.
+     * @return JsonResponse - Returns success message or an error message.
      */
     public function deleteVehicle($vehicleId)
     {
@@ -196,12 +196,13 @@ class VehicleController extends Controller
                 'user_name' => $user->name,
                 'user_email' => $user->email,
                 'role_id' => $user->role_id,
-                'description' => 'Vehicle deleted with ID: ' . $vehicleId->id,
-                'subject_type' => get_class($vehicleId),
-                'subject_id' => $vehicleId->id,
+                'description' => 'Vehicle deleted with ID: ' . $vehicleId,
+                'subject_type' => get_class(Vehicle::find($vehicleId)),  
+                'subject_id' => $vehicleId,  
                 'causer_type' => get_class($user),
                 'causer_id' => $user->id,
             ]);
+            
             
 
             return response()->json(['vehicle' => $deletedVehicle]);
@@ -212,10 +213,10 @@ class VehicleController extends Controller
     }
 
 
-    /* 
+    /**
      * Function : getAllVehicles
      * Description : Get all vehicles.
-     * @return \Illuminate\Http\JsonResponse - Returns a list of all vehicles.
+     * @return JsonResponse - Returns a list of all vehicles.
      */
     public function getAllVehicles()
     {
@@ -236,11 +237,11 @@ class VehicleController extends Controller
     }
 
     
-    /* 
+    /** 
      * Function : getVehicleByName
      * Description : Get a vehicle by name.
      * @param string $vehicleName - The name of the vehicle to fetch.
-     * @return \Illuminate\Http\JsonResponse - Returns the vehicle data or an error message if not found.
+     * @return JsonResponse - Returns the vehicle data or an error message if not found.
      */
     public function getVehicleByName($vehicleName)
     {

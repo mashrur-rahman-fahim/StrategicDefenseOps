@@ -9,6 +9,8 @@ use Exception;
 use Illuminate\Http\Request;
 use Spatie\Activitylog\Facades\Activity;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Http\JsonResponse;
+
 
 class OperationController extends Controller
 {
@@ -20,7 +22,7 @@ class OperationController extends Controller
        
     }
 
-     /* 
+   /** 
      * Function : createOperation
      * Description : Creates a new operation in the system, validates input, and logs the activity.
      * @param Request $request - The incoming HTTP request containing the operation data.
@@ -103,7 +105,7 @@ class OperationController extends Controller
 
     }
     
-    /* 
+   /** 
      * Function : updateOperation
      * Description : Updates an existing operation, validating the input and logging the update activity.
      * @param Request $request - The incoming HTTP request containing updated operation data.
@@ -150,7 +152,7 @@ class OperationController extends Controller
         return response()->json($updatedOperation, 200);
     }
 
-     /* 
+   /** 
      * Function : deleteOperation
      * Description : Deletes an operation based on the given ID and logs the deletion activity.
      * @param int $id - The ID of the operation to be deleted.
@@ -185,7 +187,7 @@ class OperationController extends Controller
         return response()->json(['message' => 'failed to delete'], 400);
     }
 
-    /* 
+    /** 
      * Function : getAllOperations
      * Description : Fetches all operations for the authenticated user.
      * @return JsonResponse - List of all operations associated with the user.
@@ -201,7 +203,7 @@ class OperationController extends Controller
         }
     }
 
-    /* 
+    /** 
      * Function : searchByName
      * Description : Searches for operations by name based on the user's role.
      * @param string $name - The name to search for in the operation records.

@@ -11,6 +11,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Validation\ValidationException;
 use Spatie\Activitylog\Facades\Activity;
+use Illuminate\Http\JsonResponse;
 
 class EquipmentController extends Controller
 {
@@ -27,7 +28,7 @@ class EquipmentController extends Controller
      * Function : addEquipment
      * Description : Adds a new equipment, validates inputs, inserts into database, and logs activity.
      * @param Request $request
-     * @return \Illuminate\Http\JsonResponse
+     * @return JsonResponse
      */
     public function addEquipment(Request $request)
     {
@@ -116,7 +117,7 @@ class EquipmentController extends Controller
      * Description : Updates an existing equipment's details and logs activity.
      * @param Request $request
      * @param int $equipmentId
-     * @return \Illuminate\Http\JsonResponse
+     * @return JsonResponse
      */
     public function updateEquipment(Request $request, $equipmentId)
     {
@@ -172,7 +173,7 @@ class EquipmentController extends Controller
      * Function : deleteEquipment
      * Description : Deletes the specified equipment and logs activity.
      * @param int $equipmentId
-     * @return \Illuminate\Http\JsonResponse
+     * @return JsonResponse
      */
     public function deleteEquipment($equipmentId)
     {
@@ -218,7 +219,7 @@ class EquipmentController extends Controller
     /**
      * Function : getAllEquipment
      * Description : Retrieves all equipment based on user authorization.
-     * @return \Illuminate\Http\JsonResponse
+     * @return JsonResponse
      */
     public function getAllEquipment()
     {
@@ -242,7 +243,7 @@ class EquipmentController extends Controller
      * Function : getEquipmentByName
      * Description : Retrieves equipment by its name based on user authorization.
      * @param string $equipmentName
-     * @return \Illuminate\Http\JsonResponse
+     * @return JsonResponse
      */
     public function getEquipmentByName($equipmentName)
     {

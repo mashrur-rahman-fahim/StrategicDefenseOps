@@ -11,6 +11,10 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Spatie\Activitylog\Facades\Activity;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Http\JsonResponse;
+use Illuminate\Validation\ValidationException;
+
+
 
 class WeaponController extends Controller
 {
@@ -23,7 +27,7 @@ class WeaponController extends Controller
         $this->resourceServices = $resourceServices;
     }
 
-    /* 
+    /** 
      * Function : createWeapon
      * Description : Creates a new weapon in the system, validates input, and logs the activity.
      * @param Request $request - The incoming HTTP request containing the weapon data.
@@ -121,7 +125,7 @@ class WeaponController extends Controller
         }
     }
 
-    /* 
+    /**  
      * Function : updateWeapon
      * Description : Updates an existing weapon, validating the input and logging the update activity.
      * @param Request $request - The incoming HTTP request containing updated weapon data.
@@ -148,6 +152,10 @@ class WeaponController extends Controller
                 return response()->json(['error' => 'Failed to update weapon'], 500);
             }
 
+            $updatedFields = [
+                'weapon_count' => $updatedWeapon->weapon_count, 
+            ];
+    
             // Audit Log : updated weapon
             Activity::create([
                 'log_name' => 'weapon_update',
@@ -160,7 +168,7 @@ class WeaponController extends Controller
                 'causer_type' => get_class($user),
                 'causer_id' => $user->id,
                 'properties' => json_encode([
-                    'updated_fields' => $validatedData
+                    'updated_fields' => $updatedFields
                 ])
             ]);
 
@@ -175,7 +183,7 @@ class WeaponController extends Controller
         }
     }
 
-    /* 
+    /** 
      * Function : deleteWeapon
      * Description : Deletes a weapon based on the given ID and logs the deletion activity.
      * @param int $id - The ID of the weapon to be deleted.
@@ -219,7 +227,7 @@ class WeaponController extends Controller
         }
     }
 
-    /* 
+    /** 
      * Function : getAllWeapons
      * Description : Fetches all weapons for the authenticated user.
      * @return JsonResponse - List of all weapons associated with the user.
@@ -242,7 +250,7 @@ class WeaponController extends Controller
         }
     }
 
-    /* 
+    /**  
      * Function : searchByName
      * Description : Searches for weapons by name based on the user's role.
      * @param string $name - The name to search for in the weapon records.
