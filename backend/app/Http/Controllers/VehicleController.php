@@ -178,7 +178,18 @@ class VehicleController extends Controller
                 return response()->json(['error' => 'Failed to delete vehicle'], 500);
             }
 
-            // Audit Log : vehicle deletion ------------------------------------------
+            // Audit Log : vehicle deletion 
+            Activity::create([
+                'log_name' => 'vehicle_deletion',
+                'user_name' => $user->name,
+                'user_email' => $user->email,
+                'role_id' => $user->role_id,
+                'description' => 'Vehicle deleted with ID: ' . $vehicleId->id,
+                'subject_type' => get_class($vehicleId),
+                'subject_id' => $vehicleId->id,
+                'causer_type' => get_class($user),
+                'causer_id' => $user->id,
+            ]);
             
 
             return response()->json(['vehicle' => $deletedVehicle]);
