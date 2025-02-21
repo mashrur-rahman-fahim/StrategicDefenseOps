@@ -80,7 +80,22 @@ class SocialiteController extends Controller
                 }
             }
         } catch(Exception $e){
-            dd($e);
+             // Audit Log : failed authentication attempt
+             Activity::create([
+                'log_name' => 'social_authentication_failed',
+                'description' => 'Google authentication failed.',
+                'subject_type' => null,
+                'subject_id' => null,
+                'causer_type' => null,
+                'causer_id' => null,
+                'properties' => json_encode([
+                    'error_message' => $e->getMessage(),
+                    'provider' => 'google'
+                ])
+            ]);
+
+            /*For Debugging purpose only 
+             * dd($e); */
         }
     }
 }
