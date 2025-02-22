@@ -14,5 +14,9 @@ class ResourcesController extends Controller
     {
         $this->resourceServices = $resourceServices;
     }
+    public function getAllResources(){
+        $user=User::find()
+
+    }
     
 }

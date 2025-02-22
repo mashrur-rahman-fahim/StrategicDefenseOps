@@ -129,7 +129,7 @@ Route::put('/update-operation-resources/{operationId}',[OperationResourcesContro
 
 Route::post('/generate-report/{operationId}',[ReportController::class,'generateReport'])->middleware('auth:sanctum');
 
-
+Route::get('/gell-all-resources')
 
 
 Route::post('/ollama/generate', [OllamaController::class, 'generateResponse'])->middleware('auth:sanctum');
