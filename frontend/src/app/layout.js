@@ -18,4 +18,5 @@ export const metadata = {
     title: 'Strategic Defense Operations',
 }
 
+
 export default RootLayout

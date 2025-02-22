@@ -1,23 +1,54 @@
-'use client'
-
+"use client";
+import { useState } from 'react';
+import Navbar from './navbar/page';
+import Sidebar from './sidebar/page';
+import Dashboard from './dashboard/page';
 import { useAuth } from '@/hooks/auth'
-import Navigation from '@/app/(app)/Navigation'
-import Loading from '@/app/(app)/Loading'
+import Loading from './Loading';
 
-const AppLayout = ({ children }) => {
-    const { user } = useAuth({ middleware: 'auth' })
 
-    if (!user) {
-        return <Loading />
+export default function RootLayout({ children }) {
+   const{user}=useAuth({middleware:'auth'})
+  const [isSidebarOpen, setIsSidebarOpen] = useState(false);
+  const [selectedItem, setSelectedItem] = useState('');
+  const {  logout } = useAuth(); 
+    if(!user){
+        return <Loading/>
     }
+  const toggleSidebar = () => {
+    setIsSidebarOpen(!isSidebarOpen);
+  };
 
-    return (
-        <div className="min-h-screen bg-gray-100">
-            <Navigation user={user} />
+  return (
+    <html lang="en">
+      <body>
+        {/* Navbar */}
+        <Navbar toggleSidebar={toggleSidebar} user={user} logout={logout} />
+        
 
-            <main>{children}</main>
+        {/* Sidebar  */}
+        <Sidebar
+          isOpen={isSidebarOpen}
+          toggleSidebar={toggleSidebar}
+          selectedItem={selectedItem}
+          setSelectedItem={setSelectedItem}  />
+        
+
+        
+        <div className="content">
+         
+          {selectedItem === 'dashboard' && <Dashboard />}
+          
+          {selectedItem === 'resourceUsage' && (
+            <div>
+              <h1>Resource Usage</h1>
+              <p>Displaying resource usage information.</p>
+            </div>
+          )}
+          
+          {children}
         </div>
-    )
+      </body>
+    </html>
+  );
 }
-
-export default AppLayout

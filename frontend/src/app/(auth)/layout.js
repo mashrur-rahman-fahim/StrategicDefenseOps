@@ -2,6 +2,7 @@ import Link from 'next/link'
 import AuthCard from '@/app/(auth)/AuthCard'
 import ApplicationLogo from '@/components/ApplicationLogo'
 
+
 export const metadata = {
     title: 'Strategic Defense Operations',
 }
@@ -22,5 +23,7 @@ const Layout = ({ children }) => {
         </div>
     )
 }
+
+
 
 export default Layout
