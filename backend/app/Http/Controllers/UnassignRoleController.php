@@ -16,7 +16,7 @@ class UnassignRoleController extends Controller
     {
         $this->unassignRoleService = $unassignRoleService;
     }
-    
+
     /* 
      * Function : managerUnassign
      * Description : Unassigns a manager role from a user by the parent (manager).
@@ -31,7 +31,7 @@ class UnassignRoleController extends Controller
 
         $parentId = auth()->id();
         $parent = User::find($parentId);
-        
+
         if (!$parent || $parent->role_id !== 1) {
             return response()->json(['message' => 'Unauthorized'], 403);
         }
@@ -39,10 +39,10 @@ class UnassignRoleController extends Controller
         $manager = $this->unassignRoleService->unassignRole($request->managerEmail, 2, $parentId);
 
         return $manager ? response()->json([$manager]) && $this->logActivity($parentId, $manager, 'Manager') //Audit Log
-                        : response()->json(['message' => 'Manager not found or not assigned'], 404);
+            : response()->json(['message' => 'Manager not found or not assigned'], 404);
     }
-    
-     /* 
+
+    /* 
      * Function : operatorUnassign
      * Description : Unassigns an operator role from a user by either a parent or a manager.
      * @param Request $request - The request object containing the operator's email.
@@ -56,7 +56,7 @@ class UnassignRoleController extends Controller
 
         $parentId = auth()->id();
         $parent = User::find($parentId);
-        
+
         if (!$parent) {
             return response()->json(['message' => 'Unauthorized'], 403);
         }
@@ -64,7 +64,7 @@ class UnassignRoleController extends Controller
         if ($parent->role_id == 1) {
             $request->validate(['managerEmail' => 'required|email|exists:users,email']);
             $manager = User::where('email', $request->managerEmail)->where('role_id', 2)->where('parent_id', $parentId)->first();
-           
+
             if ($manager) {
                 $operator = $this->unassignRoleService->unassignRole($request->operatorEmail, 3, $manager->id);
                 return response()->json([$operator], 200);
@@ -74,9 +74,9 @@ class UnassignRoleController extends Controller
         }
 
         return isset($operator) ? response()->json([$operator]) &&  $this->logUnassignActivity($parentId, $operator, 'Operator') // Audit Log
-                                : response()->json(['message' => 'Operator not found or not assigned'], 404);
+            : response()->json(['message' => 'Operator not found or not assigned'], 404);
     }
-    
+
     /* 
      * Function : viewerUnassign
      * Description : Unassigns a viewer role from a user by either a parent or a manager.
@@ -91,7 +91,7 @@ class UnassignRoleController extends Controller
 
         $parentId = auth()->id();
         $parent = User::find($parentId);
-        
+
         if (!$parent) {
             return response()->json(['message' => 'Unauthorized'], 403);
         }
@@ -107,10 +107,10 @@ class UnassignRoleController extends Controller
         }
 
         return isset($viewer) ? response()->json([$viewer]) && $this->logUnassignActivity($parentId, $viewer, 'Viewer') // Audit Log
-                              : response()->json(['message' => 'Viewer not found or not assigned'], 404);
+            : response()->json(['message' => 'Viewer not found or not assigned'], 404);
     }
-    
-     /* 
+
+    /* 
      * Function : logUnassignActivity
      * Description : Logs the activity of unassigning a role from a user.
      * @param int $parentId - The ID of the parent user performing the unassignment.
@@ -121,8 +121,8 @@ class UnassignRoleController extends Controller
     private function logUnassignActivity($parentId, $unassignedUser, $role)
     {
         if ($unassignedUser) {
-            Activity::causedBy(auth()->user()) 
-                ->performedOn($unassignedUser) 
+            Activity::causedBy(auth()->user())
+                ->performedOn($unassignedUser)
                 ->withProperties([
                     'parent_id' => $parentId,
                     'user_email' => $unassignedUser->email,
