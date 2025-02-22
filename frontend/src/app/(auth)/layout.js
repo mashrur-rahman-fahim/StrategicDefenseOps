@@ -1,7 +1,5 @@
 import Link from 'next/link'
-import AuthCard from '@/app/(auth)/AuthCard'
 import ApplicationLogo from '@/components/ApplicationLogo'
-
 
 export const metadata = {
     title: 'Strategic Defense Operations',
@@ -9,21 +7,14 @@ export const metadata = {
 
 const Layout = ({ children }) => {
     return (
-        <div>
-            <div className="text-gray-900 antialiased">
-                <AuthCard
-                    logo={
-                        <Link href="/">
-                            <ApplicationLogo className="w-20 h-20 fill-current text-gray-500" />
-                        </Link>
-                    }>
+        <div className="min-h-screen w-full flex items-center justify-center bg-gray-900">
+            <div className="w-full h-full flex items-center justify-center">
+                <div className="w-full h-full flex flex-col md:flex-row">
                     {children}
-                </AuthCard>
+                </div>
             </div>
         </div>
     )
 }
-
-
 
 export default Layout
