@@ -53,18 +53,29 @@ class RegisteredUserController extends Controller
                 ->performedOn($user)
                 ->causedBy(Auth::user())
                 ->tap(function ($activity) use ($user) {
-                    $activity->user_name = $user->name;
-                    $activity->user_email = $user->email;
+                    $activity->log_name = "Registered";
+                    $activity->user_id = $user->id; 
                     $activity->role_id = $user->role_id;
-                    $activity->log_name = "Registered"; 
+                    $activity->description = "User registered";
+                    $activity->subject_id = $user->id;
+                    $activity->subject_type = 'App\Models\User';
+                    $activity->causer_id = Auth::id();
+                    $activity->causer_type = 'App\Models\User';
+                    $activity->event = "registered";
+                    $activity->batch_uuid = null; 
+                    $activity->user_name = $user->name; 
+                    $activity->user_email = $user->email; 
                 })
                 ->withProperties([
                     'user_id' => $user->id,
                     'name' => $user->name,
                     'email' => $user->email,
                     'role_id' => $user->role_id,
+                    'user_name' => $user->name, 
+                    'user_email' => $user->email, 
                 ])
                 ->log('User registered');
+
 
 
 
@@ -98,4 +109,3 @@ class RegisteredUserController extends Controller
         }
     }
 }
-
