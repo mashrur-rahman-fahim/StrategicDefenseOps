@@ -81,21 +81,33 @@ class WeaponController extends Controller
                 DB::commit();
 
                 // Audit Log : created weapon
-                Activity::create([
-                    'log_name' => 'weapon_creation',
-                    'user_id' => $user->id, 
-                    'user_name' => $user->name,
-                    'user_email' => $user->email,
-                    'role_id' => $user->role_id,
-                    'description' => 'Weapon created with name: ' . $weapon->name,
-                    'subject_type' => get_class($weapon),
-                    'subject_id' => $weapon->id,
-                    'causer_type' => get_class($user),
-                    'causer_id' => $user->id,
-                    'properties' => json_encode([
+                activity()
+                    ->performedOn($weapon)
+                    ->causedBy($user)
+                    ->tap(function ($activity) use ($user, $weapon) {
+                        $activity->log_name = "weapon_creation";
+                        $activity->user_id = $user->id;
+                        $activity->user_name = $user->name;
+                        $activity->user_email = $user->email;
+                        $activity->role_id = $user->role_id;
+                        $activity->description = "Weapon created with name: " . $weapon->name;
+                        $activity->subject_id = $weapon->id;
+                        $activity->subject_type = get_class($weapon);
+                        $activity->causer_id = $user->id;
+                        $activity->causer_type = get_class($user);
+                    })
+                    ->withProperties([
+                        'user_id' => $user->id,
+                        'user_name' => $user->name,
+                        'user_email' => $user->email,
+                        'role_id' => $user->role_id,
+                        'weapon_name' => $weapon->name,
+                        'weapon_id' => $weapon->id,
+                        'weapon_price' => $weapon->price,
                         'additional_info' => 'Created weapon with price ' . $weapon->price
                     ])
-                ]);
+                    ->log('Weapon Created');
+
 
                 return response()->json([
                     'message' => 'Weapon added successfully',
@@ -144,24 +156,34 @@ class WeaponController extends Controller
             }
 
             // Audit Log : updated weapon
-            Activity::create([
-                'log_name' => 'weapon_update',
-                'user_id' => $user->id, 
-                'user_name' => $user->name,
-                'user_email' => $user->email,
-                'role_id' => $user->role_id,
-                'description' => 'Weapon updated with name: ' . $updatedWeapon->name,
-                'subject_type' => get_class($updatedWeapon),
-                'subject_id' => $updatedWeapon->id,
-                'causer_type' => get_class($user),
-                'causer_id' => $user->id,
-                'properties' => json_encode([
+            activity()
+                ->performedOn($updatedWeapon)
+                ->causedBy($user)
+                ->tap(function ($activity) use ($user, $updatedWeapon) {
+                    $activity->log_name = "weapon_update";
+                    $activity->user_id = $user->id;
+                    $activity->user_name = $user->name;
+                    $activity->user_email = $user->email;
+                    $activity->role_id = $user->role_id;
+                    $activity->description = "Weapon updated with name: " . $updatedWeapon->name;
+                    $activity->subject_id = $updatedWeapon->id;
+                    $activity->subject_type = get_class($updatedWeapon);
+                    $activity->causer_id = $user->id;
+                    $activity->causer_type = get_class($user);
+                })
+                ->withProperties([
+                    'user_id' => $user->id,
+                    'user_name' => $user->name,
+                    'user_email' => $user->email,
+                    'role_id' => $user->role_id,
+                    'weapon_id' => $updatedWeapon->id,
+                    'weapon_name' => $updatedWeapon->name,
                     'updated_fields' => $data
                 ])
-            ]);
+                ->log('Weapon Updated');
+
 
             return response()->json(['weapon' => $updatedWeapon]);
-
         } catch (ValidationException $e) {
             // Handle validation errors
             return response()->json(['error' => $e->errors()], 422);
@@ -194,21 +216,30 @@ class WeaponController extends Controller
             }
 
             // Audit Log : deleted weapon
-            Activity::create([
-                'log_name' => 'weapon_deletion',
-                'user_id' => $user->id, 
-                'user_name' => $user->name,
-                'user_email' => $user->email,
-                'role_id' => $user->role_id,
-                'description' => 'Weapon deleted with ID: ' . $weaponId,
-                'subject_type' => 'App\Models\Weapon',
-                'subject_id' => $weaponId,
-                'causer_type' => get_class($user),
-                'causer_id' => $user->id,
-                'properties' => json_encode([
+            activity()
+                ->performedOn(new Weapon()) 
+                ->causedBy($user)
+                ->tap(function ($activity) use ($user, $weaponId) {
+                    $activity->log_name = "weapon_deletion";
+                    $activity->user_id = $user->id;
+                    $activity->user_name = $user->name;
+                    $activity->user_email = $user->email;
+                    $activity->role_id = $user->role_id;
+                    $activity->description = "Weapon deleted with ID: " . $weaponId;
+                    $activity->subject_id = $weaponId;
+                    $activity->subject_type = 'App\Models\Weapon';
+                    $activity->causer_id = $user->id;
+                    $activity->causer_type = get_class($user);
+                })
+                ->withProperties([
+                    'user_id' => $user->id,
+                    'user_name' => $user->name,
+                    'user_email' => $user->email,
+                    'role_id' => $user->role_id,
                     'deleted_weapon_id' => $weaponId
                 ])
-            ]);
+                ->log('Weapon Deleted');
+
 
             return response()->json(['weapon' => $deletedWeapon]);
         } catch (Exception $e) {
