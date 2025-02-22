@@ -17,6 +17,8 @@ use App\Http\Controllers\Auth\VerifyEmailController;
 use App\Http\Controllers\VehicleController;
 use App\Http\Controllers\PersonnelController;
 use App\Http\Controllers\EquipmentController;
+use App\Http\Controllers\AuditLogController;
+
 
 
 
@@ -100,4 +102,10 @@ Route::middleware('auth:sanctum')->controller(PersonnelController::class)->group
     Route::delete('/delete-personnel/{personnelId}', 'deletePersonnel');
     Route::get('/get-all-personnel', 'getAllPersonnel');
     Route::get('/search-personnel/{personnelName}', 'getPersonnelByName');
+});
+
+
+Route::middleware(['auth'])->group(function () {
+    Route::get('/audit-logs/{user}', [AuditLogController::class, 'index'])
+        ->middleware('audit.log.access');
 });
