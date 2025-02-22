@@ -19,24 +19,40 @@ class VerifyEmailController extends Controller
         if ($request->user()->hasVerifiedEmail()) {
 
             // Audit Log : when the user tries to verify an already verified email
-            Activity::create([
-                'log_name' => 'email_verification',
-                'user_id' => $request->user()->id, 
-                'user_name' => $request->user()->name,
-                'user_email' => $request->user()->email,
-                'description' => 'Tried to verify email, but email is already verified.',
-                'subject_type' => 'App\Models\User',
-                'subject_id' => $request->user()->id,
-                'causer_type' => 'App\Models\User',
-                'causer_id' => $request->user()->id,
-                'properties' => json_encode([
+            activity()
+                ->causedBy($request->user())
+                ->performedOn($request->user())
+                ->tap(function ($activity) use ($request) {
+                    $activity->log_name = 'email_verification';
+                    $activity->user_id = $request->user()->id;
+                    $activity->user_name = $request->user()->name;
+                    $activity->user_email = $request->user()->email;
+                    $activity->description = 'Tried to verify email, but email is already verified.';
+                    $activity->subject_type = 'App\Models\User';
+                    $activity->subject_id = $request->user()->id;
+                    $activity->causer_type = 'App\Models\User';
+                    $activity->causer_id = $request->user()->id;
+                    $activity->properties = json_encode([
+                        'status' => 'already_verified',
+                        'timestamp' => now()->toDateTimeString(),
+                    ]);
+                    $activity->created_at = now();
+                    $activity->updated_at = now();
+                })
+                ->withProperties([
+                    'assigned_user_name' => $request->user()->name ?? 'N/A',
+                    'assigned_user_email' => $request->user()->email ?? 'N/A',
+                    'assigned_role' => null,
+                    'parent_id' => null,
                     'status' => 'already_verified',
+                    'error_message' => null,
                     'timestamp' => now()->toDateTimeString(),
                 ])
-            ]);
+                ->log("Tried to verify email, but email is already verified for {$request->user()->email}");
+
 
             return redirect()->intended(
-                config('app.frontend_url').RouteServiceProvider::HOME.'?verified=1'
+                config('app.frontend_url') . RouteServiceProvider::HOME . '?verified=1'
             );
         }
 
@@ -44,25 +60,40 @@ class VerifyEmailController extends Controller
             event(new Verified($request->user()));
 
             // Audit Log : when the email is successfully verified
-            Activity::create([
-                'log_name' => 'email_verification',
-                'user_id' => $request->user()->id, 
-                'user_name' => $request->user()->name,
-                'user_email' => $request->user()->email,
-                'description' => 'Email successfully verified.',
-                'subject_type' => 'App\Models\User',
-                'subject_id' => $request->user()->id,
-                'causer_type' => 'App\Models\User',
-                'causer_id' => $request->user()->id,
-                'properties' => json_encode([
+            activity()
+                ->causedBy($request->user())
+                ->performedOn($request->user())
+                ->tap(function ($activity) use ($request) {
+                    $activity->log_name = 'email_verification';
+                    $activity->user_id = $request->user()->id;
+                    $activity->user_name = $request->user()->name;
+                    $activity->user_email = $request->user()->email;
+                    $activity->description = 'Email successfully verified.';
+                    $activity->subject_type = 'App\Models\User';
+                    $activity->subject_id = $request->user()->id;
+                    $activity->causer_type = 'App\Models\User';
+                    $activity->causer_id = $request->user()->id;
+                    $activity->properties = json_encode([
+                        'status' => 'verified',
+                        'timestamp' => now()->toDateTimeString(),
+                    ]);
+                    $activity->created_at = now();
+                    $activity->updated_at = now();
+                })
+                ->withProperties([
+                    'assigned_user_name' => $request->user()->name ?? 'N/A',
+                    'assigned_user_email' => $request->user()->email ?? 'N/A',
+                    'assigned_role' => null,  
+                    'parent_id' => null,  
                     'status' => 'verified',
+                    'error_message' => null,
                     'timestamp' => now()->toDateTimeString(),
                 ])
-            ]);
+                ->log("Email successfully verified for {$request->user()->email}");
         }
 
         return redirect()->intended(
-            config('app.frontend_url').RouteServiceProvider::HOME.'?verified=1'
+            config('app.frontend_url') . RouteServiceProvider::HOME . '?verified=1'
         );
     }
 }
