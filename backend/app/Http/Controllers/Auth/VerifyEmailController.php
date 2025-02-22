@@ -21,6 +21,7 @@ class VerifyEmailController extends Controller
             // Audit Log : when the user tries to verify an already verified email
             Activity::create([
                 'log_name' => 'email_verification',
+                'user_id' => $request->user()->id, 
                 'user_name' => $request->user()->name,
                 'user_email' => $request->user()->email,
                 'description' => 'Tried to verify email, but email is already verified.',
@@ -45,6 +46,7 @@ class VerifyEmailController extends Controller
             // Audit Log : when the email is successfully verified
             Activity::create([
                 'log_name' => 'email_verification',
+                'user_id' => $request->user()->id, 
                 'user_name' => $request->user()->name,
                 'user_email' => $request->user()->email,
                 'description' => 'Email successfully verified.',
