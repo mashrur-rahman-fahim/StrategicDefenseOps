@@ -10,6 +10,8 @@ use Exception;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Validation\ValidationException;
+use Spatie\Activitylog\Facades\Activity;
+use Illuminate\Http\JsonResponse;
 
 class PersonnelController extends Controller
 {
@@ -22,8 +24,12 @@ class PersonnelController extends Controller
         $this->resourceServices = $resourceServices;
     }
 
+
     /**
-     * Add a new personnel.
+     * Function : addPersonnel
+     * Description : Add a new personnel along with a linked resource.
+     * @param Request $request - The incoming request containing personnel data.
+     * @return JsonResponse - The response containing the added personnel and resource or an error message.
      */
     public function addPersonnel(Request $request)
     {
@@ -71,6 +77,37 @@ class PersonnelController extends Controller
 
                 // Commit transaction
                 DB::commit();
+
+                // Audit Log: Personnel added
+                activity()
+                    ->causedBy($user)
+                    ->performedOn($personnel)
+                    ->tap(function ($activity) use ($user, $personnel) {
+                        $activity->log_name = 'personnel_created';
+                        $activity->user_id = $user->id;
+                        $activity->user_name = $user->name;
+                        $activity->user_email = $user->email;
+                        $activity->role_id = $user->role_id;
+                        $activity->description = 'Personnel added with name: ' . $personnel->personnel_name;
+                        $activity->subject_type = get_class($personnel);
+                        $activity->subject_id = $personnel->id;
+                        $activity->causer_type = get_class($user);
+                        $activity->causer_id = $user->id;
+                        $activity->event = 'created';
+                        $activity->batch_uuid = \Illuminate\Support\Str::uuid()->toString();
+                        $activity->created_at = now();
+                        $activity->updated_at = now();
+                    })
+                    ->withProperties([
+                        'personnel_name' => $personnel->personnel_name,
+                        'personnel_count' => $personnel->personnel_count,
+                        'timestamp' => now()->toDateTimeString(),
+                    ])
+                    ->log('Personnel added: ' . $personnel->personnel_name);
+
+
+
+
                 return response()->json([
                     'message' => 'Personnel added successfully',
                     'personnel' => $personnel,
@@ -90,8 +127,13 @@ class PersonnelController extends Controller
         }
     }
 
+
     /**
-     * Update an existing personnel.
+     * Function : updatePersonnel
+     * Description : Update an existing personnel's data.
+     * @param Request $request - The incoming request containing updated personnel data.
+     * @param int $personnelId - The ID of the personnel to be updated.
+     * @return JsonResponse - The response containing the updated personnel data or an error message.
      */
     public function updatePersonnel(Request $request, $personnelId)
     {
@@ -115,6 +157,35 @@ class PersonnelController extends Controller
                 return response()->json(['error' => 'Failed to update personnel'], 500);
             }
 
+            // Audit Log: Personnel updated
+            activity()
+                ->causedBy($user)
+                ->performedOn($updatedPersonnel)
+                ->tap(function ($activity) use ($user, $updatedPersonnel, $data) {
+                    $activity->log_name = 'personnel_update';
+                    $activity->user_id = $user->id;
+                    $activity->user_name = $user->name;
+                    $activity->user_email = $user->email;
+                    $activity->role_id = $user->role_id;
+                    $activity->description = 'Personnel updated with name: ' . $updatedPersonnel->personnel_name;
+                    $activity->subject_type = get_class($updatedPersonnel);
+                    $activity->subject_id = $updatedPersonnel->id;
+                    $activity->causer_type = get_class($user);
+                    $activity->causer_id = $user->id;
+                    $activity->event = 'updated';
+                    $activity->batch_uuid = \Illuminate\Support\Str::uuid()->toString();
+                    $activity->created_at = now();
+                    $activity->updated_at = now();
+                })
+                ->withProperties([
+                    'updated_fields' => $data,
+                    'timestamp' => now()->toDateTimeString(),
+                ])
+                ->log('Personnel updated: ' . $updatedPersonnel->personnel_name);
+
+
+
+
             return response()->json(['personnel' => $updatedPersonnel]);
         } catch (ValidationException $e) {
             // Handle validation errors
@@ -125,8 +196,12 @@ class PersonnelController extends Controller
         }
     }
 
+
     /**
-     * Delete a personnel.
+     * Function : deletePersonnel
+     * Description : Delete a personnel from the database.
+     * @param int $personnelId - The ID of the personnel to be deleted.
+     * @return JsonResponse - The response containing the deleted personnel or an error message.
      */
     public function deletePersonnel($personnelId)
     {
@@ -137,11 +212,46 @@ class PersonnelController extends Controller
                 return response()->json(['error' => 'Unauthorized'], 403);
             }
 
+            // Find the personnel to delete
+            $personnel = $this->personnelService->findPersonnelById($personnelId);
+
+            if (!$personnel) {
+                return response()->json(['error' => 'Personnel not found'], 404);
+            }
+
             // Delete personnel
             $deletedPersonnel = $this->personnelService->deletePersonnel($personnelId, auth()->id());
             if (!$deletedPersonnel) {
                 return response()->json(['error' => 'Failed to delete personnel'], 500);
             }
+
+            // Audit Log : Personnel deleted
+            activity()
+                ->causedBy($user)
+                ->performedOn($personnel)
+                ->tap(function ($activity) use ($user, $personnel) {
+                    $activity->log_name = 'personnel_deletion';
+                    $activity->user_id = $user->id;
+                    $activity->user_name = $user->name;
+                    $activity->user_email = $user->email;
+                    $activity->role_id = $user->role_id;
+                    $activity->description = 'Personnel deleted with name: ' . $personnel->personnel_name;
+                    $activity->subject_type = get_class($personnel);
+                    $activity->subject_id = $personnel->id;
+                    $activity->causer_type = get_class($user);
+                    $activity->causer_id = $user->id;
+                    $activity->event = 'deleted';
+                    $activity->batch_uuid = \Illuminate\Support\Str::uuid()->toString();
+                    $activity->created_at = now();
+                    $activity->updated_at = now();
+                })
+                ->withProperties([
+                    'deleted_personnel' => $personnel->personnel_name,
+                    'timestamp' => now()->toDateTimeString(),
+                ])
+                ->log('Personnel deleted: ' . $personnel->personnel_name);
+
+
 
             return response()->json(['personnel' => $deletedPersonnel]);
         } catch (Exception $e) {
@@ -150,8 +260,11 @@ class PersonnelController extends Controller
         }
     }
 
+
     /**
-     * Get all personnel.
+     * Function : getAllPersonnel
+     * Description : Retrieve all personnel from the database.
+     * @return JsonResponse - The response containing a list of all personnel or an error message.
      */
     public function getAllPersonnel()
     {
@@ -171,8 +284,12 @@ class PersonnelController extends Controller
         }
     }
 
+
     /**
-     * Get a personnel by name.
+     * Function : getPersonnelByName
+     * Description : Retrieve personnel by their name.
+     * @param string $personnelName - The name of the personnel to search for.
+     * @return JsonResponse - The response containing the personnel data or an error message.
      */
     public function getPersonnelByName($personnelName)
     {

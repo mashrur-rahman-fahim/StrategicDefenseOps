@@ -4,6 +4,9 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use App\Models\Resources;
+
+
 
 class Equipment extends Model
 {
@@ -54,6 +57,6 @@ class Equipment extends Model
      */
     public function resource()
     {
-        return $this->hasOne(Resource::class, 'equipment_id');
+        return $this->hasOne(Resources::class, 'equipment_id');
     }
 }

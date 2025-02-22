@@ -4,7 +4,7 @@ namespace App\Services;
 
 use App\Models\User;
 use App\Models\Personnel;
-use DB;
+use Illuminate\Support\Facades\DB;
 use Exception;
 
 class PersonnelService
@@ -107,6 +107,12 @@ class PersonnelService
             error_log("Error updating personnel: " . $e->getMessage());
             return false;
         }
+    }
+
+    public function findPersonnelById($id)
+    {
+        // Find the personnel by ID, or return null if not found
+        return Personnel::find($id);
     }
 
     /**

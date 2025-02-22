@@ -46,7 +46,7 @@ CREATE TABLE `personal_access_tokens` (
     `updated_at` TIMESTAMP NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
     UNIQUE KEY `personal_access_tokens_token_unique` (`token`),
     KEY `personal_access_tokens_tokenable_type_tokenable_id_index` (`tokenable_type`, `tokenable_id`)
-) 
+);
 CREATE TABLE operations (
     id INT unsigned AUTO_INCREMENT PRIMARY KEY,
     name VARCHAR(200) NOT NULL,
@@ -73,8 +73,8 @@ create table weapon(
     weapon_name varchar(200) NOT NULL,
     weapon_description TEXT,
     weapon_count INT NOT NULL,
-    weapon_category varchar(200),--gun granade explosive
-    weapon_type varchar(200), --rifle pistol
+    weapon_category varchar(200), -- gun granade explosive
+    weapon_type varchar(200),  -- rifle pistol
     weapon_model varchar(200),
     weapon_manufacturer varchar(200),
     weapon_serial_number varchar(200) NOT NULL UNIQUE,
@@ -90,8 +90,8 @@ create table vehicle(
     vehicle_name varchar(200) NOT NULL,
     vehicle_description TEXT,
     vehicle_count INT NOT NULL,
-    vehicle_type varchar(200),  --car
-    vehicle_category varchar(200) ,--land,air
+    vehicle_type varchar(200),   -- car
+    vehicle_category varchar(200) , -- land,air
     vehicle_model varchar(200),
     vehicle_manufacturer varchar(200),
     vehicle_serial_number varchar(200) NOT NULL UNIQUE,
@@ -99,36 +99,36 @@ create table vehicle(
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
     FOREIGN KEY (authorized_by) REFERENCES users(id) on DELETE CASCADE
-)
+);
 create table personnel(
     id INT unsigned AUTO_INCREMENT PRIMARY KEY,
     authorized_by INT unsigned not null,
     personnel_name varchar(200) NOT NULL,
     personnel_description TEXT,
     personnel_count INT NOT NULL,
-    personnel_category varchar(200) NOT NULL,--medical, eng
-    personnel_type varchar(200),--doctor,nurse
-    personnel_rank varchar(200),--captain, lieutenant
-    skills varchar(200),--first aid,heavy machinery
+    personnel_category varchar(200) NOT NULL, -- medical, eng
+    personnel_type varchar(200), -- doctor,nurse
+    personnel_rank varchar(200), -- captain, lieutenant
+    skills varchar(200), -- first aid,heavy machinery
     personnel_serial_number varchar(200) not null UNIQUE,
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
     FOREIGN KEY (authorized_by) REFERENCES users(id) on DELETE CASCADE
-)
+);
 create table equipment(
     id INT unsigned AUTO_INCREMENT PRIMARY KEY,
     authorized_by INT unsigned not null,
     equipment_name varchar(200) NOT NULL,
     equipment_description TEXT,
     equipment_count INT NOT NULL,
-   equipment_category varchar(200),--communication
-    equipment_type varchar(200),--radio, television
+   equipment_category varchar(200), -- communication
+    equipment_type varchar(200), -- radio, television
     equipment_manufacturer varchar(200),
     equipment_serial_number varchar(200) not null unique,
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
     FOREIGN KEY (authorized_by) REFERENCES users(id) on DELETE CASCADE
- )
+ );
 
 
 create table resource_category(
@@ -164,18 +164,28 @@ create table operation_resources (
     FOREIGN KEY (resource_id) references resources(id) on DELETE CASCADE,
     FOREIGN KEY (operation_id) REFERENCES operations(id) on DELETE CASCADE
 );
-CREATE TABLE reports (
-    id INT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
-    report_name VARCHAR(200) NOT NULL,
-    report_type ENUM('post_operation') NOT NULL,
-    operation_id INT unsigned not null,  
-    operation_status ENUM('success','failed') NOT NULL , 
-    generated_by INT unsigned not null,
-    report_summary TEXT not null,    
-    report_details TEXT,            
-    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
-    FOREIGN KEY (operation_id) REFERENCES operations(id) ON DELETE CASCADE,
-    FOREIGN KEY (generated_by) REFERENCES users(id) ON DELETE CASCADE    
- );
+
+CREATE TABLE activity_log (
+    id int UNSIGNED AUTO_INCREMENT PRIMARY KEY,
+    log_name VARCHAR(255) NULL,
+    user_id INT unsigned NOT NULL,
+    user_name VARCHAR(255) NULL,
+    user_email VARCHAR(255) NULL,
+    role_id int UNSIGNED NULL,
+    description TEXT NOT NULL,
+    subject_id int UNSIGNED NULL,
+    subject_type VARCHAR(255) NULL,
+    causer_id int UNSIGNED NULL,
+    causer_type VARCHAR(255) NULL,
+    properties JSON NULL,
+    event VARCHAR(255) NULL, 
+    batch_uuid CHAR(36) NULL, 
+    created_at TIMESTAMP NULL,
+    updated_at TIMESTAMP NULL,
+    INDEX log_name_index (log_name),
+    FOREIGN KEY (user_id) references users(id) on delete CASCADE,
+    FOREIGN KEY (role_id) references roles(id) on delete set NULL
+   
+);
+
 

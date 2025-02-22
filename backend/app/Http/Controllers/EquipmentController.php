@@ -10,6 +10,8 @@ use Exception;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Validation\ValidationException;
+use Spatie\Activitylog\Facades\Activity;
+use Illuminate\Http\JsonResponse;
 
 class EquipmentController extends Controller
 {
@@ -23,7 +25,10 @@ class EquipmentController extends Controller
     }
 
     /**
-     * Add a new equipment.
+     * Function : addEquipment
+     * Description : Adds a new equipment, validates inputs, inserts into database, and logs activity.
+     * @param Request $request
+     * @return JsonResponse
      */
     public function addEquipment(Request $request)
     {
@@ -70,6 +75,35 @@ class EquipmentController extends Controller
 
                 // Commit transaction
                 DB::commit();
+
+                // Audit Log : create equipment
+                activity()
+                    ->causedBy($user)
+                    ->performedOn($equipment)
+                    ->tap(function ($activity) use ($user, $equipment) {
+                        $activity->log_name = 'equipment_creation';
+                        $activity->user_id = $user->id;
+                        $activity->user_name = $user->name;
+                        $activity->user_email = $user->email;
+                        $activity->role_id = $user->role_id;
+                        $activity->description = 'Equipment created with name: ' . $equipment->equipment_name;
+                        $activity->subject_type = get_class($equipment);
+                        $activity->subject_id = $equipment->id;
+                        $activity->causer_type = get_class($user);
+                        $activity->causer_id = $user->id;
+                        $activity->batch_uuid = \Illuminate\Support\Str::uuid()->toString(); 
+                        $activity->created_at = now();
+                        $activity->updated_at = now();
+                    })
+                    ->withProperties([
+                        'equipment_name' => $equipment->equipment_name,
+                        'equipment_count' => $equipment->equipment_count,
+                        'timestamp' => now()->toDateTimeString(),
+                    ])
+                    ->log('Equipment created with name: ' . $equipment->equipment_name);
+
+
+
                 return response()->json([
                     'message' => 'Equipment added successfully',
                     'equipment' => $equipment,
@@ -90,7 +124,11 @@ class EquipmentController extends Controller
     }
 
     /**
-     * Update an existing equipment.
+     * Function : updateEquipment
+     * Description : Updates an existing equipment's details and logs activity.
+     * @param Request $request
+     * @param int $equipmentId
+     * @return JsonResponse
      */
     public function updateEquipment(Request $request, $equipmentId)
     {
@@ -109,11 +147,46 @@ class EquipmentController extends Controller
                 return response()->json(['error' => 'Unauthorized'], 403);
             }
 
+            $equipment = Equipment::find($equipmentId);
             // Update equipment
             $updatedEquipment = $this->equipmentService->updateEquipment($data, $equipmentId, auth()->id());
             if (!$updatedEquipment) {
                 return response()->json(['error' => 'Failed to update equipment'], 500);
             }
+
+            $updatedFields = array_filter($data, function ($value, $key) use ($equipment) {
+                return $equipment->{$key} != $value;
+            }, ARRAY_FILTER_USE_BOTH);
+
+            // Audit Log : update equipment
+            activity()
+                ->causedBy($user)
+                ->performedOn($equipment)
+                ->tap(function ($activity) use ($user, $equipment) {
+                    $activity->log_name = 'equipment_update';
+                    $activity->user_id = $user->id;
+                    $activity->user_name = $user->name;
+                    $activity->user_email = $user->email;
+                    $activity->role_id = $user->role_id;
+                    $activity->description = 'Equipment updated with name: ' . $equipment->equipment_name;
+                    $activity->subject_type = get_class($equipment);
+                    $activity->subject_id = $equipment->id;
+                    $activity->causer_type = get_class($user);
+                    $activity->causer_id = $user->id;
+                    $activity->event = 'updated';
+                    $activity->batch_uuid = \Illuminate\Support\Str::uuid()->toString(); 
+                    $activity->created_at = now();
+                    $activity->updated_at = now();
+                })
+                ->withProperties([
+                    'equipment_name' => $equipment->equipment_name,
+                    'equipment_count' => $equipment->equipment_count,
+                    'updated_fields' => $updatedFields, 
+                    'timestamp' => now()->toDateTimeString(), 
+                ])
+                ->log('Equipment updated with name: ' . $equipment->equipment_name);
+
+
 
             return response()->json(['equipment' => $updatedEquipment]);
         } catch (ValidationException $e) {
@@ -126,7 +199,10 @@ class EquipmentController extends Controller
     }
 
     /**
-     * Delete an equipment.
+     * Function : deleteEquipment
+     * Description : Deletes the specified equipment and logs activity.
+     * @param int $equipmentId
+     * @return JsonResponse
      */
     public function deleteEquipment($equipmentId)
     {
@@ -137,11 +213,42 @@ class EquipmentController extends Controller
                 return response()->json(['error' => 'Unauthorized'], 403);
             }
 
+            // Fetch the equipment object using the ID
+            $equipment = $this->equipmentService->getEquipmentById($equipmentId);
+
             // Delete equipment
             $deletedEquipment = $this->equipmentService->deleteEquipment($equipmentId, auth()->id());
             if (!$deletedEquipment) {
                 return response()->json(['error' => 'Failed to delete equipment'], 500);
             }
+
+            // Audit Log : delete equipment
+            activity()
+                ->causedBy($user)
+                ->performedOn($equipment)
+                ->tap(function ($activity) use ($user, $equipment, $equipmentId) {
+                    $activity->log_name = 'equipment_deletion';
+                    $activity->user_id = $user->id;
+                    $activity->user_name = $user->name;
+                    $activity->user_email = $user->email;
+                    $activity->role_id = $user->role_id;
+                    $activity->description = 'Equipment deleted with ID: ' . $equipmentId;
+                    $activity->subject_type = get_class($equipment);
+                    $activity->subject_id = $equipmentId;
+                    $activity->causer_type = get_class($user);
+                    $activity->causer_id = $user->id;
+                    $activity->event = 'deleted';
+                    $activity->batch_uuid = \Illuminate\Support\Str::uuid()->toString();
+                    $activity->created_at = now();
+                    $activity->updated_at = now();
+                })
+                ->withProperties([
+                    'equipment_name' => $equipment->equipment_name,
+                    'equipment_id' => $equipmentId,  
+                    'timestamp' => now()->toDateTimeString(), 
+                ])
+                ->log('Equipment deleted with ID: ' . $equipmentId);
+
 
             return response()->json(['equipment' => $deletedEquipment]);
         } catch (Exception $e) {
@@ -151,7 +258,9 @@ class EquipmentController extends Controller
     }
 
     /**
-     * Get all equipment.
+     * Function : getAllEquipment
+     * Description : Retrieves all equipment based on user authorization.
+     * @return JsonResponse
      */
     public function getAllEquipment()
     {
@@ -172,7 +281,10 @@ class EquipmentController extends Controller
     }
 
     /**
-     * Get an equipment by name.
+     * Function : getEquipmentByName
+     * Description : Retrieves equipment by its name based on user authorization.
+     * @param string $equipmentName
+     * @return JsonResponse
      */
     public function getEquipmentByName($equipmentName)
     {

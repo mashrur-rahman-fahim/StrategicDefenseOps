@@ -14,6 +14,9 @@ use App\Http\Controllers\OllamaController;
 use App\Http\Controllers\VehicleController;
 use App\Http\Controllers\PersonnelController;
 use App\Http\Controllers\EquipmentController;
+use App\Http\Controllers\AuditLogController;
+
+
 
 
 
@@ -31,76 +34,74 @@ use App\Http\Controllers\EquipmentController;
 
 
 
+// Role Assignment/Unassignment :
+Route::middleware('auth:sanctum')->group(function () {
+    // Role Assignment
+    Route::controller(AssignRoleController::class)->group(function () {
+        Route::post('/manager-assign', 'managerAssign');
+        Route::post('/temp', 'temp');
+        Route::post('/operator-assign', 'operatorAssign');
+        Route::post('/viewer-assign', 'viewerAssign');
+    });
+
+    // Role Unassignment
+    Route::controller(UnassignRoleController::class)->group(function () {
+        Route::post('/manager-unassign', 'managerUnassign');
+        Route::post('/operator-unassign', 'operatorUnassign');
+        Route::post('/viewer-unassign', 'viewerUnassign');
+    });
+
+    // User Details
+    Route::get('/user', [UserDetailsController::class, 'getUserDetails']);
+});
 
 
-Route::post('/manager-assign', [AssignRoleController::class, 'managerAssign'], )
-    ->middleware('auth:sanctum')
-;
-Route::post('/temp', [AssignRoleController::class, 'temp'])
-    ->middleware('auth:sanctum')
-;
-Route::post('/operator-assign', [AssignRoleController::class, 'operatorAssign'])
-    ->middleware('auth:sanctum');
+// Operation Create, Update, Delete, Search All, Individual Search by Name
+Route::middleware('auth:sanctum')->controller(OperationController::class)->group(function () {
+    Route::post('/create-operation', 'createOperation');
+    Route::put('/update-operation/{id}', 'updateOperation');
+    Route::delete('/delete-operation/{id}', 'deleteOperation');
+    Route::get('/get-all-operations', 'getAllOperations');
+    Route::get('/search-operations/{name}', 'searchByName');
+});
 
-Route::post('/viewer-assign', [AssignRoleController::class, 'viewerAssign'])
-    ->middleware('auth:sanctum');
+// Weapon Add, Update, Delete, Search All, Individual Search by Name
+Route::middleware('auth:sanctum')->controller(WeaponController::class)->group(function () {
+    Route::post('/add-weapon', 'addWeapon');
+    Route::put('/update-weapon/{weaponId}', 'updateWeapon');
+    Route::delete('/delete-weapon/{weaponId}', 'deleteWeapon');
+    Route::get('/get-all-weapons', 'getAllWeapons');
+    Route::get('/search-weapons/{weaponName}', 'getWeaponByName');
+});
 
-Route::post('/manager-unassign', [UnassignRoleController::class, 'managerUnassign'])
-    ->middleware('auth:sanctum');
-
-Route::post('/operator-unassign', [UnassignRoleController::class, 'operatorUnassign'])
-    ->middleware('auth:sanctum');
-
-Route::post('/viewer-unassign', [UnassignRoleController::class, 'viewerUnassign'])
-    ->middleware('auth:sanctum');
-
-Route::get('/user', [UserDetailsController::class, 'getUserDetails'])->middleware('auth:sanctum');
-
-Route::post('/create-operation', [OperationController::class, 'createOperation'])->middleware('auth:sanctum');
-
-Route::put('/update-operation/{id}', [OperationController::class, 'updateOperation'])
-    ->middleware('auth:sanctum');
-
-Route::delete('/delete-operation/{id}', [OperationController::class, 'deleteOperation'])
-    ->middleware('auth:sanctum');
-
-Route::get('/get-all-operations', [OperationController::class, 'getAllOperations'])->middleware('auth:sanctum');
-
-Route::get('/search-operations/{name}', [OperationController::class, 'searchByName'])->middleware('auth:sanctum');
-
-Route::post('/add-weapon', [WeaponController::class, 'addWeapon'])->middleware('auth:sanctum');
-
-Route::put('/update-weapon/{weaponId}', [WeaponController::class, 'updateWeapon'])->middleware('auth:sanctum');
-
-Route::delete('/delete-weapon/{weaponId}', [WeaponController::class, 'deleteWeapon'])->middleware('auth:sanctum');
-
-Route::get('/get-all-weapons', [WeaponController::class, 'getAllWeapons'])->middleware('auth:sanctum');
-
-Route::get('/search-weapons/{weaponName}', [WeaponController::class, 'getWeaponByName'])->middleware('auth:sanctum');
+// Vehicle Add, Update, Delete, Search All, Individual Search by Name
+Route::middleware('auth:sanctum')->controller(VehicleController::class)->group(function () {
+    Route::post('/add-vehicle', 'addVehicle');
+    Route::put('/update-vehicle/{vehicleId}', 'updateVehicle');
+    Route::delete('/delete-vehicle/{vehicleId}', 'deleteVehicle');
+    Route::get('/get-all-vehicles', 'getAllVehicles');
+    Route::get('/search-vehicles/{vehicleName}', 'getVehicleByName');
+});
 
 
-Route::post('/add-vehicle', [VehicleController::class, 'addVehicle'])->middleware('auth:sanctum');
-Route::put('/update-vehicle/{vehicleId}', [VehicleController::class, 'updateVehicle'])->middleware('auth:sanctum');
-Route::delete('/delete-vehicle/{vehicleId}', [VehicleController::class, 'deleteVehicle'])->middleware('auth:sanctum');
-Route::get('/get-all-vehicles', [VehicleController::class, 'getAllVehicles'])->middleware('auth:sanctum');
-Route::get('/search-vehicles/{vehicleName}', [VehicleController::class, 'getVehicleByName'])->middleware('auth:sanctum');
+// Equipment Add, Update, Delete, Search All, Individual Search by Name
+Route::middleware('auth:sanctum')->controller(EquipmentController::class)->group(function () {
+    Route::post('/add-equipment', 'addEquipment');
+    Route::put('/update-equipment/{equipmentId}', 'updateEquipment');
+    Route::delete('/delete-equipment/{equipmentId}', 'deleteEquipment');
+    Route::get('/get-all-equipment', 'getAllEquipment');
+    Route::get('/search-equipment/{equipmentName}', 'getEquipmentByName');
+});
 
 
-
-// Add a new equipment
-Route::post('/add-equipment', [EquipmentController::class, 'addEquipment'])->middleware('auth:sanctum');
-
-// Update an existing equipment
-Route::put('/update-equipment/{equipmentId}', [EquipmentController::class, 'updateEquipment'])->middleware('auth:sanctum');
-
-// Delete an equipment
-Route::delete('/delete-equipment/{equipmentId}', [EquipmentController::class, 'deleteEquipment'])->middleware('auth:sanctum');
-
-// Get all equipment
-Route::get('/get-all-equipment', [EquipmentController::class, 'getAllEquipment'])->middleware('auth:sanctum');
-
-// Search equipment by name
-Route::get('/search-equipment/{equipmentName}', [EquipmentController::class, 'getEquipmentByName'])->middleware('auth:sanctum');
+// Personnel Add, Update, Delete, Search All, Individual Search by Name
+Route::middleware('auth:sanctum')->controller(PersonnelController::class)->group(function () {
+    Route::post('/add-personnel', 'addPersonnel');
+    Route::put('/update-personnel/{personnelId}', 'updatePersonnel');
+    Route::delete('/delete-personnel/{personnelId}', 'deletePersonnel');
+    Route::get('/get-all-personnel', 'getAllPersonnel');
+    Route::get('/search-personnel/{personnelName}', 'getPersonnelByName');
+});
 
 
 
