@@ -35,7 +35,7 @@ class AssignRoleController extends Controller
         // Audit Log 
         $status = $result ? 'success' : 'failed';
         $assignedUser = User::where('email', $request->managerEmail)->first();
-        $this->logActivity($parentId, $assignedUser, 'Manager',$status );
+        $this->logActivity($parentId, $assignedUser, 'Manager', $status);
 
         return response()->json($result);
     }
@@ -60,7 +60,7 @@ class AssignRoleController extends Controller
         // Audit Log
         $status = $result ? 'success' : 'failed';
         $assignedUser = User::where('email', $data['operatorEmail'])->first();
-        $this->logActivity($parentId, $assignedUser, 'Operator',$status);
+        $this->logActivity($parentId, $assignedUser, 'Operator', $status);
 
         return response()->json($result);
     }
@@ -85,7 +85,7 @@ class AssignRoleController extends Controller
         // Audit Log
         $status = $result ? 'success' : 'failed';
         $assignedUser = User::where('email', $data['viewerEmail'])->first();
-        $this->logActivity($parentId, $assignedUser, 'Viewer',$status);
+        $this->logActivity($parentId, $assignedUser, 'Viewer', $status);
 
         return response()->json($result);
     }
@@ -123,12 +123,12 @@ class AssignRoleController extends Controller
      * @param string|null $errorMessage - The error message in case of failure.
      * @return void
      */
-    private function logActivity($parentId, $assignedUser, $role, $status , $errorMessage = null)
+    private function logActivity($parentId, $assignedUser, $role, $status, $errorMessage = null)
     {
         if ($assignedUser) {
-            // If assignedUser is not null, proceed as before
             Activity::create([
                 'log_name'      => 'role_assignment',
+                'user_id'       => auth()->id(),
                 'user_name'     => auth()->user()->name ?? 'Unknown',
                 'user_email'    => auth()->user()->email ?? 'Unknown',
                 'description'   => $status === 'success'
@@ -149,9 +149,9 @@ class AssignRoleController extends Controller
                 ])
             ]);
         } else {
-            // If assignedUser is null, handle accordingly
             Activity::create([
                 'log_name'      => 'role_assignment',
+                'user_id'       => auth()->id(),  
                 'user_name'     => auth()->user()->name ?? 'Unknown',
                 'user_email'    => auth()->user()->email ?? 'Unknown',
                 'description'   => "Failed to assign role {$role} to a non-existent user.",
