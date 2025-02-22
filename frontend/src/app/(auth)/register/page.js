@@ -14,9 +14,11 @@ const Page = () => {
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
     const [passwordConfirmation, setPasswordConfirmation] = useState("");
-    const [role_id, setRoleId] = useState(1); // Default: System Administrator
-    const [parent_id, setParentId] = useState(null); // Optional
+    const [role_id, setRoleId] = useState(1);
+    const [parent_id, setParentId] = useState(null);
     const [errors, setErrors] = useState([]);
+    const [showPassword, setShowPassword] = useState(false);
+    const [showConfirmPassword, setShowConfirmPassword] = useState(false);
 
     const roles = [
         { id: 1, name: "System Administrator" },
@@ -53,7 +55,7 @@ const Page = () => {
                         <input
                             type="text"
                             placeholder="Name"
-                            className="w-full px-4 py-2 rounded-md border border-gray-600 mb-3 bg-white"
+                            className="w-full px-4 py-2 rounded-md border border-gray-600 mb-3 bg-white text-black placeholder-gray-500"
                             value={name}
                             onChange={(e) => setName(e.target.value)}
                             required
@@ -64,7 +66,7 @@ const Page = () => {
                         <input
                             type="email"
                             placeholder="E-mail"
-                            className="w-full px-4 py-2 rounded-md border border-gray-600 mb-3 bg-white"
+                            className="w-full px-4 py-2 rounded-md border border-gray-600 mb-3 bg-white text-black placeholder-gray-500"
                             value={email}
                             onChange={(e) => setEmail(e.target.value)}
                             required
@@ -72,25 +74,43 @@ const Page = () => {
                         {errors.email && <p className="text-red-600">{errors.email}</p>}
 
                         {/* Password */}
-                        <input
-                            type="password"
-                            placeholder="Password"
-                            className="w-full px-4 py-2 rounded-md border border-gray-600 mb-3 bg-white"
-                            value={password}
-                            onChange={(e) => setPassword(e.target.value)}
-                            required
-                        />
+                        <div className="relative">
+                            <input
+                                type={showPassword ? "text" : "password"}
+                                placeholder="Password"
+                                className="w-full px-4 py-2 rounded-md border border-gray-600 mb-3 bg-white text-black placeholder-gray-500"
+                                value={password}
+                                onChange={(e) => setPassword(e.target.value)}
+                                required
+                            />
+                            <button
+                                type="button"
+                                className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-700"
+                                onClick={() => setShowPassword(!showPassword)}
+                            >
+                                {showPassword ? "👁️" : "🙈"}
+                            </button>
+                        </div>
                         {errors.password && <p className="text-red-600">{errors.password}</p>}
 
                         {/* Confirm Password */}
-                        <input
-                            type="password"
-                            placeholder="Confirm Password"
-                            className="w-full px-4 py-2 rounded-md border border-gray-600 mb-3 bg-white"
-                            value={passwordConfirmation}
-                            onChange={(e) => setPasswordConfirmation(e.target.value)}
-                            required
-                        />
+                        <div className="relative">
+                            <input
+                                type={showConfirmPassword ? "text" : "password"}
+                                placeholder="Confirm Password"
+                                className="w-full px-4 py-2 rounded-md border border-gray-600 mb-3 bg-white text-black placeholder-gray-500"
+                                value={passwordConfirmation}
+                                onChange={(e) => setPasswordConfirmation(e.target.value)}
+                                required
+                            />
+                            <button
+                                type="button"
+                                className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-700"
+                                onClick={() => setShowConfirmPassword(!showConfirmPassword)}
+                            >
+                                {showConfirmPassword ? "👁️" : "🙈"}
+                            </button>
+                        </div>
                         {errors.password_confirmation && (
                             <p className="text-red-600">{errors.password_confirmation}</p>
                         )}
@@ -114,7 +134,7 @@ const Page = () => {
                         <input
                             type="number"
                             placeholder="Parent ID (Optional)"
-                            className="w-full px-4 py-2 rounded-md border border-gray-600 mb-3 bg-white"
+                            className="w-full px-4 py-2 rounded-md border border-gray-600 mb-3 bg-white text-black placeholder-gray-500"
                             value={parent_id || ""}
                             onChange={(e) => setParentId(e.target.value)}
                         />
