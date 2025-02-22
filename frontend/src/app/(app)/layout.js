@@ -10,7 +10,7 @@ import Loading from './Loading';
 export default function RootLayout({ children }) {
    const{user}=useAuth({middleware:'auth'})
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
-  const [selectedItem, setSelectedItem] = useState('dashboard');
+  const [selectedItem, setSelectedItem] = useState('');
   const {  logout } = useAuth(); 
     if(!user){
         return <Loading/>
