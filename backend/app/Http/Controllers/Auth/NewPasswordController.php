@@ -43,8 +43,10 @@ class NewPasswordController extends Controller
                 // Audit Log : successful password reset
                 Activity::create([
                     'log_name' => 'new_password_reset',
+                    'user_id' => $user->id,
                     'user_name' => $user->name,
                     'user_email' => $user->email,
+                    'role_id' => $user->role_id,
                     'description' => 'User successfully reset their password.',
                     'subject_type' => 'App\Models\User',
                     'subject_id' => $user->id,
@@ -52,7 +54,11 @@ class NewPasswordController extends Controller
                     'causer_id' => $user->id,
                     'properties' => json_encode([
                         'method' => 'email reset',
-                    ])
+                    ]),
+                    'event' => 'password_reset',
+                    'batch_uuid' => Str::uuid()->toString(),
+                    'created_at' => now(),
+                    'updated_at' => now(),
                 ]);
             }
         );
@@ -70,8 +76,13 @@ class NewPasswordController extends Controller
                 'causer_id' => null,
                 'properties' => json_encode([
                     'status' => $status,
-                ])
+                ]),
+                'event' => 'password_reset_failed',
+                'batch_uuid' => Str::uuid()->toString(),
+                'created_at' => now(),
+                'updated_at' => now(),
             ]);
+
 
             throw ValidationException::withMessages([
                 'email' => [__($status)],
