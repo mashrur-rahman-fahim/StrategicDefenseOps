@@ -48,7 +48,7 @@ class RegisteredUserController extends Controller
                 'parent_id' => $request->parent_id,
             ]);
 
-            // Audit Log the user registration event
+            Audit Log the user registration event
             activity()
                 ->performedOn($user)
                 ->causedBy(Auth::user())

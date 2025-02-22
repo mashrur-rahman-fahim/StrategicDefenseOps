@@ -57,6 +57,6 @@ class Equipment extends Model
      */
     public function resource()
     {
-        return $this->hasOne(Resource::class, 'equipment_id');
+        return $this->hasOne(Resources::class, 'equipment_id');
     }
 }

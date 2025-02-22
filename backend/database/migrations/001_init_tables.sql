@@ -166,22 +166,26 @@ create table operation_resources (
 );
 
 CREATE TABLE activity_log (
-    id BIGINT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
+    id int UNSIGNED AUTO_INCREMENT PRIMARY KEY,
     log_name VARCHAR(255) NULL,
+    user_id INT unsigned NOT NULL,
     user_name VARCHAR(255) NULL,
     user_email VARCHAR(255) NULL,
-    role_id BIGINT UNSIGNED NULL,
+    role_id int UNSIGNED NULL,
     description TEXT NOT NULL,
-    subject_id BIGINT UNSIGNED NULL,
+    subject_id int UNSIGNED NULL,
     subject_type VARCHAR(255) NULL,
-    causer_id BIGINT UNSIGNED NULL,
+    causer_id int UNSIGNED NULL,
     causer_type VARCHAR(255) NULL,
     properties JSON NULL,
     event VARCHAR(255) NULL, 
     batch_uuid CHAR(36) NULL, 
     created_at TIMESTAMP NULL,
     updated_at TIMESTAMP NULL,
-    INDEX log_name_index (log_name)
+    INDEX log_name_index (log_name),
+    FOREIGN KEY (user_id) references users(id) on delete CASCADE,
+    FOREIGN KEY (role_id) references roles(id) on delete set NULL
+   
 );
 
 
