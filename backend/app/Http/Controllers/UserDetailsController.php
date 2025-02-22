@@ -24,7 +24,8 @@ class UserDetailsController extends Controller
             // Audit Log : unauthorized access attempt
             Activity::create([
                 'log_name' => 'user_details_access',
-                'user_name' => 'Unknown',  // Since the user is not authenticated
+                'user_id' => 0, // Use 0 as placeholder value for unauthenticated users
+                'user_name' => 'Unknown', // No authenticated user => "Unknown"
                 'user_email' => 'Unknown',
                 'description' => 'Unauthorized attempt to access user details.',
                 'subject_type' => 'App\Models\User',
@@ -47,6 +48,7 @@ class UserDetailsController extends Controller
             // Audit Log : successful retrieval of user details
             Activity::create([
                 'log_name' => 'user_details_access',
+                'user_id' => $request->user()->id, 
                 'user_name' => $request->user()->name ?? 'Unknown',
                 'user_email' => $request->user()->email ?? 'Unknown',
                 'description' => 'Successfully retrieved user details.',
@@ -67,6 +69,7 @@ class UserDetailsController extends Controller
         // Audit Log : user is not found
         Activity::create([
             'log_name' => 'user_details_access',
+            'user_id' => $request->user()->id, 
             'user_name' => $request->user()->name ?? 'Unknown',
             'user_email' => $request->user()->email ?? 'Unknown',
             'description' => 'Failed to retrieve user details, user not found.',
