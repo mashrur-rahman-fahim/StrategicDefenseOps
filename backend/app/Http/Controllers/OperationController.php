@@ -4,7 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\User;
 use App\Services\OperationService;
-/* use DB; */
+
 use Exception;
 use Illuminate\Http\Request;
 use Spatie\Activitylog\Facades\Activity;
@@ -57,29 +57,27 @@ class OperationController extends Controller
                 }
 
                 // Audit Log : created operation 
-                Activity::causedBy(auth()->user()) 
-                    ->performedOn($operation)
-                    ->withProperties([
-                        'operation_name' => $operation->name,
-                        'status' => $operation->status,
-                    ])
-                    ->log('Operation created');
-                
                 Activity::create([
-                    'log_name' => 'operation_creation', 
-                    'user_name' => $user->name, 
-                    'user_email' => $user->email, 
-                    'role_id' => $user->role_id, 
+                    'log_name' => 'operation_creation',
+                    'user_id' => $user->id,  
+                    'user_name' => $user->name,
+                    'user_email' => $user->email,
+                    'role_id' => $user->role_id,
                     'description' => 'Operation created with name: ' . $operation->name,
                     'subject_type' => get_class($operation),
                     'subject_id' => $operation->id,
-                    'causer_type' => get_class($user), 
+                    'causer_type' => get_class($user),
                     'causer_id' => $user->id,
+                    'event' => 'Operation Created', 
+                    'batch_uuid' => null, 
                     'properties' => json_encode([
-                        'additional_info' => 'Created operation with budget ' . $operation->budget
-                    ])
+                        'operation_name' => $operation->name,
+                        'status' => $operation->status,
+                        'budget' => $operation->budget
+                    ]),
+                    'created_at' => now(),  
+                    'updated_at' => now(),
                 ]);
-
 
 
                 return response()->json([
@@ -129,7 +127,9 @@ class OperationController extends Controller
         if (!$user || $user->role_id > 3) {
             return response()->json(['error' => 'Unauthorized'], 403);
         }
-      
+
+        $operation = $this->operationService->updateOperation($id, $validatedData, $user->id);
+
         $updatedOperation = $this->operationService->updateOperation($id, $validatedData, auth()->id());
         if (!$updatedOperation) {
             return response()->json(['error' => 'Failed to update operation'], 500);
@@ -137,18 +137,26 @@ class OperationController extends Controller
         }
         // Audit Log : updated operation 
         Activity::create([
-            'log_name' => 'operation_update', 
+            'log_name' => 'operation_update',
+            'user_id' => $user->id,
             'user_name' => $user->name,
             'user_email' => $user->email,
             'role_id' => $user->role_id,
-            'description' => 'Operation updated with name: ' . $updatedOperation->name,
-            'subject_type' => get_class($updatedOperation), 
-            'subject_id' => $updatedOperation->id,
-            'causer_type' => get_class($user), 
+            'description' => 'Operation updated: ' . $operation->name,
+            'subject_type' => get_class($operation),
+            'subject_id' => $operation->id,
+            'causer_type' => get_class($user),
             'causer_id' => $user->id,
+            'event' => 'Operation Updated',
+            'batch_uuid' => null,
             'properties' => json_encode([
-                'updated_fields' => $validatedData
-            ])
+                'updated_fields' => $validatedData,
+                'operation_name' => $operation->name,
+                'status' => $operation->status,
+                'budget' => $operation->budget
+            ]),
+            'created_at' => now(),
+            'updated_at' => now(),
         ]);
 
         return response()->json($updatedOperation, 200);
@@ -166,22 +174,31 @@ class OperationController extends Controller
         if(!$user || $user->role_id!=1){
             return response()->json(['error' => 'Unauthorized'], 403);
         }
+        $operation = $this->operationService->getOperationById($id);
         $message = $this->operationService->deleteOperation($id, auth()->id());
         if ($message) {
+            
             // Audit Log : deleted operation 
             Activity::create([
                 'log_name' => 'operation_deletion',
+                'user_id' => $user->id,
                 'user_name' => $user->name,
                 'user_email' => $user->email,
                 'role_id' => $user->role_id,
-                'description' => 'Operation deleted with ID: ' . $id,
-                'subject_type' => 'App\Models\Operation', 
-                'subject_id' => $id,
-                'causer_type' => get_class($user), 
+                'description' => 'Operation deleted: ' . $operation->name,
+                'subject_type' => get_class($operation),
+                'subject_id' => $operation->id,
+                'causer_type' => get_class($user),
                 'causer_id' => $user->id,
+                'event' => 'Operation Deleted',
+                'batch_uuid' => null,
                 'properties' => json_encode([
-                    'deleted_operation_id' => $id
-                ])
+                    'operation_name' => $operation->name,
+                    'status' => $operation->status,
+                    'budget' => $operation->budget
+                ]),
+                'created_at' => now(),
+                'updated_at' => now(),
             ]);
 
             return response()->json(['message' => 'deleted successfully'], 200);
