@@ -46,7 +46,8 @@ class AuthenticatedSessionController extends Controller
                     $activity->subject_id = $user->id;
                     $activity->causer_type = 'App\Models\User';
                     $activity->causer_id = $user->id;
-                    $activity->batch_uuid = Str::uuid()->toString();  // Generate unique batch UUID
+                    $activity->batch_uuid = Str::uuid()->toString();
+                    $activity->event = "LoggedIn";
                 })
                 ->withProperties([
                     'user_id' => $user->id,
@@ -107,7 +108,8 @@ class AuthenticatedSessionController extends Controller
                     $activity->subject_id = $user->id;
                     $activity->causer_type = 'App\Models\User';
                     $activity->causer_id = $user->id;
-                    $activity->batch_uuid = Str::uuid()->toString();  // Generate unique batch UUID
+                    $activity->batch_uuid = Str::uuid()->toString();
+                    $activity->event = "LoggedOut";
                 })
                 ->withProperties([
                     'user_id' => $user->id,
