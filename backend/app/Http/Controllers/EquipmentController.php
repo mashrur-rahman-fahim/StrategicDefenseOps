@@ -77,26 +77,32 @@ class EquipmentController extends Controller
                 DB::commit();
 
                 // Audit Log : create equipment
-                Activity::create([
-                    'log_name' => 'equipment_creation',  
-                    'user_id' => $user->id, 
-                    'user_name' => $user->name,  
-                    'user_email' => $user->email,  
-                    'role_id' => $user->role_id,  
-                    'description' => 'Equipment created with name: ' . $equipment->equipment_name,  
-                    'subject_type' => get_class($equipment),  
-                    'subject_id' => $equipment->id,  
-                    'causer_type' => get_class($user),  
-                    'causer_id' => $user->id, 
-                    'properties' => json_encode([ 
+                activity()
+                    ->causedBy($user)
+                    ->performedOn($equipment)
+                    ->tap(function ($activity) use ($user, $equipment) {
+                        $activity->log_name = 'equipment_creation';
+                        $activity->user_id = $user->id;
+                        $activity->user_name = $user->name;
+                        $activity->user_email = $user->email;
+                        $activity->role_id = $user->role_id;
+                        $activity->description = 'Equipment created with name: ' . $equipment->equipment_name;
+                        $activity->subject_type = get_class($equipment);
+                        $activity->subject_id = $equipment->id;
+                        $activity->causer_type = get_class($user);
+                        $activity->causer_id = $user->id;
+                        $activity->batch_uuid = \Illuminate\Support\Str::uuid()->toString(); 
+                        $activity->created_at = now();
+                        $activity->updated_at = now();
+                    })
+                    ->withProperties([
                         'equipment_name' => $equipment->equipment_name,
                         'equipment_count' => $equipment->equipment_count,
-                    ]),
-                    'batch_uuid' => null,  
-                    'created_at' => now(),  
-                    'updated_at' => now(),  
-                ]);
-                
+                        'timestamp' => now()->toDateTimeString(),
+                    ])
+                    ->log('Equipment created with name: ' . $equipment->equipment_name);
+
+
 
                 return response()->json([
                     'message' => 'Equipment added successfully',
@@ -140,35 +146,46 @@ class EquipmentController extends Controller
             if (!$user || $user->role_id > 2) {
                 return response()->json(['error' => 'Unauthorized'], 403);
             }
-            
-            $equipment = Equipment::find($equipmentId); 
+
+            $equipment = Equipment::find($equipmentId);
             // Update equipment
             $updatedEquipment = $this->equipmentService->updateEquipment($data, $equipmentId, auth()->id());
             if (!$updatedEquipment) {
                 return response()->json(['error' => 'Failed to update equipment'], 500);
             }
-        
+
+            $updatedFields = array_filter($data, function ($value, $key) use ($equipment) {
+                return $equipment->{$key} != $value;
+            }, ARRAY_FILTER_USE_BOTH);
+
             // Audit Log : update equipment
-            Activity::create([
-                'log_name' => 'equipment_creation',
-                'user_id' => $user->id,  
-                'user_name' => $user->name,  
-                'user_email' => $user->email,  
-                'role_id' => $user->role_id,
-                'description' => 'Equipment created with name: ' . $equipment->equipment_name,
-                'subject_type' => get_class($equipment),
-                'subject_id' => $equipment->id,
-                'causer_type' => get_class($user),
-                'causer_id' => $user->id,
-                'properties' => json_encode([
+            activity()
+                ->causedBy($user)
+                ->performedOn($equipment)
+                ->tap(function ($activity) use ($user, $equipment) {
+                    $activity->log_name = 'equipment_update';
+                    $activity->user_id = $user->id;
+                    $activity->user_name = $user->name;
+                    $activity->user_email = $user->email;
+                    $activity->role_id = $user->role_id;
+                    $activity->description = 'Equipment updated with name: ' . $equipment->equipment_name;
+                    $activity->subject_type = get_class($equipment);
+                    $activity->subject_id = $equipment->id;
+                    $activity->causer_type = get_class($user);
+                    $activity->causer_id = $user->id;
+                    $activity->event = 'updated';
+                    $activity->batch_uuid = \Illuminate\Support\Str::uuid()->toString(); 
+                    $activity->created_at = now();
+                    $activity->updated_at = now();
+                })
+                ->withProperties([
                     'equipment_name' => $equipment->equipment_name,
                     'equipment_count' => $equipment->equipment_count,
-                ]),
-                'batch_uuid' => null,  
-                'created_at' => now(),  
-                'updated_at' => now(),  
-            ]);
-            
+                    'updated_fields' => $updatedFields, 
+                    'timestamp' => now()->toDateTimeString(), 
+                ])
+                ->log('Equipment updated with name: ' . $equipment->equipment_name);
+
 
 
             return response()->json(['equipment' => $updatedEquipment]);
@@ -195,10 +212,10 @@ class EquipmentController extends Controller
             if (!$user || $user->role_id !== 1) {
                 return response()->json(['error' => 'Unauthorized'], 403);
             }
-            
+
             // Fetch the equipment object using the ID
-           $equipment = $this->equipmentService->getEquipmentById($equipmentId);
-           
+            $equipment = $this->equipmentService->getEquipmentById($equipmentId);
+
             // Delete equipment
             $deletedEquipment = $this->equipmentService->deleteEquipment($equipmentId, auth()->id());
             if (!$deletedEquipment) {
@@ -206,25 +223,33 @@ class EquipmentController extends Controller
             }
 
             // Audit Log : delete equipment
-            Activity::create([
-                'log_name' => 'equipment_deletion',
-                'user_id' => $user->id,
-                'user_name' => $user->name,
-                'user_email' => $user->email,
-                'role_id' => $user->role_id,
-                'description' => 'Equipment deleted with ID: ' . $equipmentId,
-                'subject_type' => get_class($equipment),
-                'subject_id' => $equipmentId,
-                'causer_type' => get_class($user),
-                'causer_id' => $user->id,
-                'properties' => json_encode([
+            activity()
+                ->causedBy($user)
+                ->performedOn($equipment)
+                ->tap(function ($activity) use ($user, $equipment, $equipmentId) {
+                    $activity->log_name = 'equipment_deletion';
+                    $activity->user_id = $user->id;
+                    $activity->user_name = $user->name;
+                    $activity->user_email = $user->email;
+                    $activity->role_id = $user->role_id;
+                    $activity->description = 'Equipment deleted with ID: ' . $equipmentId;
+                    $activity->subject_type = get_class($equipment);
+                    $activity->subject_id = $equipmentId;
+                    $activity->causer_type = get_class($user);
+                    $activity->causer_id = $user->id;
+                    $activity->event = 'deleted';
+                    $activity->batch_uuid = \Illuminate\Support\Str::uuid()->toString();
+                    $activity->created_at = now();
+                    $activity->updated_at = now();
+                })
+                ->withProperties([
                     'equipment_name' => $equipment->equipment_name,
-                ]),
-                'batch_uuid' => null,  
-                'created_at' => now(),  
-                'updated_at' => now(),  
-            ]);
-            
+                    'equipment_id' => $equipmentId,  
+                    'timestamp' => now()->toDateTimeString(), 
+                ])
+                ->log('Equipment deleted with ID: ' . $equipmentId);
+
+
             return response()->json(['equipment' => $deletedEquipment]);
         } catch (Exception $e) {
             // Handle unexpected errors

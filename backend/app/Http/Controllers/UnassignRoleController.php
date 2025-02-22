@@ -121,8 +121,20 @@ class UnassignRoleController extends Controller
     private function logUnassignActivity($parentId, $unassignedUser, $role)
     {
         if ($unassignedUser) {
-            Activity::causedBy(auth()->user())
+            activity()
+                ->causedBy(auth()->user())
                 ->performedOn($unassignedUser)
+                ->tap(function ($activity) use ($parentId, $unassignedUser, $role) {
+                    $activity->log_name = "role_unassignment";
+                    $activity->user_id = auth()->user()->id;
+                    $activity->user_name = auth()->user()->name;
+                    $activity->user_email = auth()->user()->email;
+                    $activity->description = "Unassigned role {$role} from user {$unassignedUser->email} by {$parentId}";
+                    $activity->subject_type = get_class($unassignedUser);
+                    $activity->subject_id = $unassignedUser->id;
+                    $activity->causer_type = get_class(auth()->user());
+                    $activity->causer_id = auth()->user()->id;
+                })
                 ->withProperties([
                     'parent_id' => $parentId,
                     'user_email' => $unassignedUser->email,

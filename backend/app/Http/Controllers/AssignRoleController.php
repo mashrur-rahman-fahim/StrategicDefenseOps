@@ -123,52 +123,92 @@ class AssignRoleController extends Controller
      * @param string|null $errorMessage - The error message in case of failure.
      * @return void
      */
-    private function logActivity($parentId, $assignedUser, $role, $status, $errorMessage = null)
+    private function logActivity($parentId, ?User $assignedUser, string $role, $status, $errorMessage = null)
     {
+
+        $user = auth()->user();
+        /* $assignedUserName = $assignedUser?->name ?? 'N/A'; 
+        $assignedUserEmail = $assignedUser?->email ?? 'N/A'; */
+        $activityDetails = [
+            'log_name'    => 'role_assignment',
+            'user_id'     => $user->id,
+            'user_name'   => $user->name ?? 'Unknown',
+            'user_email'  => $user->email ?? 'Unknown',
+            'description' => $status === 'success'
+                ? "Successfully assigned role {$role} to user {$assignedUser->email}."
+                : "Failed to assign role {$role} to user {$assignedUser->email}.",
+            'subject_type' => 'App\Models\User',
+            'causer_type' => 'App\Models\User',
+            'causer_id'   => $user->id,
+            'properties'  => json_encode([
+                'assigned_user_name'  => $assignedUser->name ?? 'N/A',
+                'assigned_user_email' => $assignedUser->email ?? 'N/A',
+                'assigned_role'       => $role,
+                'parent_id'           => $parentId,
+                'timestamp'           => now()->toDateTimeString(),
+                'status'              => $status,
+                'error_message'       => $status === 'failed' ? $errorMessage : null
+            ])
+        ];
+
         if ($assignedUser) {
-            Activity::create([
-                'log_name'      => 'role_assignment',
-                'user_id'       => auth()->id(),
-                'user_name'     => auth()->user()->name ?? 'Unknown',
-                'user_email'    => auth()->user()->email ?? 'Unknown',
-                'description'   => $status === 'success'
-                    ? "Successfully assigned role {$role} to user {$assignedUser->email}."
-                    : "Failed to assign role {$role} to user {$assignedUser->email}.",
-                'subject_type'  => 'App\Models\User',
-                'subject_id'    => $assignedUser->id,
-                'causer_type'   => 'App\Models\User',
-                'causer_id'     => auth()->id(),
-                'properties'    => json_encode([
-                    'assigned_user_name'  => $assignedUser->name ?? 'N/A',
+            // Log for successful assignment
+            activity()
+                ->causedBy($user)
+                ->performedOn($assignedUser)
+                ->tap(function ($activity) use ($activityDetails) {
+                    $activity->log_name = $activityDetails['log_name'];
+                    $activity->user_id = $activityDetails['user_id'];
+                    $activity->user_name = $activityDetails['user_name'];
+                    $activity->user_email = $activityDetails['user_email'];
+                    $activity->description = $activityDetails['description'];
+                    $activity->subject_type = $activityDetails['subject_type'];
+                    $activity->subject_id = $activityDetails['subject_id'];
+                    $activity->causer_type = $activityDetails['causer_type'];
+                    $activity->causer_id = $activityDetails['causer_id'];
+                    $activity->properties = $activityDetails['properties'];
+                    $activity->created_at = now();
+                    $activity->updated_at = now();
+                })
+                ->withProperties([
+                    'assigned_user_name' => $assignedUser->name ?? 'N/A',
                     'assigned_user_email' => $assignedUser->email ?? 'N/A',
-                    'assigned_role'       => $role,
-                    'parent_id'           => $parentId,
-                    'timestamp'           => now()->toDateTimeString(),
-                    'status'              => $status,
-                    'error_message'       => $status === 'failed' ? $errorMessage : null
+                    'assigned_role' => $role,
+                    'parent_id' => $parentId,
+                    'status' => $status,
+                    'error_message' => $status === 'failed' ? $errorMessage : null,
+                    'timestamp' => now()->toDateTimeString(),
                 ])
-            ]);
+                ->log("Role assignment {$status} for {$assignedUser->email}");
         } else {
-            Activity::create([
-                'log_name'      => 'role_assignment',
-                'user_id'       => auth()->id(),  
-                'user_name'     => auth()->user()->name ?? 'Unknown',
-                'user_email'    => auth()->user()->email ?? 'Unknown',
-                'description'   => "Failed to assign role {$role} to a non-existent user.",
-                'subject_type'  => 'App\Models\User',
-                'subject_id'    => null,
-                'causer_type'   => 'App\Models\User',
-                'causer_id'     => auth()->id(),
-                'properties'    => json_encode([
-                    'assigned_user_name'  => 'N/A',
+
+            // Log for failed assignment (user not found)
+            activity()
+                ->causedBy($user)
+                ->tap(function ($activity) use ($activityDetails) {
+                    $activity->log_name = $activityDetails['log_name'];
+                    $activity->user_id = $activityDetails['user_id'];
+                    $activity->user_name = $activityDetails['user_name'];
+                    $activity->user_email = $activityDetails['user_email'];
+                    $activity->description = "Failed to assign role {$activityDetails['assigned_role']} to a non-existent user.";
+                    $activity->subject_type = $activityDetails['subject_type'];
+                    $activity->subject_id = null;
+                    $activity->causer_type = $activityDetails['causer_type'];
+                    $activity->causer_id = $activityDetails['causer_id'];
+                    $activity->properties = $activityDetails['properties'];
+                    $activity->created_at = now();
+                    $activity->updated_at = now();
+                })
+                ->withProperties([
+                    'assigned_user_name' => 'N/A',
                     'assigned_user_email' => 'N/A',
-                    'assigned_role'       => $role,
-                    'parent_id'           => $parentId,
-                    'timestamp'           => now()->toDateTimeString(),
-                    'status'              => 'failed',
-                    'error_message'       => $errorMessage ?? 'Assigned user not found'
+                    'assigned_role' => $role,
+                    'parent_id' => $parentId,
+                    'status' => 'failed',
+                    'error_message' => $errorMessage ?? 'Assigned user not found',
+                    'timestamp' => now()->toDateTimeString(),
                 ])
-            ]);
+                ->log("Failed role assignment for non-existent user");
         }
     }
 }

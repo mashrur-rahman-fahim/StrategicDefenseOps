@@ -6,6 +6,8 @@ use App\Models\User;
 use App\Models\Vehicle;
 use Illuminate\Support\Facades\DB;
 use Exception;
+use Spatie\Activitylog\Models\Activity;
+
 
 class VehicleService
 {

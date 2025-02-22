@@ -79,26 +79,32 @@ class PersonnelController extends Controller
                 DB::commit();
 
                 // Audit Log: Personnel added
-                Activity::create([
-                    'log_name' => 'personnel_created',
-                    'user_id' => $user->id, 
-                    'user_name' => $user->name,
-                    'user_email' => $user->email,
-                    'role_id' => $user->role_id,
-                    'description' => 'Personnel added with name: ' . $personnel->personnel_name,
-                    'subject_type' => get_class($personnel),
-                    'subject_id' => $personnel->id,
-                    'causer_type' => get_class($user),
-                    'causer_id' => $user->id,
-                    'event' => 'created', 
-                    'batch_uuid' => \Illuminate\Support\Str::uuid()->toString(), 
-                    'properties' => json_encode([
+                activity()
+                    ->causedBy($user)
+                    ->performedOn($personnel)
+                    ->tap(function ($activity) use ($user, $personnel) {
+                        $activity->log_name = 'personnel_created';
+                        $activity->user_id = $user->id;
+                        $activity->user_name = $user->name;
+                        $activity->user_email = $user->email;
+                        $activity->role_id = $user->role_id;
+                        $activity->description = 'Personnel added with name: ' . $personnel->personnel_name;
+                        $activity->subject_type = get_class($personnel);
+                        $activity->subject_id = $personnel->id;
+                        $activity->causer_type = get_class($user);
+                        $activity->causer_id = $user->id;
+                        $activity->event = 'created';
+                        $activity->batch_uuid = \Illuminate\Support\Str::uuid()->toString();
+                        $activity->created_at = now();
+                        $activity->updated_at = now();
+                    })
+                    ->withProperties([
                         'personnel_name' => $personnel->personnel_name,
                         'personnel_count' => $personnel->personnel_count,
-                    ]),
-                    'created_at' => now(),
-                    'updated_at' => now()
-                ]);
+                        'timestamp' => now()->toDateTimeString(),
+                    ])
+                    ->log('Personnel added: ' . $personnel->personnel_name);
+
 
 
 
@@ -152,25 +158,31 @@ class PersonnelController extends Controller
             }
 
             // Audit Log: Personnel updated
-            Activity::create([
-                'log_name' => 'personnel_update',
-                'user_id' => $user->id, // New field
-                'user_name' => $user->name,
-                'user_email' => $user->email,
-                'role_id' => $user->role_id,
-                'description' => 'Personnel updated with name: ' . $updatedPersonnel->personnel_name,
-                'subject_type' => get_class($updatedPersonnel),
-                'subject_id' => $updatedPersonnel->id,
-                'causer_type' => get_class($user),
-                'causer_id' => $user->id,
-                'event' => 'updated', // New field
-                'batch_uuid' => \Illuminate\Support\Str::uuid()->toString(), // Generate UUID
-                'properties' => json_encode([
-                    'updated_fields' => $data
-                ]),
-                'created_at' => now(),
-                'updated_at' => now()
-            ]);
+            activity()
+                ->causedBy($user)
+                ->performedOn($updatedPersonnel)
+                ->tap(function ($activity) use ($user, $updatedPersonnel, $data) {
+                    $activity->log_name = 'personnel_update';
+                    $activity->user_id = $user->id;
+                    $activity->user_name = $user->name;
+                    $activity->user_email = $user->email;
+                    $activity->role_id = $user->role_id;
+                    $activity->description = 'Personnel updated with name: ' . $updatedPersonnel->personnel_name;
+                    $activity->subject_type = get_class($updatedPersonnel);
+                    $activity->subject_id = $updatedPersonnel->id;
+                    $activity->causer_type = get_class($user);
+                    $activity->causer_id = $user->id;
+                    $activity->event = 'updated';
+                    $activity->batch_uuid = \Illuminate\Support\Str::uuid()->toString();
+                    $activity->created_at = now();
+                    $activity->updated_at = now();
+                })
+                ->withProperties([
+                    'updated_fields' => $data,
+                    'timestamp' => now()->toDateTimeString(),
+                ])
+                ->log('Personnel updated: ' . $updatedPersonnel->personnel_name);
+
 
 
 
@@ -214,25 +226,31 @@ class PersonnelController extends Controller
             }
 
             // Audit Log : Personnel deleted
-            Activity::create([
-                'log_name' => 'personnel_deletion',
-                'user_id' => $user->id,
-                'user_name' => $user->name,
-                'user_email' => $user->email,
-                'role_id' => $user->role_id,
-                'description' => 'Personnel deleted with name: ' . $personnel->personnel_name,
-                'subject_type' => get_class($personnel),
-                'subject_id' => $personnel->id,
-                'causer_type' => get_class($user),
-                'causer_id' => $user->id,
-                'event' => 'deleted',
-                'batch_uuid' => \Illuminate\Support\Str::uuid()->toString(),
-                'properties' => json_encode([
-                    'deleted_personnel' => $personnel->personnel_name
-                ]),
-                'created_at' => now(),
-                'updated_at' => now()
-            ]);
+            activity()
+                ->causedBy($user)
+                ->performedOn($personnel)
+                ->tap(function ($activity) use ($user, $personnel) {
+                    $activity->log_name = 'personnel_deletion';
+                    $activity->user_id = $user->id;
+                    $activity->user_name = $user->name;
+                    $activity->user_email = $user->email;
+                    $activity->role_id = $user->role_id;
+                    $activity->description = 'Personnel deleted with name: ' . $personnel->personnel_name;
+                    $activity->subject_type = get_class($personnel);
+                    $activity->subject_id = $personnel->id;
+                    $activity->causer_type = get_class($user);
+                    $activity->causer_id = $user->id;
+                    $activity->event = 'deleted';
+                    $activity->batch_uuid = \Illuminate\Support\Str::uuid()->toString();
+                    $activity->created_at = now();
+                    $activity->updated_at = now();
+                })
+                ->withProperties([
+                    'deleted_personnel' => $personnel->personnel_name,
+                    'timestamp' => now()->toDateTimeString(),
+                ])
+                ->log('Personnel deleted: ' . $personnel->personnel_name);
+
 
 
             return response()->json(['personnel' => $deletedPersonnel]);

@@ -12,6 +12,8 @@ use Illuminate\Support\Facades\DB;
 use Illuminate\Validation\ValidationException;
 use Spatie\Activitylog\Facades\Activity;
 use Illuminate\Http\JsonResponse;
+
+
 class VehicleController extends Controller
 {
     protected VehicleService $vehicleService;
@@ -78,22 +80,33 @@ class VehicleController extends Controller
                 DB::commit();
 
                 // Audit Log : vehicle creation
-                Activity::create([
-                    'log_name' => 'vehicle_creation',
-                    'user_id' => $user->id, 
-                    'user_name' => $user->name,
-                    'user_email' => $user->email,
-                    'role_id' => $user->role_id,
-                    'description' => 'Vehicle created with name: ' . $vehicle->vehicle_name,
-                    'subject_type' => get_class($vehicle),
-                    'subject_id' => $vehicle->id,
-                    'causer_type' => get_class($user),
-                    'causer_id' => $user->id,
-                    'properties' => json_encode([
+                activity()
+                    ->performedOn($vehicle)
+                    ->causedBy($user)
+                    ->tap(function ($activity) use ($user, $vehicle) {
+                        $activity->log_name = "vehicle_creation";
+                        $activity->user_id = $user->id;
+                        $activity->user_name = $user->name;
+                        $activity->user_email = $user->email;
+                        $activity->role_id = $user->role_id;
+                        $activity->description = "Vehicle created with name: " . $vehicle->vehicle_name;
+                        $activity->subject_id = $vehicle->id;
+                        $activity->subject_type = get_class($vehicle);
+                        $activity->causer_id = $user->id;
+                        $activity->causer_type = get_class($user);
+                    })
+                    ->withProperties([
+                        'user_id' => $user->id,
+                        'user_name' => $user->name,
+                        'user_email' => $user->email,
+                        'role_id' => $user->role_id,
+                        'vehicle_id' => $vehicle->id,
+                        'vehicle_name' => $vehicle->vehicle_name,
                         'vehicle_count' => $vehicle->vehicle_count,
-                        'vehicle_capacity' => $vehicle->vehicle_capacity,
+                        'vehicle_capacity' => $vehicle->vehicle_capacity
                     ])
-                ]);
+                    ->log('Vehicle Created');
+
 
                 return response()->json([
                     'message' => 'Vehicle added successfully',
@@ -144,21 +157,34 @@ class VehicleController extends Controller
             }
 
             // Audit Log : vehicle update
-            Activity::create([
-                'log_name' => 'vehicle_update',
-                'user_id' => $user->id, 
-                'user_name' => $user->name,
-                'user_email' => $user->email,
-                'role_id' => $user->role_id,
-                'description' => 'Vehicle updated with name: ' . $updatedVehicle->vehicle_name,
-                'subject_type' => get_class($updatedVehicle),
-                'subject_id' => $updatedVehicle->id,
-                'causer_type' => get_class($user),
-                'causer_id' => $user->id,
-                'properties' => json_encode([
-                    'updated_fields' => $data
+            activity()
+                ->performedOn($updatedVehicle)
+                ->causedBy($user)
+                ->tap(function ($activity) use ($user, $updatedVehicle, $data) {
+                    $activity->log_name = "vehicle_update";
+                    $activity->user_id = $user->id;
+                    $activity->user_name = $user->name;
+                    $activity->user_email = $user->email;
+                    $activity->role_id = $user->role_id;
+                    $activity->description = "Vehicle updated with name: " . $updatedVehicle->vehicle_name;
+                    $activity->subject_id = $updatedVehicle->id;
+                    $activity->subject_type = get_class($updatedVehicle);
+                    $activity->causer_id = $user->id;
+                    $activity->causer_type = get_class($user);
+                })
+                ->withProperties([
+                    'user_id' => $user->id,
+                    'user_name' => $user->name,
+                    'user_email' => $user->email,
+                    'role_id' => $user->role_id,
+                    'vehicle_id' => $updatedVehicle->id,
+                    'vehicle_name' => $updatedVehicle->vehicle_name,
+                    'vehicle_count' => $updatedVehicle->vehicle_count,
+                    'vehicle_capacity' => $updatedVehicle->vehicle_capacity,
+                    'updated_fields' => $data // Assuming $data contains the fields that were updated
                 ])
-            ]);
+                ->log('Vehicle Updated');
+
 
             return response()->json(['vehicle' => $updatedVehicle]);
         } catch (ValidationException $e) {
@@ -193,20 +219,32 @@ class VehicleController extends Controller
             }
 
             // Audit Log : vehicle deletion 
-            Activity::create([
-                'log_name' => 'vehicle_deletion',
-                'user_id' => $user->id, 
-                'user_name' => $user->name,
-                'user_email' => $user->email,
-                'role_id' => $user->role_id,
-                'description' => 'Vehicle deleted with ID: ' . $vehicleId,
-                'subject_type' => get_class(Vehicle::find($vehicleId)),
-                'subject_id' => $vehicleId,
-                'causer_type' => get_class($user),
-                'causer_id' => $user->id,
-            ]);
-            
-            
+            activity()
+                ->performedOn(Vehicle::find($vehicleId))
+                ->causedBy($user)
+                ->tap(function ($activity) use ($user, $vehicleId) {
+                    $activity->log_name = "vehicle_deletion";
+                    $activity->user_id = $user->id;
+                    $activity->user_name = $user->name;
+                    $activity->user_email = $user->email;
+                    $activity->role_id = $user->role_id;
+                    $activity->description = "Vehicle deleted with ID: " . $vehicleId;
+                    $activity->subject_id = $vehicleId;
+                    $activity->subject_type = get_class(Vehicle::find($vehicleId));
+                    $activity->causer_id = $user->id;
+                    $activity->causer_type = get_class($user);
+                })
+                ->withProperties([
+                    'user_id' => $user->id,
+                    'user_name' => $user->name,
+                    'user_email' => $user->email,
+                    'role_id' => $user->role_id,
+                    'vehicle_id' => $vehicleId
+                ])
+                ->log('Vehicle Deleted');
+
+
+
 
             return response()->json(['vehicle' => $deletedVehicle]);
         } catch (Exception $e) {
@@ -239,7 +277,7 @@ class VehicleController extends Controller
         }
     }
 
-    
+
     /** 
      * Function : getVehicleByName
      * Description : Get a vehicle by name.

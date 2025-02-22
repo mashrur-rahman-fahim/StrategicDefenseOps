@@ -22,21 +22,26 @@ class UserDetailsController extends Controller
 
         if (!$userId) {
             // Audit Log : unauthorized access attempt
-            Activity::create([
-                'log_name' => 'user_details_access',
-                'user_id' => 0, // Use 0 as placeholder value for unauthenticated users
-                'user_name' => 'Unknown', // No authenticated user => "Unknown"
-                'user_email' => 'Unknown',
-                'description' => 'Unauthorized attempt to access user details.',
-                'subject_type' => 'App\Models\User',
-                'subject_id' => null,
-                'causer_type' => 'App\Models\User',
-                'causer_id' => null,
-                'properties' => json_encode([
+            activity()
+                ->performedOn(new \App\Models\User())
+                ->causedBy(null)
+                ->tap(function ($activity) {
+                    $activity->log_name = "user_details_access";
+                    $activity->user_id = 0;
+                    $activity->user_name = "Unknown";
+                    $activity->user_email = "Unknown";
+                    $activity->description = "Unauthorized attempt to access user details.";
+                    $activity->subject_type = "App\Models\User";
+                    $activity->subject_id = null;
+                    $activity->causer_type = "App\Models\User";
+                    $activity->causer_id = null;
+                })
+                ->withProperties([
                     'status' => 'unauthorized',
                     'timestamp' => now()->toDateTimeString(),
                 ])
-            ]);
+                ->log('Unauthorized Access to User Details');
+
             return response()->json([
                 'message' => 'Unauthorized'
             ], 401);
@@ -46,46 +51,54 @@ class UserDetailsController extends Controller
 
         if ($user) {
             // Audit Log : successful retrieval of user details
-            Activity::create([
-                'log_name' => 'user_details_access',
-                'user_id' => $request->user()->id, 
-                'user_name' => $request->user()->name ?? 'Unknown',
-                'user_email' => $request->user()->email ?? 'Unknown',
-                'description' => 'Successfully retrieved user details.',
-                'subject_type' => 'App\Models\User',
-                'subject_id' => $user->id,
-                'causer_type' => 'App\Models\User',
-                'causer_id' => $userId,
-                'properties' => json_encode([
+            activity()
+                ->performedOn($user)
+                ->causedBy($request->user())
+                ->tap(function ($activity) use ($request, $user) {
+                    $activity->log_name = "user_details_access";
+                    $activity->user_id = $request->user()->id;
+                    $activity->user_name = $request->user()->name ?? 'Unknown';
+                    $activity->user_email = $request->user()->email ?? 'Unknown';
+                    $activity->description = "Successfully retrieved user details.";
+                    $activity->subject_type = "App\Models\User";
+                    $activity->subject_id = $user->id;
+                    $activity->causer_type = "App\Models\User";
+                    $activity->causer_id = $user->id;
+                })
+                ->withProperties([
                     'status' => 'success',
                     'timestamp' => now()->toDateTimeString(),
                 ])
-            ]);
+                ->log('Successfully Retrieved User Details');
+
             return response()->json(
                 $user
             );
         }
 
         // Audit Log : user is not found
-        Activity::create([
-            'log_name' => 'user_details_access',
-            'user_id' => $request->user()->id, 
-            'user_name' => $request->user()->name ?? 'Unknown',
-            'user_email' => $request->user()->email ?? 'Unknown',
-            'description' => 'Failed to retrieve user details, user not found.',
-            'subject_type' => 'App\Models\User',
-            'subject_id' => null,
-            'causer_type' => 'App\Models\User',
-            'causer_id' => $userId,
-            'properties' => json_encode([
+        activity()
+            ->causedBy($request->user())
+            ->tap(function ($activity) use ($request, $userId) {
+                $activity->log_name = "user_details_access";
+                $activity->user_id = $request->user()->id;
+                $activity->user_name = $request->user()->name ?? 'Unknown';
+                $activity->user_email = $request->user()->email ?? 'Unknown';
+                $activity->description = "Failed to retrieve user details, user not found.";
+                $activity->subject_type = "App\Models\User";
+                $activity->subject_id = null;
+                $activity->causer_type = "App\Models\User";
+                $activity->causer_id = $userId;
+            })
+            ->withProperties([
                 'status' => 'not_found',
                 'timestamp' => now()->toDateTimeString(),
             ])
-        ]);
+            ->log('Failed to Retrieve User Details (User Not Found)');
+
 
         return response()->json([
             'message' => 'User not found'
         ], 404);
     }
 }
-
