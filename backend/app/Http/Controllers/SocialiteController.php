@@ -33,6 +33,7 @@ class SocialiteController extends Controller
                 // Audit Log : existing user login
                 Activity::create([
                     'log_name' => 'social_login',
+                    'user_id' => $user->id, 
                     'user_name' => $user->name,
                     'user_email' => $user->email,
                     'role_id' => $user->role_id,
@@ -63,6 +64,7 @@ class SocialiteController extends Controller
                     // Audit Log : new user registration
                     Activity::create([
                         'log_name' => 'social_registration',
+                        'user_id' => $userData->id, 
                         'user_name' => $userData->name,
                         'user_email' => $userData->email,
                         'role_id' => $userData->role_id,
