@@ -2,20 +2,41 @@
 
 import { useState } from "react";
 import Link from "next/link";
+import { useAuth } from "@/hooks/auth"; // Adjust import path if needed
 
 const Page = () => {
+    const { register } = useAuth({
+        middleware: "guest",
+        redirectIfAuthenticated: "/dashboard",
+    });
+
     const [name, setName] = useState("");
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
     const [passwordConfirmation, setPasswordConfirmation] = useState("");
-    const [officerId, setOfficerId] = useState("");
-    const [phone, setPhone] = useState("");
-    const [address, setAddress] = useState("");
+    const [role_id, setRoleId] = useState(1); // Default: System Administrator
+    const [parent_id, setParentId] = useState(null); // Optional
     const [errors, setErrors] = useState([]);
+
+    const roles = [
+        { id: 1, name: "System Administrator" },
+        { id: 2, name: "Operations Coordinator" },
+        { id: 3, name: "Field Specialist" },
+        { id: 4, name: "Mission Observer" },
+    ];
 
     const submitForm = (event) => {
         event.preventDefault();
-        // Handle form submission logic here
+
+        register({
+            name,
+            email,
+            password,
+            password_confirmation: passwordConfirmation,
+            role_id,
+            parent_id,
+            setErrors,
+        });
     };
 
     return (
@@ -28,26 +49,76 @@ const Page = () => {
                     </h2>
 
                     <form onSubmit={submitForm} className="mt-6">
-                        {/* Form Inputs */}
-                        {[
-                            { label: "Name", type: "text", value: name, setter: setName },
-                            { label: "E-mail", type: "email", value: email, setter: setEmail },
-                            { label: "Password", type: "password", value: password, setter: setPassword },
-                            { label: "Confirm Password", type: "password", value: passwordConfirmation, setter: setPasswordConfirmation },
-                            { label: "Officer ID", type: "text", value: officerId, setter: setOfficerId },
-                            { label: "Phone", type: "tel", value: phone, setter: setPhone },
-                            { label: "Address", type: "text", value: address, setter: setAddress },
-                        ].map((input, index) => (
-                            <input
-                                key={index}
-                                type={input.type}
-                                placeholder={input.label}
-                                className="w-full px-4 py-2 rounded-md border border-gray-600 mb-3 bg-white"
-                                value={input.value}
-                                onChange={(e) => input.setter(e.target.value)}
-                                required
-                            />
-                        ))}
+                        {/* Name */}
+                        <input
+                            type="text"
+                            placeholder="Name"
+                            className="w-full px-4 py-2 rounded-md border border-gray-600 mb-3 bg-white"
+                            value={name}
+                            onChange={(e) => setName(e.target.value)}
+                            required
+                        />
+                        {errors.name && <p className="text-red-600">{errors.name}</p>}
+
+                        {/* Email */}
+                        <input
+                            type="email"
+                            placeholder="E-mail"
+                            className="w-full px-4 py-2 rounded-md border border-gray-600 mb-3 bg-white"
+                            value={email}
+                            onChange={(e) => setEmail(e.target.value)}
+                            required
+                        />
+                        {errors.email && <p className="text-red-600">{errors.email}</p>}
+
+                        {/* Password */}
+                        <input
+                            type="password"
+                            placeholder="Password"
+                            className="w-full px-4 py-2 rounded-md border border-gray-600 mb-3 bg-white"
+                            value={password}
+                            onChange={(e) => setPassword(e.target.value)}
+                            required
+                        />
+                        {errors.password && <p className="text-red-600">{errors.password}</p>}
+
+                        {/* Confirm Password */}
+                        <input
+                            type="password"
+                            placeholder="Confirm Password"
+                            className="w-full px-4 py-2 rounded-md border border-gray-600 mb-3 bg-white"
+                            value={passwordConfirmation}
+                            onChange={(e) => setPasswordConfirmation(e.target.value)}
+                            required
+                        />
+                        {errors.password_confirmation && (
+                            <p className="text-red-600">{errors.password_confirmation}</p>
+                        )}
+
+                        {/* Role Selection */}
+                        <select
+                            value={role_id}
+                            onChange={(e) => setRoleId(Number(e.target.value))}
+                            className="w-full px-4 py-2 rounded-md border border-gray-600 mb-3 bg-white text-black"
+                            required
+                        >
+                            {roles.map((role) => (
+                                <option key={role.id} value={role.id}>
+                                    {role.name}
+                                </option>
+                            ))}
+                        </select>
+                        {errors.role_id && <p className="text-red-600">{errors.role_id}</p>}
+
+                        {/* Parent ID (Optional) */}
+                        <input
+                            type="number"
+                            placeholder="Parent ID (Optional)"
+                            className="w-full px-4 py-2 rounded-md border border-gray-600 mb-3 bg-white"
+                            value={parent_id || ""}
+                            onChange={(e) => setParentId(e.target.value)}
+                        />
+                        {errors.parent_id && <p className="text-red-600">{errors.parent_id}</p>}
 
                         {/* Sign Up Button */}
                         <button className="w-full bg-black text-white py-2 rounded-md mt-3 font-bold">
@@ -72,16 +143,21 @@ const Page = () => {
                 </div>
             </div>
 
-            {/* Right Side - Image */}
-            <div
-                className="flex-1 h-full bg-cover bg-center"
-                style={{
-                    backgroundImage: `url('/registration.jpg')`,
-                    backgroundSize: "cover",
-                    backgroundPosition: "center",
-                    width: "50%",
-                }}
-            ></div>
+            {/* Right Side - Image with Gradient Overlay */}
+            <div className="flex-1 h-full relative">
+                {/* Gradient Overlay */}
+                <div className="absolute inset-0 bg-gradient-to-r from-black/70 via-transparent to-black/30"></div>
+
+                {/* Background Image */}
+                <div
+                    className="absolute inset-0 bg-cover bg-center"
+                    style={{
+                        backgroundImage: `url('/registration.jpg')`,
+                        backgroundSize: "cover",
+                        backgroundPosition: "center",
+                    }}
+                ></div>
+            </div>
         </div>
     );
 };
