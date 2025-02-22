@@ -3,6 +3,7 @@
 namespace App\Services;
 
 use App\Models\Resources;
+use App\Models\User;
 use App\Models\Weapon;
 
 class ResourceServices{
@@ -25,6 +26,10 @@ class ResourceServices{
         return false;
     }
     public function getAllResources($userId){
+        $user=User::find($userId);
+        if($user->role_id==2 && $user->parent_id!=null){
+            $userId=$user->parent_id;
+        }
         $weapon=$this->weaponService->getAllWeapons($userId);
         $vehicle=$this->vehicleService->getAllVehicles($userId);
         $equipment=$this->equipmentService->getAllEquipment($userId);
