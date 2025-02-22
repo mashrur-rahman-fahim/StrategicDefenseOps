@@ -81,16 +81,9 @@ class WeaponController extends Controller
                 DB::commit();
 
                 // Audit Log : created weapon
-                Activity::causedBy(auth()->user())
-                    ->performedOn($weapon)
-                    ->withProperties([
-                        'weapon_name' => $weapon->name,
-                        'status' => $weapon->status,
-                    ])
-                    ->log('Weapon created');
-
                 Activity::create([
                     'log_name' => 'weapon_creation',
+                    'user_id' => $user->id, 
                     'user_name' => $user->name,
                     'user_email' => $user->email,
                     'role_id' => $user->role_id,
@@ -153,6 +146,7 @@ class WeaponController extends Controller
             // Audit Log : updated weapon
             Activity::create([
                 'log_name' => 'weapon_update',
+                'user_id' => $user->id, 
                 'user_name' => $user->name,
                 'user_email' => $user->email,
                 'role_id' => $user->role_id,
@@ -202,6 +196,7 @@ class WeaponController extends Controller
             // Audit Log : deleted weapon
             Activity::create([
                 'log_name' => 'weapon_deletion',
+                'user_id' => $user->id, 
                 'user_name' => $user->name,
                 'user_email' => $user->email,
                 'role_id' => $user->role_id,
