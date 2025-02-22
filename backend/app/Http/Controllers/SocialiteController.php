@@ -85,6 +85,9 @@ class SocialiteController extends Controller
              // Audit Log : failed authentication attempt
              Activity::create([
                 'log_name' => 'social_authentication_failed',
+                'user_id' => null, // No user is authenticated yet
+                'user_name' => null, // No user name available
+                'user_email' => null, // No email available
                 'description' => 'Google authentication failed.',
                 'subject_type' => null,
                 'subject_id' => null,
@@ -95,6 +98,7 @@ class SocialiteController extends Controller
                     'provider' => 'google'
                 ])
             ]);
+            
 
             /*For Debugging purpose only 
              * dd($e); */

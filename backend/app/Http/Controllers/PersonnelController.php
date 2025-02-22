@@ -24,8 +24,8 @@ class PersonnelController extends Controller
         $this->resourceServices = $resourceServices;
     }
 
-    
-   /**
+
+    /**
      * Function : addPersonnel
      * Description : Add a new personnel along with a linked resource.
      * @param Request $request - The incoming request containing personnel data.
@@ -79,13 +79,28 @@ class PersonnelController extends Controller
                 DB::commit();
 
                 // Audit Log: Personnel added
-                Activity::causedBy(auth()->user())
-                    ->performedOn($personnel)
-                    ->withProperties([
+                Activity::create([
+                    'log_name' => 'personnel_created',
+                    'user_id' => $user->id, 
+                    'user_name' => $user->name,
+                    'user_email' => $user->email,
+                    'role_id' => $user->role_id,
+                    'description' => 'Personnel added with name: ' . $personnel->personnel_name,
+                    'subject_type' => get_class($personnel),
+                    'subject_id' => $personnel->id,
+                    'causer_type' => get_class($user),
+                    'causer_id' => $user->id,
+                    'event' => 'created', 
+                    'batch_uuid' => \Illuminate\Support\Str::uuid()->toString(), 
+                    'properties' => json_encode([
                         'personnel_name' => $personnel->personnel_name,
                         'personnel_count' => $personnel->personnel_count,
-                    ])
-                    ->log('Personnel added');
+                    ]),
+                    'created_at' => now(),
+                    'updated_at' => now()
+                ]);
+
+
 
                 return response()->json([
                     'message' => 'Personnel added successfully',
@@ -136,9 +151,10 @@ class PersonnelController extends Controller
                 return response()->json(['error' => 'Failed to update personnel'], 500);
             }
 
-            // Audit Log : Personnel updated
+            // Audit Log: Personnel updated
             Activity::create([
                 'log_name' => 'personnel_update',
+                'user_id' => $user->id, // New field
                 'user_name' => $user->name,
                 'user_email' => $user->email,
                 'role_id' => $user->role_id,
@@ -147,10 +163,16 @@ class PersonnelController extends Controller
                 'subject_id' => $updatedPersonnel->id,
                 'causer_type' => get_class($user),
                 'causer_id' => $user->id,
+                'event' => 'updated', // New field
+                'batch_uuid' => \Illuminate\Support\Str::uuid()->toString(), // Generate UUID
                 'properties' => json_encode([
                     'updated_fields' => $data
-                ])
+                ]),
+                'created_at' => now(),
+                'updated_at' => now()
             ]);
+
+
 
             return response()->json(['personnel' => $updatedPersonnel]);
         } catch (ValidationException $e) {
@@ -163,7 +185,7 @@ class PersonnelController extends Controller
     }
 
 
-   /**
+    /**
      * Function : deletePersonnel
      * Description : Delete a personnel from the database.
      * @param int $personnelId - The ID of the personnel to be deleted.
@@ -178,12 +200,12 @@ class PersonnelController extends Controller
                 return response()->json(['error' => 'Unauthorized'], 403);
             }
 
-           // Find the personnel to delete
-        $personnel = $this->personnelService->findPersonnelById($personnelId);
+            // Find the personnel to delete
+            $personnel = $this->personnelService->findPersonnelById($personnelId);
 
-        if (!$personnel) {
-            return response()->json(['error' => 'Personnel not found'], 404);
-        }
+            if (!$personnel) {
+                return response()->json(['error' => 'Personnel not found'], 404);
+            }
 
             // Delete personnel
             $deletedPersonnel = $this->personnelService->deletePersonnel($personnelId, auth()->id());
@@ -191,8 +213,10 @@ class PersonnelController extends Controller
                 return response()->json(['error' => 'Failed to delete personnel'], 500);
             }
 
+            // Audit Log : Personnel deleted
             Activity::create([
                 'log_name' => 'personnel_deletion',
+                'user_id' => $user->id,
                 'user_name' => $user->name,
                 'user_email' => $user->email,
                 'role_id' => $user->role_id,
@@ -201,7 +225,15 @@ class PersonnelController extends Controller
                 'subject_id' => $personnel->id,
                 'causer_type' => get_class($user),
                 'causer_id' => $user->id,
+                'event' => 'deleted',
+                'batch_uuid' => \Illuminate\Support\Str::uuid()->toString(),
+                'properties' => json_encode([
+                    'deleted_personnel' => $personnel->personnel_name
+                ]),
+                'created_at' => now(),
+                'updated_at' => now()
             ]);
+
 
             return response()->json(['personnel' => $deletedPersonnel]);
         } catch (Exception $e) {
@@ -211,7 +243,7 @@ class PersonnelController extends Controller
     }
 
 
-   /**
+    /**
      * Function : getAllPersonnel
      * Description : Retrieve all personnel from the database.
      * @return JsonResponse - The response containing a list of all personnel or an error message.
@@ -235,7 +267,7 @@ class PersonnelController extends Controller
     }
 
 
-   /**
+    /**
      * Function : getPersonnelByName
      * Description : Retrieve personnel by their name.
      * @param string $personnelName - The name of the personnel to search for.
