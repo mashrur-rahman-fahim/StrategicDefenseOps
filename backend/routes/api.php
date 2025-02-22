@@ -6,6 +6,7 @@ use App\Http\Controllers\OperationController;
 use App\Http\Controllers\OperationResourcesController;
 
 use App\Http\Controllers\ReportController;
+use App\Http\Controllers\ResourcesController;
 use App\Http\Controllers\UnassignRoleController;
 use App\Http\Controllers\UserDetailsController;
 use App\Http\Controllers\WeaponController;
@@ -129,7 +130,7 @@ Route::put('/update-operation-resources/{operationId}',[OperationResourcesContro
 
 Route::post('/generate-report/{operationId}',[ReportController::class,'generateReport'])->middleware('auth:sanctum');
 
-Route::get('/gell-all-resources')
+Route::get('/get-all-resources',[ResourcesController::class,'getAllResources'])->middleware('auth:sanctum');
 
 
 Route::post('/ollama/generate', [OllamaController::class, 'generateResponse'])->middleware('auth:sanctum');

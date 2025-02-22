@@ -34,8 +34,20 @@ class ResourceServices{
         $vehicle=$this->vehicleService->getAllVehicles($userId);
         $equipment=$this->equipmentService->getAllEquipment($userId);
         $personnel=$this->personnelService->getAllPersonnel($userId);
-        $resources=array_merge($weapon,$vehicle,$equipment,$personnel);
-        return $resources;
+       $resources=[];
+       if($weapon){
+            $resources=array_merge($resources,$weapon);
+       }
+       if($vehicle){
+            $resources=array_merge($resources,$vehicle);
+       }
+       if($equipment){
+            $resources=array_merge($resources,$equipment);
+       }
+       if($personnel){
+            $resources=array_merge($resources,$personnel);
+       }
+        return [count($resources),$resources];
 
     }
     
