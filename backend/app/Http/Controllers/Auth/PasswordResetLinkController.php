@@ -38,12 +38,13 @@ class PasswordResetLinkController extends Controller
             // Audit Log : sending the reset link
             Activity::create([
                 'log_name' => 'success_password_reset_request',
+                'user_id' => $user ? $user->id : null, 
                 'user_name' => $user ? $user->name : null, 
                 'user_email' => $user ? $user->email : null, 
                 'role_id' => $user ? $user->role_id : null, 
                 'description' => 'Password reset link sent to ' . $request->email,
-                'subject_type' => null, // No specific subject (operation is about sending reset link)
-                'subject_id' => null,   // No specific subject ID
+                'subject_type' => null, 
+                'subject_id' => null,   
                 'causer_type' => 'App\Models\User', 
                 'causer_id' => $user ? $user->id : null, 
                 'properties' => json_encode([
@@ -54,6 +55,7 @@ class PasswordResetLinkController extends Controller
             // Audit Log : reset link could not be sent
             Activity::create([
                 'log_name' => 'failed_password_reset_request',
+                'user_id' => $user ? $user->id : null, 
                 'user_name' => $user ? $user->name : null,
                 'user_email' => $user ? $user->email : null,
                 'role_id' => $user ? $user->role_id : null,
