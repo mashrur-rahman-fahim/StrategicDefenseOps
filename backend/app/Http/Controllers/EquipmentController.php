@@ -78,20 +78,25 @@ class EquipmentController extends Controller
 
                 // Audit Log : create equipment
                 Activity::create([
-                    'log_name' => 'equipment_creation',
-                    'user_name' => $user->name,
-                    'user_email' => $user->email,
-                    'role_id' => $user->role_id,
-                    'description' => 'Equipment created with name: ' . $equipment->equipment_name,
-                    'subject_type' => get_class($equipment),
-                    'subject_id' => $equipment->id,
-                    'causer_type' => get_class($user),
-                    'causer_id' => $user->id,
-                    'properties' => json_encode([
+                    'log_name' => 'equipment_creation',  
+                    'user_id' => $user->id, 
+                    'user_name' => $user->name,  
+                    'user_email' => $user->email,  
+                    'role_id' => $user->role_id,  
+                    'description' => 'Equipment created with name: ' . $equipment->equipment_name,  
+                    'subject_type' => get_class($equipment),  
+                    'subject_id' => $equipment->id,  
+                    'causer_type' => get_class($user),  
+                    'causer_id' => $user->id, 
+                    'properties' => json_encode([ 
                         'equipment_name' => $equipment->equipment_name,
                         'equipment_count' => $equipment->equipment_count,
                     ]),
+                    'batch_uuid' => null,  
+                    'created_at' => now(),  
+                    'updated_at' => now(),  
                 ]);
+                
 
                 return response()->json([
                     'message' => 'Equipment added successfully',
@@ -135,28 +140,35 @@ class EquipmentController extends Controller
             if (!$user || $user->role_id > 2) {
                 return response()->json(['error' => 'Unauthorized'], 403);
             }
-
+            
+            $equipment = Equipment::find($equipmentId); 
             // Update equipment
             $updatedEquipment = $this->equipmentService->updateEquipment($data, $equipmentId, auth()->id());
             if (!$updatedEquipment) {
                 return response()->json(['error' => 'Failed to update equipment'], 500);
             }
-
+        
             // Audit Log : update equipment
             Activity::create([
-                'log_name' => 'equipment_update',
-                'user_name' => $user->name,
-                'user_email' => $user->email,
+                'log_name' => 'equipment_creation',
+                'user_id' => $user->id,  
+                'user_name' => $user->name,  
+                'user_email' => $user->email,  
                 'role_id' => $user->role_id,
-                'description' => 'Equipment updated with ID: ' . $updatedEquipment->id,
-                'subject_type' => get_class($updatedEquipment),
-                'subject_id' => $updatedEquipment->id,
+                'description' => 'Equipment created with name: ' . $equipment->equipment_name,
+                'subject_type' => get_class($equipment),
+                'subject_id' => $equipment->id,
                 'causer_type' => get_class($user),
                 'causer_id' => $user->id,
                 'properties' => json_encode([
-                    'updated_fields' => $data
-                ])
+                    'equipment_name' => $equipment->equipment_name,
+                    'equipment_count' => $equipment->equipment_count,
+                ]),
+                'batch_uuid' => null,  
+                'created_at' => now(),  
+                'updated_at' => now(),  
             ]);
+            
 
 
             return response()->json(['equipment' => $updatedEquipment]);
@@ -186,7 +198,7 @@ class EquipmentController extends Controller
             
             // Fetch the equipment object using the ID
            $equipment = $this->equipmentService->getEquipmentById($equipmentId);
-
+           
             // Delete equipment
             $deletedEquipment = $this->equipmentService->deleteEquipment($equipmentId, auth()->id());
             if (!$deletedEquipment) {
@@ -196,19 +208,23 @@ class EquipmentController extends Controller
             // Audit Log : delete equipment
             Activity::create([
                 'log_name' => 'equipment_deletion',
+                'user_id' => $user->id,
                 'user_name' => $user->name,
                 'user_email' => $user->email,
                 'role_id' => $user->role_id,
                 'description' => 'Equipment deleted with ID: ' . $equipmentId,
-                'subject_type' => get_class($equipment),  // Using the actual equipment object
-                'subject_id' => $equipmentId,  // Using the ID of the equipment
+                'subject_type' => get_class($equipment),
+                'subject_id' => $equipmentId,
                 'causer_type' => get_class($user),
                 'causer_id' => $user->id,
                 'properties' => json_encode([
-                    'equipment_name' => $equipment->equipment_name
-                ])
+                    'equipment_name' => $equipment->equipment_name,
+                ]),
+                'batch_uuid' => null,  
+                'created_at' => now(),  
+                'updated_at' => now(),  
             ]);
-
+            
             return response()->json(['equipment' => $deletedEquipment]);
         } catch (Exception $e) {
             // Handle unexpected errors
