@@ -80,6 +80,7 @@ class VehicleController extends Controller
                 // Audit Log : vehicle creation
                 Activity::create([
                     'log_name' => 'vehicle_creation',
+                    'user_id' => $user->id, 
                     'user_name' => $user->name,
                     'user_email' => $user->email,
                     'role_id' => $user->role_id,
@@ -145,6 +146,7 @@ class VehicleController extends Controller
             // Audit Log : vehicle update
             Activity::create([
                 'log_name' => 'vehicle_update',
+                'user_id' => $user->id, 
                 'user_name' => $user->name,
                 'user_email' => $user->email,
                 'role_id' => $user->role_id,
@@ -193,12 +195,13 @@ class VehicleController extends Controller
             // Audit Log : vehicle deletion 
             Activity::create([
                 'log_name' => 'vehicle_deletion',
+                'user_id' => $user->id, 
                 'user_name' => $user->name,
                 'user_email' => $user->email,
                 'role_id' => $user->role_id,
                 'description' => 'Vehicle deleted with ID: ' . $vehicleId,
-                'subject_type' => get_class(Vehicle::find($vehicleId)),  
-                'subject_id' => $vehicleId,  
+                'subject_type' => get_class(Vehicle::find($vehicleId)),
+                'subject_id' => $vehicleId,
                 'causer_type' => get_class($user),
                 'causer_id' => $user->id,
             ]);
