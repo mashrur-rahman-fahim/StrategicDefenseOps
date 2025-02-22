@@ -72,21 +72,16 @@ const Page = () => {
                 </div>
             </div>
 
-            {/* Right Side - Image with Gradient Overlay */}
-            <div className="flex-1 h-full relative">
-                {/* Gradient Overlay */}
-                <div className="absolute inset-0 bg-gradient-to-r from-black/70 via-transparent to-black/30"></div>
-
-                {/* Background Image */}
-                <div
-                    className="absolute inset-0 bg-cover bg-center"
-                    style={{
-                        backgroundImage: `url('/registration.jpg')`,
-                        backgroundSize: "cover",
-                        backgroundPosition: "center",
-                    }}
-                ></div>
-            </div>
+            {/* Right Side - Image */}
+            <div
+                className="flex-1 h-full bg-cover bg-center"
+                style={{
+                    backgroundImage: `url('/registration.jpg')`,
+                    backgroundSize: "cover",
+                    backgroundPosition: "center",
+                    width: "50%",
+                }}
+            ></div>
         </div>
     );
 };
