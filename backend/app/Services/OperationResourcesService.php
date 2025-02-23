@@ -1,12 +1,17 @@
 <?php
 
 namespace App\Services;
+use App\Models\OperationResources;
+use Illuminate\Support\Facades\DB;
+use \Exception;
+
+
 
 use App\Models\Operation;
-use App\Models\OperationResources;
+
 use App\Models\Resources;
 use App\Models\User;
-use DB;
+
 
 class OperationResourcesService
 {
@@ -205,6 +210,9 @@ class OperationResourcesService
 
                 $resourceId = $operationResources[$i]->resource_id;
                 $resource = Resources::find($resourceId);
+                if(!$resource) {
+                    throw new \Exception("Could not find resource");
+                }
                 $resourceCategory = DB::selectOne("select * from resource_category where id=?", [$resource->resource_category]);
                 $resourceCategory = $resourceCategory->resource_category;
                 if ($resourceCategory == "vehicle") {

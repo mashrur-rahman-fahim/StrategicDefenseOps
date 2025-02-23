@@ -13,7 +13,10 @@ class LoginRequest extends FormRequest
 {
     
     /**
-     * Determine if the user is authorized to make this request.
+     * Function: authorize
+     * Description: Determine if the user is authorized to make this request.
+     * @param NA
+     * @return bool
      */
     public function authorize(): bool
     {
@@ -21,8 +24,9 @@ class LoginRequest extends FormRequest
     }
 
     /**
-     * Get the validation rules that apply to the request.
-     *
+     * Function: rules
+     * Description: Get the validation rules that apply to the request.
+     * @param NA
      * @return array<string, \Illuminate\Contracts\Validation\Rule|array|string>
      */
     public function rules(): array
@@ -34,8 +38,10 @@ class LoginRequest extends FormRequest
     }
 
     /**
-     * Attempt to authenticate the request's credentials.
-     *
+     * Function: authenticate
+     * Description: Attempt to authenticate the request's credentials.
+     * @param NA
+     * @return void
      * @throws \Illuminate\Validation\ValidationException
      */
     public function authenticate(): void
@@ -54,8 +60,10 @@ class LoginRequest extends FormRequest
     }
 
     /**
-     * Ensure the login request is not rate limited.
-     *
+     * Function: ensureIsNotRateLimited
+     * Description: Ensure the login request is not rate limited.
+     * @param NA
+     * @return void
      * @throws \Illuminate\Validation\ValidationException
      */
     public function ensureIsNotRateLimited(): void
@@ -77,7 +85,10 @@ class LoginRequest extends FormRequest
     }
 
     /**
-     * Get the rate limiting throttle key for the request.
+     * Function: throttleKey
+     * Description: Get the rate limiting throttle key for the request.
+     * @param NA
+     * @return string
      */
     public function throttleKey(): string
     {
