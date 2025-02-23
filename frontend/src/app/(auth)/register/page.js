@@ -19,6 +19,16 @@ const Page = () => {
     const [errors, setErrors] = useState([]);
     const [showPassword, setShowPassword] = useState(false);
     const [showConfirmPassword, setShowConfirmPassword] = useState(false);
+    
+    const handleGoogleLogin = async () => {
+        try {
+            // Redirect user to Laravel's Google login route
+            window.location.href = `http://127.0.0.1:8000/auth/google`;
+        } catch (error) {
+            console.error("Google login error:", error);
+        }
+    };
+    
 
     const roles = [
         { id: 1, name: "System Administrator" },
@@ -26,6 +36,7 @@ const Page = () => {
         { id: 3, name: "Field Specialist" },
         { id: 4, name: "Mission Observer" },
     ];
+    
 
     const submitForm = (event) => {
         event.preventDefault();
@@ -149,7 +160,9 @@ const Page = () => {
                         <div className="text-center text-gray-700 my-3 font-bold">or</div>
 
                         {/* Google Button */}
-                        <button className="w-full bg-black text-white py-2 rounded-md font-bold">
+                        <button 
+                        onClick={handleGoogleLogin} 
+                        className="w-full bg-black text-white py-2 rounded-md font-bold">
                             Continue with Google
                         </button>
 
