@@ -1,11 +1,16 @@
 'use client';
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { Card, Button, Row, Col, Container } from 'react-bootstrap';
 import { Icon } from "@iconify/react";
+import axios from '@/lib/axios'
 
 export default function Resources() {
+  const [resourceData, setResourceData] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
+
   const overviewData = {
-    totalResources: 230940,
+    totalResources: resourceData[0] || 0,
     inUse: 1400,
     available: 22890,
     maintenance: 100
@@ -42,6 +47,41 @@ export default function Resources() {
     }
   ];
 
+  useEffect(() => {
+    const fetchResources = async () => {
+      try {
+        setLoading(true);
+        const response = await axios.get('/api/get-all-resources');
+        console.log('Resources:', response.data);
+        setResourceData(response.data);
+        setError(null);
+      } catch (err) {
+        setError('Failed to fetch resources');
+        console.error('Error fetching resources:', err);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchResources();
+  }, []);
+
+  if (loading) {
+    return (
+      <Container fluid className="p-4">
+        <div className="text-center">Loading resources...</div>
+      </Container>
+    );
+  }
+
+  if (error) {
+    return (
+      <Container fluid className="p-4">
+        <div className="text-danger">{error}</div>
+      </Container>
+    );
+  }
+
   return (
     <Container fluid className="p-4">
       {/* Resource Overview*/}
@@ -49,7 +89,7 @@ export default function Resources() {
       
       <Row className="mb-4 g-3">
         <Col xs={12} sm={6} md={3}>
-          <Card border="primary" className="shadow rounded-5">
+          <Card border="primary" className="shadow-sm rounded-5">
             <Card.Body className="d-flex flex-column justify-content-center align-items-center">
               <Card.Title className="text-muted">Total Resources</Card.Title>
               <Card.Text className="fs-1 fw-bold">
@@ -60,7 +100,7 @@ export default function Resources() {
         </Col>
         
         <Col xs={12} sm={6} md={3}>
-          <Card border="primary" className="shadow rounded-5">
+          <Card border="primary" className="shadow-sm rounded-5">
             <Card.Body className="d-flex flex-column justify-content-center align-items-center">
               <Card.Title className="text-muted">In use</Card.Title>
               <Card.Text className="fs-1 fw-bold">
@@ -71,7 +111,7 @@ export default function Resources() {
         </Col>
         
         <Col xs={12} sm={6} md={3}>
-          <Card border="primary" className="shadow rounded-5">
+          <Card border="primary" className="shadow-sm rounded-5">
             <Card.Body className="d-flex flex-column justify-content-center align-items-center">
               <Card.Title className="text-muted">Available</Card.Title>
               <Card.Text className="fs-1 fw-bold">
@@ -82,7 +122,7 @@ export default function Resources() {
         </Col>
         
         <Col xs={12} sm={6} md={3}>
-          <Card border="primary" className="shadow rounded-5">
+          <Card border="primary" className="shadow-sm rounded-5">
             <Card.Body className="d-flex flex-column justify-content-center align-items-center">
               <Card.Title className="text-muted">Maintenance</Card.Title>
               <Card.Text className="fs-1 fw-bold">
