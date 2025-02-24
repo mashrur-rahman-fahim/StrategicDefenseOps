@@ -3,11 +3,15 @@ import React, { useState, useEffect } from 'react';
 import { Card, Button, Row, Col, Container } from 'react-bootstrap';
 import { Icon } from "@iconify/react";
 import axios from '@/lib/axios'
+import { useAuth } from '@/hooks/auth'
+import ResourceFormModal from './ResourceFormModal';
 
 export default function Resources() {
+  //const { user } = useAuth({ middleware: 'auth', redirectIfAuthenticated: '/resources' });
   const [resourceData, setResourceData] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
+  const [showModal, setShowModal] = useState(false);
 
   const overviewData = {
     totalResources: resourceData[0] || 0,
@@ -47,24 +51,27 @@ export default function Resources() {
     }
   ];
 
-  useEffect(() => {
-    const fetchResources = async () => {
-      try {
-        setLoading(true);
-        const response = await axios.get('/api/get-all-resources');
-        console.log('Resources:', response.data);
-        setResourceData(response.data);
-        setError(null);
-      } catch (err) {
-        setError('Failed to fetch resources');
-        console.error('Error fetching resources:', err);
-      } finally {
-        setLoading(false);
-      }
-    };
+  const fetchResources = async () => {
+    try {
+      setLoading(true);
+      const response = await axios.get('/api/get-all-resources');
+      console.log('Resources:', response.data);
+      setResourceData(response.data);
+      setError(null);
+    } catch (err) {
+      setError('Failed to fetch resources');
+      console.error('Error fetching resources:', err);
+    } finally {
+      setLoading(false);
+    }
+  };
 
+  useEffect(() => {
     fetchResources();
   }, []);
+
+  const handleOpenModal = () => setShowModal(true);
+  const handleCloseModal = () => setShowModal(false);
 
   if (loading) {
     return (
@@ -134,11 +141,17 @@ export default function Resources() {
       </Row>
 
       <Button variant="primary" className="mb-4">
-        View All Resources
+        All Resources
       </Button>
       
       {/* Resources*/}
-      <h1 className="mb-4">Resources</h1>
+      <div className='d-flex justify-content-between align-items-center'>
+        <h1 className="mb-4">Resources</h1>
+        <Button variant="outline-primary" className="mb-4" onClick={handleOpenModal}>
+          New Resource
+        </Button>
+      </div>
+      
       
       <Row className="g-3">
         {resourceCategories.map((category, index) => (
@@ -171,6 +184,11 @@ export default function Resources() {
           </Col>
         ))}
       </Row>
+      <ResourceFormModal 
+        show={showModal} 
+        handleClose={handleCloseModal} 
+        refreshResources={fetchResources} 
+      />
     </Container>
   );
 }
