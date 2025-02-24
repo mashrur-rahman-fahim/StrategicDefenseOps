@@ -18,7 +18,7 @@ class OllamaController extends Controller
     public function generateResponse(Request $request): StreamedResponse
     {
         // Validate the request
-        set_time_limit(300);
+        // set_time_limit(300);
         $validated = $request->validate([
             'prompt' => 'required|string',
         ]);

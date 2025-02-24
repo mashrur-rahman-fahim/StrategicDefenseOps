@@ -161,12 +161,12 @@ create table operation_resources (
     resource_count INT unsigned not null,
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
-    FOREIGN KEY (resource_id) references resources(id) on DELETE CASCADE,
+    FOREIGN KEY (resource_id) references Resources(id) on DELETE CASCADE,
     FOREIGN KEY (operation_id) REFERENCES operations(id) on DELETE CASCADE
 );
 
 CREATE TABLE activity_log (
-    id int UNSIGNED AUTO_INCREMENT PRIMARY KEY,
+    id INT unsigned AUTO_INCREMENT PRIMARY KEY,
     log_name VARCHAR(255) NULL,
     user_id INT unsigned NOT NULL,
     user_name VARCHAR(255) NULL,
