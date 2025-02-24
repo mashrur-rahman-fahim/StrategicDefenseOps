@@ -60,6 +60,7 @@ const ResourceFormModal = ({ show, handleClose, refreshResources }) => {
       if (payload.personnel_count) payload.personnel_count = parseInt(payload.personnel_count);
       if (payload.equipment_count) payload.equipment_count = parseInt(payload.equipment_count);
       
+      //console.log(payload);
       const response = await axios.post(endpoint, payload);
       console.log('Resource added:', response.data);
       setSuccess(true);
@@ -108,7 +109,7 @@ const ResourceFormModal = ({ show, handleClose, refreshResources }) => {
               />
             </Form.Group>
             <Form.Group className="mb-3">
-              <Form.Label>Type</Form.Label>
+              <Form.Label>Type*</Form.Label>
               <Form.Select 
                 name="weapon_type" 
                 value={formData.weapon_type || ''} 
@@ -116,12 +117,12 @@ const ResourceFormModal = ({ show, handleClose, refreshResources }) => {
                 required
               >
                 <option value="">Select type</option>
-                <option value="rifle">Rifle</option>
-                <option value="pistol">Pistol</option>
-                <option value="shotgun">Shotgun</option>
-                <option value="sniper">Sniper</option>
-                <option value="grenade">Grenade</option>
-                <option value="other">Other</option>
+                <option value="Rifle">Rifle</option>
+                <option value="Pistol">Pistol</option>
+                <option value="Shotgun">Shotgun</option>
+                <option value="Sniper">Sniper</option>
+                <option value="Grenade">Grenade</option>
+                <option value="Other">Other</option>
               </Form.Select>
             </Form.Group>
             <Form.Group className="mb-3">
@@ -162,17 +163,20 @@ const ResourceFormModal = ({ show, handleClose, refreshResources }) => {
               />
             </Form.Group>
             <Form.Group className="mb-3">
-              <Form.Label>Type</Form.Label>
+              <Form.Label>Type*</Form.Label>
               <Form.Select 
                 name="vehicle_type" 
                 value={formData.vehicle_type || ''} 
                 onChange={handleInputChange}
+                required
               >
-                <option value="">Select category</option>
-                <option value="car">Car</option>
-                <option value="truck">Truck</option>
-                <option value="helicopter">Helicopter</option>
-                <option value="other">Other</option>
+                <option value="">Select type</option>
+                <option value="Utility Vehicle">Utility Vehicle</option>
+                <option value="Tank">Tank</option>
+                <option value="Drone">Drone</option>
+                <option value="Helicopter">Helicopter</option>
+                <option value="Ship">Ship</option>
+                <option value="Other">Other</option>
               </Form.Select>
             </Form.Group>
             <Form.Group className="mb-3">
@@ -213,18 +217,19 @@ const ResourceFormModal = ({ show, handleClose, refreshResources }) => {
               />
             </Form.Group>
             <Form.Group className="mb-3">
-              <Form.Label>Category*</Form.Label>
+              <Form.Label>Type*</Form.Label>
               <Form.Select 
                 name="personnel_category" 
                 value={formData.personnel_category || ''} 
                 onChange={handleInputChange}
                 required
               >
-                <option value="">Select category</option>
-                <option value="medical">Medical</option>
-                <option value="engineering">Engineering</option>
-                <option value="combat">Combat</option>
-                <option value="logistics">Logistics</option>
+                <option value="">Select type</option>
+                <option value="Medic">Medic</option>
+                <option value="Engineer">Engineer</option>
+                <option value="Combat">Combat</option>
+                <option value="Logistics">Logistics</option>
+                <option value="Other">Other</option>
               </Form.Select>
             </Form.Group>
             <Form.Group className="mb-3">
@@ -285,14 +290,20 @@ const ResourceFormModal = ({ show, handleClose, refreshResources }) => {
               />
             </Form.Group>
             <Form.Group className="mb-3">
-              <Form.Label>Type</Form.Label>
-              <Form.Control 
-                type="text" 
+              <Form.Label>Type*</Form.Label>
+              <Form.Select 
                 name="equipment_type" 
                 value={formData.equipment_type || ''} 
-                onChange={handleInputChange} 
-                placeholder="e.g. Radio, Television"
-              />
+                onChange={handleInputChange}
+                required
+              >
+                <option value="">Select type</option>
+                <option value="Medical Supplies">Medical Supplies</option>
+                <option value="Surveillance & Communication">Surveillance & Communication</option>
+                <option value="Protective Gear">Protective Gear</option>
+                <option value="Tools">Tools</option>
+                <option value="Other">Other</option>
+              </Form.Select>
             </Form.Group>
             <Form.Group className="mb-3">
               <Form.Label>Serial Number*</Form.Label>
