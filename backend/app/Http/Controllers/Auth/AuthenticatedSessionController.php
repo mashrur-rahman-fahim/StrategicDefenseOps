@@ -33,7 +33,7 @@ class AuthenticatedSessionController extends Controller
                 return response()->json(['message' => 'User not found'], 404);
             }
             
-            // Audit Log : User login
+            Audit Log : User login
             Activity::performedOn($user)
                 ->causedBy(Auth::user())
                 ->tap(function ($activity) use ($user) {

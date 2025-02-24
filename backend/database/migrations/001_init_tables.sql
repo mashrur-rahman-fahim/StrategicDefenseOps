@@ -165,8 +165,8 @@ create table operation_resources (
     FOREIGN KEY (operation_id) REFERENCES operations(id) on DELETE CASCADE
 );
 
-CREATE TABLE activity_log (
-    id INT unsigned AUTO_INCREMENT PRIMARY KEY,
+CREATE TABLE activity_log(
+    id int unsigned auto_increment PRIMARY KEY,
     log_name VARCHAR(255) NULL,
     user_id INT unsigned NOT NULL,
     user_name VARCHAR(255) NULL,
