@@ -161,7 +161,7 @@ create table operation_resources (
     resource_count INT unsigned not null,
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
-    FOREIGN KEY (resource_id) references resources(id) on DELETE CASCADE,
+    FOREIGN KEY (resource_id) references Resources(id) on DELETE CASCADE,
     FOREIGN KEY (operation_id) REFERENCES operations(id) on DELETE CASCADE
 );
 
