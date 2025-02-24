@@ -72,7 +72,7 @@ return [
     |
     */
 
-    // 'connection' => env('SESSION_CONNECTION'),
+    'connection' => env('SESSION_CONNECTION'),
 
     /*
     |--------------------------------------------------------------------------
@@ -100,7 +100,7 @@ return [
     |
     */
 
-    // 'store' => env('SESSION_STORE'),
+    'store' => env('SESSION_STORE'),
 
     /*
     |--------------------------------------------------------------------------
