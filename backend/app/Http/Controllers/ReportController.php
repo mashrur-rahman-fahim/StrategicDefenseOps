@@ -20,7 +20,7 @@ class ReportController extends Controller
 
     public function generateReport(Request $request, $operationId)
     {
-        set_time_limit(300); // 5 minutes
+        // set_time_limit(300); // 5 minutes
 
         $data = $request->validate([
             "report_type" => "required|string",

@@ -166,7 +166,7 @@ create table operation_resources (
 );
 
 CREATE TABLE activity_log (
-    id int UNSIGNED AUTO_INCREMENT PRIMARY KEY,
+    id INT unsigned AUTO_INCREMENT PRIMARY KEY,
     log_name VARCHAR(255) NULL,
     user_id INT unsigned NOT NULL,
     user_name VARCHAR(255) NULL,
