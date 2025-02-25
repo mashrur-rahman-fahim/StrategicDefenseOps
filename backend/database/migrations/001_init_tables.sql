@@ -24,6 +24,10 @@ CREATE TABLE `users` (
     CONSTRAINT `users_role_id_foreign` FOREIGN KEY (`role_id`) REFERENCES `roles`(`id`) ON DELETE CASCADE,
     CONSTRAINT `users_parent_id_foreign` FOREIGN KEY (`parent_id`) REFERENCES `users`(`id`) ON delete set NULL
 ) ;
+
+INSERT INTO users (name, email, password, role_id, created_at, updated_at) VALUES
+('Admin User', 'admin@example.com', '$2y$10$92IXUNpkjO0rOQ5byMi.Ye4oKoEa3Ro9llC/.og/at2.uheWG/igi', 1, NOW(), NOW());
+
 CREATE TABLE `password_resets` (
     `email` VARCHAR(255) NOT NULL PRIMARY KEY,
     `token` VARCHAR(255) NOT NULL,
