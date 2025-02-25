@@ -9,19 +9,6 @@ on:
 jobs:
   laravel-tests:
     runs-on: ubuntu-latest
-    services:
-      mysql:
-        image: mysql:8
-        env:
-          MYSQL_DATABASE: StratDefOps
-          MYSQL_ROOT_PASSWORD: root
-        ports:
-          - 3306:3306
-        options: >-
-          --health-cmd="mysqladmin ping"
-          --health-interval=10s
-          --health-timeout=5s
-          --health-retries=3
 
     steps:
     - name: Checkout Repository
@@ -57,24 +44,7 @@ jobs:
     - name: Set Directory Permissions
       run: sudo chmod -R 777 backend/storage backend/bootstrap/cache
 
-    - name: Wait for MySQL to be ready
-      run: |
-        until mysqladmin ping -h 127.0.0.1 -u root -proot --silent; do
-          echo "Waiting for MySQL to be ready..."
-          sleep 2
-        done
-
-    - name: Import Database Schema and Data
-      env:
-        DB_CONNECTION: mysql
-        DB_HOST: 127.0.0.1
-        DB_PORT: 3306
-        DB_DATABASE: StratDefOps
-        DB_USERNAME: root
-        DB_PASSWORD: root
-      run: |
-        mysql -h 127.0.0.1 -u root -proot StratDefOps < backend/database/migrations/001_init_tables.sql
-        mysql -h 127.0.0.1 -u root -proot StratDefOps < backend/database/seeders/seed_data.sql
+    # Removed database-related steps
 
     - name: Cache Configuration
       run: |
@@ -82,13 +52,6 @@ jobs:
         php artisan config:cache
 
     - name: Run Tests (Unit & Feature)
-      env:
-        DB_CONNECTION: mysql
-        DB_HOST: 127.0.0.1
-        DB_PORT: 3306
-        DB_DATABASE: StratDefOps
-        DB_USERNAME: root
-        DB_PASSWORD: root
       run: |
         cd backend
         php artisan test
