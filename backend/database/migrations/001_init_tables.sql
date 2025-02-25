@@ -4,6 +4,11 @@ CREATE TABLE `roles` (
     `created_at` TIMESTAMP NULL,
     `updated_at` TIMESTAMP NULL
 );
+INSERT INTO roles (role_name, created_at, updated_at) VALUES
+('admin', NOW(), NOW()),
+('manager', NOW(), NOW()),
+('operator', NOW(), NOW()),
+('viewer', NOW(), NOW());
 CREATE TABLE `users` (
     `id` INT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
     `name` VARCHAR(255) NOT NULL,
@@ -137,6 +142,11 @@ create table resource_category(
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
 );
+insert into resource_category (resource_category) values 
+('vehicle'),
+('weapon'),
+('personnel'),
+('equipment')
 
 create table Resources(
     id INT unsigned AUTO_INCREMENT PRIMARY KEY,
