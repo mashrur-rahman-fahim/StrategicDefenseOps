@@ -59,7 +59,7 @@ jobs:
         DB_PORT: 3306
         DB_DATABASE: StratDefOps
         DB_USERNAME: root
-        DB_PASSWORD: root
+        DB_PASSWORD: ""
       run: |
         mysql -h 127.0.0.1 -u root -proot StratDefOps < backend/database/migrations/001_init_tables.sql
 
@@ -75,7 +75,7 @@ jobs:
         DB_PORT: 3306
         DB_DATABASE: StratDefOps
         DB_USERNAME: root
-        DB_PASSWORD: root
+        DB_PASSWORD: ""
       run: |
         cd backend
         php artisan test
