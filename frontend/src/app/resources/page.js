@@ -13,13 +13,6 @@ export default function Resources() {
   const [error, setError] = useState(null);
   const [showModal, setShowModal] = useState(false);
 
-  const overviewData = {
-    totalResources: resourceData[0] || 0,
-    inUse: 1400,
-    available: 22890,
-    maintenance: 100
-  };
-
   const resourceCategories = [
     {
       type: "Weapons",
@@ -92,66 +85,13 @@ export default function Resources() {
   return (
     <Container fluid className="p-4">
       {/* Resource Overview*/}
-      <h1 className="mb-4">Resource Overview</h1>
-      
-      <Row className="mb-4 g-3">
-        <Col xs={12} sm={6} md={3}>
-          <Card border="primary" className="shadow-sm rounded-5">
-            <Card.Body className="d-flex flex-column justify-content-center align-items-center">
-              <Card.Title className="text-muted">Total Resources</Card.Title>
-              <Card.Text className="fs-1 fw-bold">
-                {overviewData.totalResources}
-              </Card.Text>
-            </Card.Body>
-          </Card>
-        </Col>
-        
-        <Col xs={12} sm={6} md={3}>
-          <Card border="primary" className="shadow-sm rounded-5">
-            <Card.Body className="d-flex flex-column justify-content-center align-items-center">
-              <Card.Title className="text-muted">In use</Card.Title>
-              <Card.Text className="fs-1 fw-bold">
-                {overviewData.inUse}
-              </Card.Text>
-            </Card.Body>
-          </Card>
-        </Col>
-        
-        <Col xs={12} sm={6} md={3}>
-          <Card border="primary" className="shadow-sm rounded-5">
-            <Card.Body className="d-flex flex-column justify-content-center align-items-center">
-              <Card.Title className="text-muted">Available</Card.Title>
-              <Card.Text className="fs-1 fw-bold">
-                {overviewData.available}
-              </Card.Text>
-            </Card.Body>
-          </Card>
-        </Col>
-        
-        <Col xs={12} sm={6} md={3}>
-          <Card border="primary" className="shadow-sm rounded-5">
-            <Card.Body className="d-flex flex-column justify-content-center align-items-center">
-              <Card.Title className="text-muted">Maintenance</Card.Title>
-              <Card.Text className="fs-1 fw-bold">
-                {overviewData.maintenance}
-              </Card.Text>
-            </Card.Body>
-          </Card>
-        </Col>
-      </Row>
 
-      <Button variant="primary" className="mb-4">
-        All Resources
-      </Button>
-      
-      {/* Resources*/}
-      <div className='d-flex justify-content-between align-items-center'>
-        <h1 className="mb-4">Resources</h1>
+      <div className='d-flex justify-content-between align-items-center mt-4'>
+        <h1 className="mb-4">Resource Overview</h1>
         <Button variant="outline-primary" className="mb-4" onClick={handleOpenModal}>
           New Resource
         </Button>
       </div>
-      
       
       <Row className="g-3">
         {resourceCategories.map((category, index) => (
@@ -176,14 +116,12 @@ export default function Resources() {
                     <span className="text-warning">{category.underMaintenance}</span>
                   </div>
                 </div>
-                <div className="text-center mt-3">
-                  <Button variant="primary" className='rounded-pill'>View Details</Button>
-                </div>
               </Card.Body>
             </Card>
           </Col>
         ))}
       </Row>
+
       <ResourceFormModal 
         show={showModal} 
         handleClose={handleCloseModal} 
