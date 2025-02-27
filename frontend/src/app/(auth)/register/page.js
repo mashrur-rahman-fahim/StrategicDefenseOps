@@ -53,7 +53,7 @@ const Page = () => {
     return (
         <div className="flex h-screen w-screen">
             {/* Left Side - Form */}
-            <div className="flex-1 bg-[#b3b08d] flex items-center justify-center p-6 md:p-10">
+            <div className="flex-1 bg-[#5E5E39] flex items-center justify-center p-6 md:p-10 rounded-r-xl">
                 <div className="w-full max-w-lg">
                     <h2 className="text-4xl font-bold text-black font-[Stencil] text-center">
                         REGISTER
@@ -169,7 +169,7 @@ const Page = () => {
                         </button>
 
                         {/* OR Divider */}
-                        <div className="text-center text-gray-700 my-3 font-bold">
+                        <div className="text-center text-white my-3 font-bold">
                             or
                         </div>
 
@@ -184,7 +184,7 @@ const Page = () => {
                         <p className="text-center mt-3">
                             <Link
                                 href="/login"
-                                className="text-gray-700 underline">
+                                className="text-white underline">
                                 Already have an account?
                             </Link>
                         </p>
@@ -201,7 +201,7 @@ const Page = () => {
                 <div
                     className="absolute inset-0 bg-cover bg-center"
                     style={{
-                        backgroundImage: `url('/registration.jpg')`,
+                        backgroundImage: `url('/registration1.jpg')`,
                         backgroundSize: 'cover',
                         backgroundPosition: 'center',
                     }}></div>
