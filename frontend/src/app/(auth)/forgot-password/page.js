@@ -68,7 +68,7 @@ const Page = () => {
                 <div className="absolute inset-0 bg-gradient-to-r from-black/70 via-transparent to-black/30"></div>
                 <div
                     className="absolute inset-0 bg-cover bg-center"
-                    style={{ backgroundImage: `url('/registration.jpg')` }}
+                    style={{ backgroundImage: `url('/forgot.jpg')` }}
                 ></div>
             </div>
         </div>

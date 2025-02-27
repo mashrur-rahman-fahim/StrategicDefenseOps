@@ -18,6 +18,7 @@ const Login = () => {
     const [shouldRemember, setShouldRemember] = useState(false)
     const [errors, setErrors] = useState([])
     const [status, setStatus] = useState(null)
+    const [showPassword, setShowPassword] = useState(false)
 
     useEffect(() => {
         if (router.reset?.length > 0 && errors.length === 0) {
@@ -63,6 +64,7 @@ const Login = () => {
                             className="w-full px-4 py-2 rounded-md border border-gray-600 mb-3 bg-white text-black placeholder-gray-500"
                             value={email}
                             onChange={e => setEmail(e.target.value)}
+                            autocomplete="email"
                             required
                         />
                         {errors.email && (
@@ -70,14 +72,23 @@ const Login = () => {
                         )}
 
                         {/* Password */}
-                        <input
-                            type="password"
-                            placeholder="Password"
-                            className="w-full px-4 py-2 rounded-md border border-gray-600 mb-3 bg-white text-black placeholder-gray-500"
-                            value={password}
-                            onChange={e => setPassword(e.target.value)}
-                            required
-                        />
+                        <div className="relative">
+                            <input
+                                type={showPassword ? 'text' : 'password'}
+                                placeholder="Password"
+                                className="w-full px-4 py-2 rounded-md border border-gray-600 mb-3 bg-white text-black placeholder-gray-500"
+                                value={password}
+                                onChange={e => setPassword(e.target.value)}
+                                required
+                            />
+                            <button
+                                type="button"
+                                className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-700"
+                                onClick={() => setShowPassword(!showPassword)}
+                            >
+                                {showPassword ? '👁️' : '🙈'}
+                            </button>
+                        </div>
                         {errors.password && (
                             <p className="text-red-600">{errors.password}</p>
                         )}
