@@ -11,7 +11,7 @@ export default function RootLayout({children}){
         return <Loading/>;
     }
     return (
-        <div className="min-h-screen bg-gray-100">
+        <div className="chatbot-navigation">
         <Navigation user={user} logout={logout}/>
         
         <main>{children}</main>

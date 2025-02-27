@@ -18,6 +18,7 @@ class OllamaService
 
     public function generateResponse(string $prompt)
     {
+       
         try {
             $response = $this->client->post('http://localhost:11434/api/generate', [
                 'json' => [
@@ -25,15 +26,12 @@ class OllamaService
                     'prompt' => $prompt,
                     'stream' => true, // Set to true if you want streamed responses
                     'options' => [
-                        'seed' => 42,  // Fix randomness for reproducible results
-                        'num_predict' => 100, // Controls output length (adjust as needed)
                         'temperature' => 0.5, // Controls randomness (higher = more creative)
-                        'top_k' => 40, // Limits token selection to top 40 choices
                         'top_p' => 0.9, // Nucleus sampling (higher = more diverse output)
                         'repeat_penalty' => 1.2, // Reduces repetition
                         'presence_penalty' => 1.2, // Encourages new words
                         'frequency_penalty' => 0.8, // Lessens overuse of frequent words
-                     
+                       
                        
                     ],
                 ]

@@ -135,3 +135,4 @@ Route::get('/get-all-resources',[ResourcesController::class,'getAllResources'])-
 
 Route::post('/ollama/generate', [OllamaController::class, 'generateResponse'])->middleware('auth:sanctum');
 
+
