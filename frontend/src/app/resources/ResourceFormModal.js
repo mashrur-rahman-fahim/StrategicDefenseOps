@@ -1,20 +1,17 @@
 'use client';
 import React, { useState } from 'react';
-import { Modal, Button, Form, Alert } from 'react-bootstrap';
+import { Modal, Button, Form } from 'react-bootstrap';
 import axios from '@/lib/axios';
+import { toast } from 'sonner';
 
-const ResourceFormModal = ({ show, handleClose, refreshResources }) => {
+const ResourceFormModal = ({ show, handleClose, refreshResources}) => {
   const [resourceType, setResourceType] = useState('');
   const [formData, setFormData] = useState({});
   const [loading, setLoading] = useState(false);
-  const [error, setError] = useState(null);
-  const [success, setSuccess] = useState(false);
 
   // Reset form when modal closes or type changes
   const resetForm = () => {
     setFormData({});
-    setError(null);
-    setSuccess(false);
   };
 
   const handleTypeChange = (e) => {
@@ -30,7 +27,6 @@ const ResourceFormModal = ({ show, handleClose, refreshResources }) => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     setLoading(true);
-    setError(null);
     
     try {
       let endpoint = '';
@@ -60,22 +56,18 @@ const ResourceFormModal = ({ show, handleClose, refreshResources }) => {
       if (payload.personnel_count) payload.personnel_count = parseInt(payload.personnel_count);
       if (payload.equipment_count) payload.equipment_count = parseInt(payload.equipment_count);
       
-      //console.log(payload);
       const response = await axios.post(endpoint, payload);
       console.log('Resource added:', response.data);
-      setSuccess(true);
-      
-      // Refresh resources list
-      if (refreshResources) refreshResources();
-      
-      setTimeout(() => {
-        handleClose();
-        resetForm();
-      }, 1500);
+
+      toast.success(response?.data?.message || 'Resource added successfully');
+
+      handleClose();
+      resetForm();
+      refreshResources();
       
     } catch (err) {
       console.error('Error adding resource:', err);
-      setError(err.response?.data?.message || 'Failed to add resource');
+      toast.error(err.response?.data?.message || 'Failed to add resource');
     } finally {
       setLoading(false);
     }
@@ -329,9 +321,6 @@ const ResourceFormModal = ({ show, handleClose, refreshResources }) => {
         <Modal.Title>Add New Resource</Modal.Title>
       </Modal.Header>
       <Modal.Body>
-        {error && <Alert variant="danger">{error}</Alert>}
-        {success && <Alert variant="success">Resource added successfully!</Alert>}
-        
         <Form onSubmit={handleSubmit}>
           <Form.Group className="mb-4">
             <Form.Label>Resource Type*</Form.Label>
