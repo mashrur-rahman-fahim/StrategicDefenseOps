@@ -30,7 +30,7 @@ class OllamaService
                         'temperature' => 0.5, // Controls randomness (higher = more creative)
                         'top_k' => 40, // Limits token selection to top 40 choices
                         'top_p' => 0.9, // Nucleus sampling (higher = more diverse output)
-                        'repeat_penalty' => 1.5, // Reduces repetition
+                        'repeat_penalty' => 1.2, // Reduces repetition
                         'presence_penalty' => 1.2, // Encourages new words
                         'frequency_penalty' => 0.8, // Lessens overuse of frequent words
                      

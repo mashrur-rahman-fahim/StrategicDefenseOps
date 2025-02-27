@@ -12,7 +12,7 @@ export default function RootLayout({children}){
     }
     return (
         <div className="min-h-screen bg-gray-100">
-        <Navigation logout={logout}/>
+        <Navigation user={user} logout={logout}/>
         
         <main>{children}</main>
     </div>
