@@ -8,6 +8,10 @@ use Illuminate\Http\Request;
 use Laravel\Socialite\Facades\Socialite;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
+use App\Providers\RouteServiceProvider;
+use Illuminate\Http\RedirectResponse;
+use Illuminate\Support\Facades\Log;
+
 use Spatie\Activitylog\Facades\Activity;
 
 class SocialiteController extends Controller
@@ -21,41 +25,18 @@ class SocialiteController extends Controller
     {
         try {
             $googleUser = Socialite::driver('google')->user();
-            $role = $request->query('role');
-
+            $role = $request->query('role', 1); // Default to role 1 if not provided
 
             if (!in_array($role, [1, 2, 3, 4])) {
-                throw new Exception("Invalid role specified.");
+                return redirect()->route('login')->with('error', 'Invalid role specified.');
             }
 
             $user = User::where('google_id', $googleUser->id)->first();
             if ($user) {
                 Auth::login($user);
-
-                // Audit Log : existing user login
-                activity()
-                    ->causedBy($user)
-                    ->performedOn($user)
-                    ->tap(function ($activity) use ($user, $googleUser) {
-                        $activity->log_name = 'social_login';
-                        $activity->user_id = $user->id;
-                        $activity->user_name = $user->name;
-                        $activity->user_email = $user->email;
-                        $activity->role_id = $user->role_id;
-                        $activity->description = 'User logged in via Google.';
-                        $activity->subject_type = get_class($user);
-                        $activity->subject_id = $user->id;
-                        $activity->causer_type = get_class($user);
-                        $activity->causer_id = $user->id;
-                    })
-                    ->withProperties([
-                        'provider' => 'google',
-                        'google_id' => $googleUser->id,
-                        'timestamp' => now()->toDateTimeString(),
-                    ])
-                    ->log('User logged in via Google.');
-
-                return redirect()->route('dashboard');
+                return redirect()->intended(
+                    config('app.frontend_url').RouteServiceProvider::HOME.'?verified=1'
+                );
             } else {
                 $userData = User::create([
                     'name' => $googleUser->name,
@@ -68,58 +49,18 @@ class SocialiteController extends Controller
 
                 if ($userData) {
                     Auth::login($userData);
-                    // Audit Log : new user registration
-                    activity()
-                        ->causedBy($userData)
-                        ->performedOn($userData)
-                        ->tap(function ($activity) use ($userData, $googleUser) {
-                            $activity->log_name = 'social_registration';
-                            $activity->user_id = $userData->id;
-                            $activity->user_name = $userData->name;
-                            $activity->user_email = $userData->email;
-                            $activity->role_id = $userData->role_id;
-                            $activity->description = 'New user registered via Google.';
-                            $activity->subject_type = get_class($userData);
-                            $activity->subject_id = $userData->id;
-                            $activity->causer_type = get_class($userData);
-                            $activity->causer_id = $userData->id;
-                        })
-                        ->withProperties([
-                            'provider' => 'google',
-                            'google_id' => $googleUser->id,
-                            'timestamp' => now()->toDateTimeString(),
-                        ])
-                        ->log('New user registered via Google.');
-
-                    return redirect()->route('dashboard');
+                    return redirect()->intended(
+                        config('app.frontend_url').RouteServiceProvider::HOME.'?verified=1'
+                    );
                 }
             }
+        } catch (\Laravel\Socialite\Two\InvalidStateException $e) {
+            Log::error('InvalidStateException: ' . $e->getMessage());
+            Log::error('Session State: ' . session()->get('state'));
+            Log::error('Request State: ' . $request->input('state'));
+            throw $e;
         } catch (Exception $e) {
-            // Audit Log : failed authentication attempt
-            activity()
-                ->causedBy(null)
-                ->tap(function ($activity) use ($e) {
-                    $activity->log_name = 'social_authentication_failed';
-                    $activity->user_id = null;
-                    $activity->user_name = null;
-                    $activity->user_email = null;
-                    $activity->description = 'Google authentication failed.';
-                    $activity->subject_type = null;
-                    $activity->subject_id = null;
-                    $activity->causer_type = null;
-                    $activity->causer_id = null;
-                })
-                ->withProperties([
-                    'error_message' => $e->getMessage(),
-                    'provider' => 'google',
-                    'timestamp' => now()->toDateTimeString(),
-                ])
-                ->log('Google authentication failed.');
-
-
-
-            /*For Debugging purpose only 
-             * dd($e); */
+            return redirect()->route('login')->with('error', 'An error occurred during authentication.');
         }
     }
 }
