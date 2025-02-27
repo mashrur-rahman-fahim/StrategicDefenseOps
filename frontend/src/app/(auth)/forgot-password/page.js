@@ -23,7 +23,7 @@ const Page = () => {
     return (
         <div className="flex h-screen w-screen">
             {/* Left Side - Form */}
-            <div className="flex-1 bg-[#b3b08d] flex items-center justify-center p-6 md:p-10">
+            <div className="flex-1 bg-[#74624D] flex items-center justify-center p-6 md:p-10 rounded-r-xl">
                 <div className="w-full max-w-lg">
                     <h2 className="text-4xl font-bold text-black font-[Stencil] text-center">
                         FORGOT PASSWORD
@@ -55,7 +55,7 @@ const Page = () => {
 
                         {/* Don't have an account? */}
                         <p className="text-center mt-3">
-                            <Link href="/register" className="text-gray-700 underline">
+                            <Link href="/register" className="text-white underline">
                                 Don't have an account?
                             </Link>
                         </p>
@@ -68,7 +68,7 @@ const Page = () => {
                 <div className="absolute inset-0 bg-gradient-to-r from-black/70 via-transparent to-black/30"></div>
                 <div
                     className="absolute inset-0 bg-cover bg-center"
-                    style={{ backgroundImage: `url('/registration.jpg')` }}
+                    style={{ backgroundImage: `url('/forgot1.jpg')` }}
                 ></div>
             </div>
         </div>

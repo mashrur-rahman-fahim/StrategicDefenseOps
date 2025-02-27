@@ -18,6 +18,7 @@ const Login = () => {
     const [shouldRemember, setShouldRemember] = useState(false)
     const [errors, setErrors] = useState([])
     const [status, setStatus] = useState(null)
+    const [showPassword, setShowPassword] = useState(false)
 
     useEffect(() => {
         if (router.reset?.length > 0 && errors.length === 0) {
@@ -49,7 +50,7 @@ const Login = () => {
     return (
         <div className="flex h-screen w-screen">
             {/* Left Side - Form */}
-            <div className="flex-1 bg-[#b3b08d] flex items-center justify-center p-6 md:p-10">
+            <div className="flex-1 bg-[#446158] flex items-center justify-center p-6 md:p-10 rounded-r-xl">
                 <div className="w-full max-w-lg">
                     <h2 className="text-4xl font-bold text-black font-[Stencil] text-center">
                         LOGIN
@@ -63,6 +64,7 @@ const Login = () => {
                             className="w-full px-4 py-2 rounded-md border border-gray-600 mb-3 bg-white text-black placeholder-gray-500"
                             value={email}
                             onChange={e => setEmail(e.target.value)}
+                            autocomplete="email"
                             required
                         />
                         {errors.email && (
@@ -70,17 +72,34 @@ const Login = () => {
                         )}
 
                         {/* Password */}
-                        <input
-                            type="password"
-                            placeholder="Password"
-                            className="w-full px-4 py-2 rounded-md border border-gray-600 mb-3 bg-white text-black placeholder-gray-500"
-                            value={password}
-                            onChange={e => setPassword(e.target.value)}
-                            required
-                        />
+                        <div className="relative">
+                            <input
+                                type={showPassword ? 'text' : 'password'}
+                                placeholder="Password"
+                                className="w-full px-4 py-2 rounded-md border border-gray-600 mb-3 bg-white text-black placeholder-gray-500"
+                                value={password}
+                                onChange={e => setPassword(e.target.value)}
+                                required
+                            />
+                            <button
+                                type="button"
+                                className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-700"
+                                onClick={() => setShowPassword(!showPassword)}>
+                                {showPassword ? '👁️' : '🙈'}
+                            </button>
+                        </div>
                         {errors.password && (
                             <p className="text-red-600">{errors.password}</p>
                         )}
+
+                        {/* Forgot Password */}
+                        <div className="text-right mt-3  ">
+                            <Link
+                                href="/forgot-password"
+                                className="text-white underline">
+                                Forgot your password?
+                            </Link>
+                        </div>
 
                         {/* Remember Me */}
                         <div className="block mt-4">
@@ -96,7 +115,7 @@ const Login = () => {
                                         setShouldRemember(e.target.checked)
                                     }
                                 />
-                                <span className="ml-2 text-sm text-gray-600">
+                                <span className="ml-2 text-sm text-white">
                                     Remember me
                                 </span>
                             </label>
@@ -107,17 +126,8 @@ const Login = () => {
                             Login
                         </button>
 
-                        {/* Forgot Password */}
-                        <div className="text-center mt-3">
-                            <Link
-                                href="/forgot-password"
-                                className="text-gray-700 underline">
-                                Forgot your password?
-                            </Link>
-                        </div>
-
                         {/* OR Divider */}
-                        <div className="text-center text-gray-700 my-3 font-bold">
+                        <div className="text-center text-white my-3 font-bold">
                             or
                         </div>
 
@@ -137,7 +147,7 @@ const Login = () => {
                 <div
                     className="absolute inset-0 bg-cover bg-center"
                     style={{
-                        backgroundImage: `url('/login.jpg')`,
+                        backgroundImage: `url('/login1.jpg')`,
                         backgroundSize: 'cover',
                         backgroundPosition: 'center',
                     }}></div>

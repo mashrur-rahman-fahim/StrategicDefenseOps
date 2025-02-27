@@ -1,45 +1,43 @@
-"use client";
+'use client'
 
-import { useState } from "react";
-import Link from "next/link";
-import { useAuth } from "@/hooks/auth"; // Adjust import path if needed
+import { useState } from 'react'
+import Link from 'next/link'
+import { useAuth } from '@/hooks/auth' // Adjust import path if needed
 
 const Page = () => {
     const { register } = useAuth({
-        middleware: "guest",
-        redirectIfAuthenticated: "/dashboard",
-    });
+        middleware: 'guest',
+        redirectIfAuthenticated: '/dashboard',
+    })
 
-    const [name, setName] = useState("");
-    const [email, setEmail] = useState("");
-    const [password, setPassword] = useState("");
-    const [passwordConfirmation, setPasswordConfirmation] = useState("");
-    const [role_id, setRoleId] = useState(1);
-    const [parent_id, setParentId] = useState(null);
-    const [errors, setErrors] = useState([]);
-    const [showPassword, setShowPassword] = useState(false);
-    const [showConfirmPassword, setShowConfirmPassword] = useState(false);
-    
+    const [name, setName] = useState('')
+    const [email, setEmail] = useState('')
+    const [password, setPassword] = useState('')
+    const [passwordConfirmation, setPasswordConfirmation] = useState('')
+    const [role_id, setRoleId] = useState(1)
+    const [parent_id, setParentId] = useState(null)
+    const [errors, setErrors] = useState([])
+    const [showPassword, setShowPassword] = useState(false)
+    const [showConfirmPassword, setShowConfirmPassword] = useState(false)
+
     const handleGoogleLogin = async () => {
         try {
             // Redirect user to Laravel's Google login route
-            window.location.href = `http://127.0.0.1:8000/auth/google`;
+            window.location.href = `http://127.0.0.1:8000/auth/google`
         } catch (error) {
-            console.error("Google login error:", error);
+            console.error('Google login error:', error)
         }
-    };
-    
+    }
 
     const roles = [
-        { id: 1, name: "System Administrator" },
-        { id: 2, name: "Operations Coordinator" },
-        { id: 3, name: "Field Specialist" },
-        { id: 4, name: "Mission Observer" },
-    ];
-    
+        { id: 1, name: 'System Administrator' },
+        { id: 2, name: 'Operations Coordinator' },
+        { id: 3, name: 'Field Specialist' },
+        { id: 4, name: 'Mission Observer' },
+    ]
 
-    const submitForm = (event) => {
-        event.preventDefault();
+    const submitForm = event => {
+        event.preventDefault()
 
         register({
             name,
@@ -49,13 +47,13 @@ const Page = () => {
             role_id,
             parent_id,
             setErrors,
-        });
-    };
+        })
+    }
 
     return (
         <div className="flex h-screen w-screen">
             {/* Left Side - Form */}
-            <div className="flex-1 bg-[#b3b08d] flex items-center justify-center p-6 md:p-10">
+            <div className="flex-1 bg-[#5E5E39] flex items-center justify-center p-6 md:p-10 rounded-r-xl">
                 <div className="w-full max-w-lg">
                     <h2 className="text-4xl font-bold text-black font-[Stencil] text-center">
                         REGISTER
@@ -68,10 +66,12 @@ const Page = () => {
                             placeholder="Name"
                             className="w-full px-4 py-2 rounded-md border border-gray-600 mb-3 bg-white text-black placeholder-gray-500"
                             value={name}
-                            onChange={(e) => setName(e.target.value)}
+                            onChange={e => setName(e.target.value)}
                             required
                         />
-                        {errors.name && <p className="text-red-600">{errors.name}</p>}
+                        {errors.name && (
+                            <p className="text-red-600">{errors.name}</p>
+                        )}
 
                         {/* Email */}
                         <input
@@ -79,77 +79,89 @@ const Page = () => {
                             placeholder="E-mail"
                             className="w-full px-4 py-2 rounded-md border border-gray-600 mb-3 bg-white text-black placeholder-gray-500"
                             value={email}
-                            onChange={(e) => setEmail(e.target.value)}
+                            onChange={e => setEmail(e.target.value)}
+                            autocomplete="email"
                             required
                         />
-                        {errors.email && <p className="text-red-600">{errors.email}</p>}
+                        {errors.email && (
+                            <p className="text-red-600">{errors.email}</p>
+                        )}
 
                         {/* Password */}
                         <div className="relative">
                             <input
-                                type={showPassword ? "text" : "password"}
+                                type={showPassword ? 'text' : 'password'}
                                 placeholder="Password"
                                 className="w-full px-4 py-2 rounded-md border border-gray-600 mb-3 bg-white text-black placeholder-gray-500"
                                 value={password}
-                                onChange={(e) => setPassword(e.target.value)}
+                                onChange={e => setPassword(e.target.value)}
                                 required
                             />
                             <button
                                 type="button"
                                 className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-700"
-                                onClick={() => setShowPassword(!showPassword)}
-                            >
-                                {showPassword ? "👁️" : "🙈"}
+                                onClick={() => setShowPassword(!showPassword)}>
+                                {showPassword ? '👁️' : '🙈'}
                             </button>
                         </div>
-                        {errors.password && <p className="text-red-600">{errors.password}</p>}
+                        {errors.password && (
+                            <p className="text-red-600">{errors.password}</p>
+                        )}
 
                         {/* Confirm Password */}
                         <div className="relative">
                             <input
-                                type={showConfirmPassword ? "text" : "password"}
+                                type={showConfirmPassword ? 'text' : 'password'}
                                 placeholder="Confirm Password"
                                 className="w-full px-4 py-2 rounded-md border border-gray-600 mb-3 bg-white text-black placeholder-gray-500"
                                 value={passwordConfirmation}
-                                onChange={(e) => setPasswordConfirmation(e.target.value)}
+                                onChange={e =>
+                                    setPasswordConfirmation(e.target.value)
+                                }
                                 required
                             />
                             <button
                                 type="button"
                                 className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-700"
-                                onClick={() => setShowConfirmPassword(!showConfirmPassword)}
-                            >
-                                {showConfirmPassword ? "👁️" : "🙈"}
+                                onClick={() =>
+                                    setShowConfirmPassword(!showConfirmPassword)
+                                }>
+                                {showConfirmPassword ? '👁️' : '🙈'}
                             </button>
                         </div>
                         {errors.password_confirmation && (
-                            <p className="text-red-600">{errors.password_confirmation}</p>
+                            <p className="text-red-600">
+                                {errors.password_confirmation}
+                            </p>
                         )}
 
                         {/* Role Selection */}
                         <select
                             value={role_id}
-                            onChange={(e) => setRoleId(Number(e.target.value))}
+                            onChange={e => setRoleId(Number(e.target.value))}
                             className="w-full px-4 py-2 rounded-md border border-gray-600 mb-3 bg-white text-black"
-                            required
-                        >
-                            {roles.map((role) => (
+                            required>
+                            {roles.map(role => (
                                 <option key={role.id} value={role.id}>
                                     {role.name}
                                 </option>
                             ))}
                         </select>
-                        {errors.role_id && <p className="text-red-600">{errors.role_id}</p>}
+                        {errors.role_id && (
+                            <p className="text-red-600">{errors.role_id}</p>
+                        )}
 
                         {/* Parent ID (Optional) */}
                         <input
                             type="number"
                             placeholder="Parent ID (Optional)"
                             className="w-full px-4 py-2 rounded-md border border-gray-600 mb-3 bg-white text-black placeholder-gray-500"
-                            value={parent_id || ""}
-                            onChange={(e) => setParentId(e.target.value)}
+                            value={parent_id || ''}
+                            onChange={e => setParentId(e.target.value)}
                         />
-                        {errors.parent_id && <p className="text-red-600">{errors.parent_id}</p>}
+                        {errors.parent_id && (
+                            <p className="text-red-600">{errors.parent_id}</p>
+                        )}
 
                         {/* Sign Up Button */}
                         <button className="w-full bg-black text-white py-2 rounded-md mt-3 font-bold">
@@ -157,18 +169,22 @@ const Page = () => {
                         </button>
 
                         {/* OR Divider */}
-                        <div className="text-center text-gray-700 my-3 font-bold">or</div>
+                        <div className="text-center text-white my-3 font-bold">
+                            or
+                        </div>
 
                         {/* Google Button */}
-                        <button 
-                        onClick={handleGoogleLogin} 
-                        className="w-full bg-black text-white py-2 rounded-md font-bold">
+                        <button
+                            onClick={handleGoogleLogin}
+                            className="w-full bg-black text-white py-2 rounded-md font-bold">
                             Continue with Google
                         </button>
 
                         {/* Already have an account? */}
                         <p className="text-center mt-3">
-                            <Link href="/login" className="text-gray-700 underline">
+                            <Link
+                                href="/login"
+                                className="text-white underline">
                                 Already have an account?
                             </Link>
                         </p>
@@ -185,14 +201,13 @@ const Page = () => {
                 <div
                     className="absolute inset-0 bg-cover bg-center"
                     style={{
-                        backgroundImage: `url('/registration.jpg')`,
-                        backgroundSize: "cover",
-                        backgroundPosition: "center",
-                    }}
-                ></div>
+                        backgroundImage: `url('/registration1.jpg')`,
+                        backgroundSize: 'cover',
+                        backgroundPosition: 'center',
+                    }}></div>
             </div>
         </div>
-    );
-};
+    )
+}
 
-export default Page;
+export default Page
