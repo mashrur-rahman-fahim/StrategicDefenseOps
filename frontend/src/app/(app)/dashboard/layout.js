@@ -2,15 +2,15 @@
 import { useState } from 'react';
 import Navbar from './navbar/page';
 import Sidebar from './sidebar/page';
-import Dashboard from './dashboard/page';
+import Dashboard from './page';
 import { useAuth } from '@/hooks/auth'
-import Loading from './Loading';
+import Loading from '../Loading';
 
 
 export default function RootLayout({ children }) {
    const{user}=useAuth({middleware:'auth'})
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
-  const [selectedItem, setSelectedItem] = useState('dashboard');
+  const [selectedItem, setSelectedItem] = useState('');
   const {  logout } = useAuth(); 
     if(!user){
         return <Loading/>

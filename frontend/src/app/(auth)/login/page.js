@@ -10,7 +10,7 @@ const Login = () => {
     const router = useRouter()
     const { login } = useAuth({
         middleware: 'guest',
-        redirectIfAuthenticated: '/sidebar',
+        redirectIfAuthenticated: '/dashboard',
     })
 
     const [email, setEmail] = useState('')

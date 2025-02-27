@@ -1,12 +1,17 @@
 <?php
 
 namespace App\Services;
+use App\Models\OperationResources;
+use Illuminate\Support\Facades\DB;
+use \Exception;
+
+
 
 use App\Models\Operation;
-use App\Models\OperationResources;
+
 use App\Models\Resources;
 use App\Models\User;
-use DB;
+
 
 class OperationResourcesService
 {

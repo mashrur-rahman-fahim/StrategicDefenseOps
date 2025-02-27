@@ -4,8 +4,10 @@ namespace App\Services;
 
 use App\Models\User;
 use App\Models\Vehicle;
-use DB;
+use Illuminate\Support\Facades\DB;
 use Exception;
+use Spatie\Activitylog\Models\Activity;
+
 
 class VehicleService
 {

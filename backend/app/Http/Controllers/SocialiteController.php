@@ -12,6 +12,7 @@ use App\Providers\RouteServiceProvider;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Support\Facades\Log;
 
+use Spatie\Activitylog\Facades\Activity;
 
 class SocialiteController extends Controller
 {
