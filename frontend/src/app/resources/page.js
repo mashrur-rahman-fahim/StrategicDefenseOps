@@ -70,7 +70,6 @@ export default function Resources() {
     return (
         <Container fluid className="p-4">
             {/* Resource Overview*/}
-            <Toaster position="bottom-right" richColors />
 
             {loading ? (
                 <div className="text-center">Loading resources...</div>
