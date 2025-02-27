@@ -8,6 +8,10 @@ use Illuminate\Http\Request;
 use Laravel\Socialite\Facades\Socialite;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
+use App\Providers\RouteServiceProvider;
+use Illuminate\Http\RedirectResponse;
+use Illuminate\Support\Facades\Log;
+
 
 class SocialiteController extends Controller
 {
@@ -29,7 +33,9 @@ class SocialiteController extends Controller
             $user = User::where('google_id', $googleUser->id)->first();
             if ($user) {
                 Auth::login($user);
-                return redirect()->route('dashboard');
+                return redirect()->intended(
+                    config('app.frontend_url').RouteServiceProvider::HOME.'?verified=1'
+                );
             } else {
                 $userData = User::create([
                     'name' => $googleUser->name,
@@ -42,13 +48,15 @@ class SocialiteController extends Controller
 
                 if ($userData) {
                     Auth::login($userData);
-                    return redirect()->route('dashboard');
+                    return redirect()->intended(
+                        config('app.frontend_url').RouteServiceProvider::HOME.'?verified=1'
+                    );
                 }
             }
         } catch (\Laravel\Socialite\Two\InvalidStateException $e) {
-            \Log::error('InvalidStateException: ' . $e->getMessage());
-            \Log::error('Session State: ' . session()->get('state'));
-            \Log::error('Request State: ' . $request->input('state'));
+            Log::error('InvalidStateException: ' . $e->getMessage());
+            Log::error('Session State: ' . session()->get('state'));
+            Log::error('Request State: ' . $request->input('state'));
             throw $e;
         } catch (Exception $e) {
             return redirect()->route('login')->with('error', 'An error occurred during authentication.');
