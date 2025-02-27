@@ -1,5 +1,4 @@
 <?php
-
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
@@ -26,11 +25,13 @@ class OllamaController extends Controller
         return response()->stream(function () use ($validated) {
             foreach ($this->ollamaService->generateResponse($validated['prompt']) as $chunk) {
                 if (!empty($chunk)) {
-                    echo $chunk." " ;
+                    echo $chunk . "\n"; // Preserve formatting (Markdown-friendly)
+                    
                     if (ob_get_level() > 0) {
                         ob_flush();
                     }
                     flush();
+                    usleep(50000); // Slight delay for smooth streaming
                 }
             }
         }, 200, [
