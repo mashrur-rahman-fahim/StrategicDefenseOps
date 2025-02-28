@@ -29,17 +29,17 @@ class UnassignRoleController extends Controller
             'managerEmail' => 'required|email|exists:users,email',
         ]);
     
-        $parentId = auth()->id();
-        $parent = User::find($parentId);
+        $admin = auth()->id();
+        $admin = User::find($admin);
     
         // Check if the parent is authorized (must be a role_id 1 user)
-        if (!$parent || $parent->role_id !== 1) {
+        if (!$admin || $admin->role_id !== 1) {
             return response()->json(['message' => 'Unauthorized'], 403);
         }
     
         DB::beginTransaction();
         try {
-            $manager = $this->unassignRoleService->unassignRole($request->managerEmail, 2, $parentId);
+            $manager = $this->unassignRoleService->unassignRole($request->managerEmail, 2, $admin->parent_id);
     
             if (!$manager) {
                 DB::rollBack();
