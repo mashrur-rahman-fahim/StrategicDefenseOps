@@ -2,7 +2,7 @@
 import React, { useState } from "react";
 import "./navbar.css";
 
-const Header = ({ title, toggleSidebar, user, logout }) => {
+const Navbar = ({ title, toggleSidebar, user, logout }) => {
   const [isDropdownOpen, setDropdownOpen] = useState(false);
   const [showLogoutPrompt, setShowLogoutPrompt] = useState(false);
   const [isLoggingOut, setIsLoggingOut] = useState(false);
@@ -62,4 +62,4 @@ const Header = ({ title, toggleSidebar, user, logout }) => {
   );
 };
 
-export default Header;
+export default Navbar;
