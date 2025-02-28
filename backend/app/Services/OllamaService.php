@@ -1,5 +1,4 @@
 <?php
-
 namespace App\Services;
 
 use GuzzleHttp\Client;
@@ -9,54 +8,87 @@ class OllamaService
 {
     protected $client;
 
-    public function __construct(Client $client)
+    public function __construct()
     {
         $this->client = new Client([
-            'timeout' =>120,
+            'timeout' => 120,
             'connect_timeout' => 120,
         ]);
     }
 
     public function generateResponse(string $prompt)
     {
+       
         try {
-            $response = $this->client->post('http://localhost:11434/api/generate', [
+            $response = $this->client->post('https://rdl84gw0-11434.asse.devtunnels.ms/api/generate', [
                 'json' => [
-                    'model' => 'llama3.1',
+                    'model' => 'deepseek-r1:1.5b',
                     'prompt' => $prompt,
-                    'max_tokens'=>1
-                    
-                ],
-                'stream' => true,
+                    'stream' => true, // Set to true if you want streamed responses
+                    'options' => [
+                        'temperature' => 0.5,
+                       
+                        'top_p' => 0.9, // Nucleus sampling (higher = more diverse output)            
+                                        ],
+                ]
+                
             ]);
 
             $body = $response->getBody();
+            yield from $this->processStream($body);
 
-            foreach ($this->processStream($body) as $chunk) {
-                yield $chunk;
-            }
         } catch (\Exception $e) {
             \Log::error('Ollama API Error: ' . $e->getMessage());
-            yield null;
+            yield "**Error:** Unable to generate a response.";
         }
     }
 
     private function processStream(StreamInterface $body): \Generator
-    {
-        while (!$body->eof()) {
-            $chunk = $body->read(1024); // Read 1024 bytes at a time
+{
+    $buffer = ''; // Buffer to handle incomplete JSON objects
 
-            foreach (explode("\n", $chunk) as $line) {
-                $json = json_decode(trim($line), true);
+    while (!$body->eof()) {
+        $chunk = $body->read(1024); // Read 1024 bytes at a time
+        $buffer .= $chunk; // Append chunk to buffer
 
-                if (!empty($json['response'])) {
-                    yield trim($json['response']); // Directly yield the response
-                }
+        // Split the buffer into lines
+        $lines = explode("\n", $buffer);
+        $buffer = array_pop($lines); // Keep the last (possibly incomplete) line in the buffer
 
-                if (!empty($json['done'])) {
-                    return;
-                }
+        foreach ($lines as $line) {
+            $json = json_decode(trim($line), true);
+            if (json_last_error() !== JSON_ERROR_NONE) {
+                continue; // Skip invalid JSON
+            }
+
+            if (!empty($json['response'])) {
+                // Clean the response: Remove unwanted tags and fix LaTeX formatting
+                $cleanedResponse = $this->cleanResponse($json['response']);
+                yield $cleanedResponse; // Yield the cleaned response text
+            }
+
+            if (!empty($json['done'])) {
+                return; // Stop processing when done
             }
         }
     }
+
+    // Process any remaining data in the buffer
+    if (!empty($buffer)) {
+        $json = json_decode(trim($buffer), true);
+        if (json_last_error() === JSON_ERROR_NONE && !empty($json['response'])) {
+            $cleanedResponse = $this->cleanResponse($json['response']);
+            yield $cleanedResponse;
+        }
+    }
+}
+
+private function cleanResponse(string $response): string
+{
+    // Remove unwanted tags like <think></think>
+    $response = str_replace(['<think>', '</think>'], '', $response);
+   
+
+    return trim($response);
+}
 }

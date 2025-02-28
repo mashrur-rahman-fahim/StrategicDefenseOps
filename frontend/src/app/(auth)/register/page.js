@@ -1,37 +1,42 @@
-"use client"
+'use client'
 
-import Button from '@/components/Button'
-import Input from '@/components/Input'
-import InputError from '@/components/InputError'
-import Label from '@/components/Label'
-import Link from 'next/link'
-import { useAuth } from '@/hooks/auth'
 import { useState } from 'react'
+import Link from 'next/link'
+import { useAuth } from '@/hooks/auth' // Adjust import path if needed
 
 const Page = () => {
     const { register } = useAuth({
         middleware: 'guest',
         redirectIfAuthenticated: '/dashboard',
-        
     })
 
     const [name, setName] = useState('')
     const [email, setEmail] = useState('')
     const [password, setPassword] = useState('')
     const [passwordConfirmation, setPasswordConfirmation] = useState('')
-    const [role_id, setRoleId] = useState(1) // Default to System Administrator
-    const [parent_id, setParentId] = useState(null) // Optional, set to null initially
+    const [role_id, setRoleId] = useState(1)
+    const [parent_id, setParentId] = useState(null)
     const [errors, setErrors] = useState([])
+    const [showPassword, setShowPassword] = useState(false)
+    const [showConfirmPassword, setShowConfirmPassword] = useState(false)
+
+    const handleGoogleLogin = async () => {
+        try {
+            // Redirect user to Laravel's Google login route
+            window.location.href = `http://127.0.0.1:8000/auth/google`
+        } catch (error) {
+            console.error('Google login error:', error)
+        }
+    }
 
     const roles = [
-        { id: 1, name: "System Administrator" },
-        { id: 2, name: "Operations Coordinator" },
-        { id: 3, name: "Field Specialist" },
-        { id: 4, name: "Mission Observer" },
+        { id: 1, name: 'System Administrator' },
+        { id: 2, name: 'Operations Coordinator' },
+        { id: 3, name: 'Field Specialist' },
+        { id: 4, name: 'Mission Observer' },
     ]
 
     const submitForm = event => {
-      
         event.preventDefault()
 
         register({
@@ -42,133 +47,166 @@ const Page = () => {
             role_id,
             parent_id,
             setErrors,
-        });
-       
-        
+        })
     }
 
     return (
-        <form onSubmit={submitForm}>
-            {/* Name */}
-            <div>
-                <Label htmlFor="name">Name</Label>
+        <div className="flex h-screen w-screen">
+            {/* Left Side - Form */}
+            <div className="flex-1 bg-[#5E5E39] flex items-center justify-center p-6 md:p-10 rounded-r-xl">
+                <div className="w-full max-w-lg">
+                    <h2 className="text-4xl font-bold text-black font-[Stencil] text-center">
+                        REGISTER
+                    </h2>
 
-                <Input
-                    id="name"
-                    type="text"
-                    value={name}
-                    className="block mt-1 w-full"
-                    onChange={event => setName(event.target.value)}
-                    required
-                    autoFocus
-                />
+                    <form onSubmit={submitForm} className="mt-6">
+                        {/* Name */}
+                        <input
+                            type="text"
+                            placeholder="Name"
+                            className="w-full px-4 py-2 rounded-md border border-gray-600 mb-3 bg-white text-black placeholder-gray-500"
+                            value={name}
+                            onChange={e => setName(e.target.value)}
+                            required
+                        />
+                        {errors.name && (
+                            <p className="text-red-600">{errors.name}</p>
+                        )}
 
-                <InputError messages={errors.name} className="mt-2" />
+                        {/* Email */}
+                        <input
+                            type="email"
+                            placeholder="E-mail"
+                            className="w-full px-4 py-2 rounded-md border border-gray-600 mb-3 bg-white text-black placeholder-gray-500"
+                            value={email}
+                            onChange={e => setEmail(e.target.value)}
+                            autocomplete="email"
+                            required
+                        />
+                        {errors.email && (
+                            <p className="text-red-600">{errors.email}</p>
+                        )}
+
+                        {/* Password */}
+                        <div className="relative">
+                            <input
+                                type={showPassword ? 'text' : 'password'}
+                                placeholder="Password"
+                                className="w-full px-4 py-2 rounded-md border border-gray-600 mb-3 bg-white text-black placeholder-gray-500"
+                                value={password}
+                                onChange={e => setPassword(e.target.value)}
+                                required
+                            />
+                            <button
+                                type="button"
+                                className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-700"
+                                onClick={() => setShowPassword(!showPassword)}>
+                                {showPassword ? '👁️' : '🙈'}
+                            </button>
+                        </div>
+                        {errors.password && (
+                            <p className="text-red-600">{errors.password}</p>
+                        )}
+
+                        {/* Confirm Password */}
+                        <div className="relative">
+                            <input
+                                type={showConfirmPassword ? 'text' : 'password'}
+                                placeholder="Confirm Password"
+                                className="w-full px-4 py-2 rounded-md border border-gray-600 mb-3 bg-white text-black placeholder-gray-500"
+                                value={passwordConfirmation}
+                                onChange={e =>
+                                    setPasswordConfirmation(e.target.value)
+                                }
+                                required
+                            />
+                            <button
+                                type="button"
+                                className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-700"
+                                onClick={() =>
+                                    setShowConfirmPassword(!showConfirmPassword)
+                                }>
+                                {showConfirmPassword ? '👁️' : '🙈'}
+                            </button>
+                        </div>
+                        {errors.password_confirmation && (
+                            <p className="text-red-600">
+                                {errors.password_confirmation}
+                            </p>
+                        )}
+
+                        {/* Role Selection */}
+                        <select
+                            value={role_id}
+                            onChange={e => setRoleId(Number(e.target.value))}
+                            className="w-full px-4 py-2 rounded-md border border-gray-600 mb-3 bg-white text-black"
+                            required>
+                            {roles.map(role => (
+                                <option key={role.id} value={role.id}>
+                                    {role.name}
+                                </option>
+                            ))}
+                        </select>
+                        {errors.role_id && (
+                            <p className="text-red-600">{errors.role_id}</p>
+                        )}
+
+                        {/* Parent ID (Optional) */}
+                        <input
+                            type="number"
+                            placeholder="Parent ID (Optional)"
+                            className="w-full px-4 py-2 rounded-md border border-gray-600 mb-3 bg-white text-black placeholder-gray-500"
+                            value={parent_id || ''}
+                            onChange={e => setParentId(e.target.value)}
+                        />
+                        {errors.parent_id && (
+                            <p className="text-red-600">{errors.parent_id}</p>
+                        )}
+
+                        {/* Sign Up Button */}
+                        <button className="w-full bg-black text-white py-2 rounded-md mt-3 font-bold">
+                            Sign UP
+                        </button>
+
+                        {/* OR Divider */}
+                        <div className="text-center text-white my-3 font-bold">
+                            or
+                        </div>
+
+                        {/* Google Button */}
+                        <button
+                            onClick={handleGoogleLogin}
+                            className="w-full bg-black text-white py-2 rounded-md font-bold">
+                            Continue with Google
+                        </button>
+
+                        {/* Already have an account? */}
+                        <p className="text-center mt-3">
+                            <Link
+                                href="/login"
+                                className="text-white underline">
+                                Already have an account?
+                            </Link>
+                        </p>
+                    </form>
+                </div>
             </div>
 
-            {/* Email Address */}
-            <div className="mt-4">
-                <Label htmlFor="email">Email</Label>
+            {/* Right Side - Image with Gradient Overlay */}
+            <div className="flex-1 h-full relative">
+                {/* Gradient Overlay */}
+                <div className="absolute inset-0 bg-gradient-to-r from-black/70 via-transparent to-black/30"></div>
 
-                <Input
-                    id="email"
-                    type="email"
-                    value={email}
-                    className="block mt-1 w-full"
-                    onChange={event => setEmail(event.target.value)}
-                    required
-                />
-
-                <InputError messages={errors.email} className="mt-2" />
+                {/* Background Image */}
+                <div
+                    className="absolute inset-0 bg-cover bg-center"
+                    style={{
+                        backgroundImage: `url('/registration1.jpg')`,
+                        backgroundSize: 'cover',
+                        backgroundPosition: 'center',
+                    }}></div>
             </div>
-
-            {/* Password */}
-            <div className="mt-4">
-                <Label htmlFor="password">Password</Label>
-
-                <Input
-                    id="password"
-                    type="password"
-                    value={password}
-                    className="block mt-1 w-full"
-                    onChange={event => setPassword(event.target.value)}
-                    required
-                    autoComplete="new-password"
-                />
-
-                <InputError messages={errors.password} className="mt-2" />
-            </div>
-
-            {/* Confirm Password */}
-            <div className="mt-4">
-                <Label htmlFor="passwordConfirmation">
-                    Confirm Password
-                </Label>
-
-                <Input
-                    id="passwordConfirmation"
-                    type="password"
-                    value={passwordConfirmation}
-                    className="block mt-1 w-full"
-                    onChange={event =>
-                        setPasswordConfirmation(event.target.value)
-                    }
-                    required
-                />
-
-                <InputError
-                    messages={errors.password_confirmation}
-                    className="mt-2"
-                />
-            </div>
-
-            {/* Role */}
-            <div className="mt-4">
-                <Label htmlFor="role_id">Role</Label>
-
-                <select
-                    id="role_id"
-                    value={role_id}
-                    onChange={event => setRoleId(Number(event.target.value))}
-                    className="block mt-1 w-full"
-                    required
-                >
-                    {roles.map(role => (
-                        <option key={role.id} value={role.id}>
-                            {role.name}
-                        </option>
-                    ))}
-                </select>
-
-                <InputError messages={errors.role_id} className="mt-2" />
-            </div>
-
-            {/* Parent ID */}
-            {/* Optional, if needed */}
-            <div className="mt-4">
-                <Label htmlFor="parent_id">Parent ID</Label>
-
-                <Input
-                    id="parent_id"
-                    type="number"
-                    value={parent_id || ''}
-                    className="block mt-1 w-full"
-                    onChange={event => setParentId(event.target.value)}
-                />
-
-                <InputError messages={errors.parent_id} className="mt-2" />
-            </div>
-
-            <div className="flex items-center justify-end mt-4">
-                <Link
-                    href="/login"
-                    className="underline text-sm text-gray-600 hover:text-gray-900">
-                    Already registered?
-                </Link>
-
-                <Button className="ml-4">Register</Button>
-            </div>
-        </form>
+        </div>
     )
 }
 

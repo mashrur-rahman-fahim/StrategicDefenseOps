@@ -4,6 +4,11 @@ CREATE TABLE `roles` (
     `created_at` TIMESTAMP NULL,
     `updated_at` TIMESTAMP NULL
 );
+INSERT INTO roles (role_name, created_at, updated_at) VALUES
+('admin', NOW(), NOW()),
+('manager', NOW(), NOW()),
+('operator', NOW(), NOW()),
+('viewer', NOW(), NOW());
 CREATE TABLE `users` (
     `id` INT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
     `name` VARCHAR(255) NOT NULL,
@@ -19,6 +24,10 @@ CREATE TABLE `users` (
     CONSTRAINT `users_role_id_foreign` FOREIGN KEY (`role_id`) REFERENCES `roles`(`id`) ON DELETE CASCADE,
     CONSTRAINT `users_parent_id_foreign` FOREIGN KEY (`parent_id`) REFERENCES `users`(`id`) ON delete set NULL
 ) ;
+
+INSERT INTO users (name, email, password, role_id, created_at, updated_at) VALUES
+('Admin User', 'admin@example.com', '$2y$10$92IXUNpkjO0rOQ5byMi.Ye4oKoEa3Ro9llC/.og/at2.uheWG/igi', 1, NOW(), NOW());
+
 CREATE TABLE `password_resets` (
     `email` VARCHAR(255) NOT NULL PRIMARY KEY,
     `token` VARCHAR(255) NOT NULL,
@@ -73,8 +82,8 @@ create table weapon(
     weapon_name varchar(200) NOT NULL,
     weapon_description TEXT,
     weapon_count INT NOT NULL,
-    weapon_category varchar(200), -- gun granade explosive
-    weapon_type varchar(200),  -- rifle pistol
+    weapon_category varchar(200),
+    weapon_type varchar(200),
     weapon_model varchar(200),
     weapon_manufacturer varchar(200),
     weapon_serial_number varchar(200) NOT NULL UNIQUE,
@@ -90,8 +99,8 @@ create table vehicle(
     vehicle_name varchar(200) NOT NULL,
     vehicle_description TEXT,
     vehicle_count INT NOT NULL,
-    vehicle_type varchar(200),   -- car
-    vehicle_category varchar(200) , -- land,air
+    vehicle_type varchar(200),   
+    vehicle_category varchar(200) , 
     vehicle_model varchar(200),
     vehicle_manufacturer varchar(200),
     vehicle_serial_number varchar(200) NOT NULL UNIQUE,
@@ -106,10 +115,10 @@ create table personnel(
     personnel_name varchar(200) NOT NULL,
     personnel_description TEXT,
     personnel_count INT NOT NULL,
-    personnel_category varchar(200) NOT NULL, -- medical, eng
-    personnel_type varchar(200), -- doctor,nurse
-    personnel_rank varchar(200), -- captain, lieutenant
-    skills varchar(200), -- first aid,heavy machinery
+    personnel_category varchar(200) NOT NULL, 
+    personnel_type varchar(200), 
+    personnel_rank varchar(200), 
+    skills varchar(200), 
     personnel_serial_number varchar(200) not null UNIQUE,
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
@@ -121,8 +130,8 @@ create table equipment(
     equipment_name varchar(200) NOT NULL,
     equipment_description TEXT,
     equipment_count INT NOT NULL,
-   equipment_category varchar(200), -- communication
-    equipment_type varchar(200), -- radio, television
+   equipment_category varchar(200), 
+    equipment_type varchar(200), 
     equipment_manufacturer varchar(200),
     equipment_serial_number varchar(200) not null unique,
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
@@ -137,6 +146,11 @@ create table resource_category(
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
 );
+insert into resource_category (resource_category) values 
+('vehicle'),
+('weapon'),
+('personnel'),
+('equipment');
 
 create table Resources(
     id INT unsigned AUTO_INCREMENT PRIMARY KEY,
@@ -165,8 +179,8 @@ create table operation_resources (
     FOREIGN KEY (operation_id) REFERENCES operations(id) on DELETE CASCADE
 );
 
-CREATE TABLE activity_log (
-    id INT unsigned AUTO_INCREMENT PRIMARY KEY,
+CREATE TABLE activity_log(
+    id int unsigned auto_increment PRIMARY KEY,
     log_name VARCHAR(255) NULL,
     user_id INT unsigned NOT NULL,
     user_name VARCHAR(255) NULL,

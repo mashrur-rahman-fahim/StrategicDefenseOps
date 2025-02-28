@@ -40,7 +40,7 @@ Route::middleware('auth:sanctum')->group(function () {
     // Role Assignment
     Route::controller(AssignRoleController::class)->group(function () {
         Route::post('/manager-assign', 'managerAssign');
-        Route::post('/temp', 'temp');
+      
         Route::post('/operator-assign', 'operatorAssign');
         Route::post('/viewer-assign', 'viewerAssign');
     });
@@ -134,4 +134,5 @@ Route::get('/get-all-resources',[ResourcesController::class,'getAllResources'])-
 
 
 Route::post('/ollama/generate', [OllamaController::class, 'generateResponse'])->middleware('auth:sanctum');
+
 

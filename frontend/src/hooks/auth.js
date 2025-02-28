@@ -1,3 +1,4 @@
+"use client";
 import useSWR from 'swr'
 import axios from '@/lib/axios'
 import { useEffect } from 'react'
@@ -24,6 +25,7 @@ export const useAuth = ({ middleware, redirectIfAuthenticated } = {}) => {
                 router.push('/verify-email')
             }),
     )
+   
 
     const csrf = () => axios.get('/sanctum/csrf-cookie')
 
@@ -55,7 +57,12 @@ export const useAuth = ({ middleware, redirectIfAuthenticated } = {}) => {
 
         axios
             .post('/login', props)
-            .then(() => mutate())
+            .then(response => {
+                const token = response.data.token
+                localStorage.setItem('api_token', token)
+
+                mutate()
+            })
             .catch(error => {
                 if (error.response.status !== 422) throw error
 
@@ -112,24 +119,28 @@ export const useAuth = ({ middleware, redirectIfAuthenticated } = {}) => {
     }
 
     useEffect(() => {
-        if (middleware === 'guest' && redirectIfAuthenticated && user)
-            router.push(redirectIfAuthenticated)
-
-        if (middleware === 'auth' && !user?.email_verified_at){
+        if (middleware === 'guest' && redirectIfAuthenticated && user){
           
+            router.push(redirectIfAuthenticated)}
+
+        if (user && middleware === 'auth' && !user?.email_verified_at){
+         
             router.push('/verify-email');}
 
         if (
             window.location.pathname === '/verify-email' &&
             user?.email_verified_at
-        )
-            router.push(redirectIfAuthenticated)
+        ){
+           
+        
+            router.push(redirectIfAuthenticated)}
         if (middleware === 'auth' && error){ 
            
             logout();
 
 
         }
+        
     }, [user, error])
 
     return {

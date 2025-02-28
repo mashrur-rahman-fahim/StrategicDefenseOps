@@ -13,10 +13,13 @@ class VerifyCsrfToken extends Middleware
      */
     protected $except = [
         //
-        '/api/*',
-        '/login',
-        '/logout',
-        '/*'
+        
+        
+        
+        "/api/*",
+        'auth/google',
+        'auth/google-callback',
+        
         
     ];
 }

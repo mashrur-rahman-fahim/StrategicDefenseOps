@@ -117,7 +117,7 @@ class ReportService{
         }
         catch(Exception $e){
            
-            error_log("Error getting operation resources: ".$e->getMessage());
+            print_r("Error getting operation resources: ".$e->getMessage());
             return false;
         }
     }
