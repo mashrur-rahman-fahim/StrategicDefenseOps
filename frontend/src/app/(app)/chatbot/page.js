@@ -1,6 +1,6 @@
 "use client";
 import "./chatbot.css";
-import { useState, useRef } from "react";
+import { useState, useRef, useEffect } from "react";
 import ReactMarkdown from "react-markdown";
 import remarkMath from "remark-math";
 import rehypeKatex from "rehype-katex";
@@ -12,6 +12,14 @@ export default function Chatbot() {
     const [input, setInput] = useState("");
     const [loading, setLoading] = useState(false);
     const abortControllerRef = useRef(null);
+    const chatHistoryRef = useRef(null); // Ref for automatic scrolling
+
+    // Function to scroll to the bottom
+    useEffect(() => {
+        if (chatHistoryRef.current) {
+            chatHistoryRef.current.scrollTop = chatHistoryRef.current.scrollHeight;
+        }
+    }, [messages]); // Runs whenever messages update
 
     const sendMessage = async () => {
         if (!input.trim()) return;
@@ -83,11 +91,19 @@ export default function Chatbot() {
         }
     };
 
+    // Handle Enter key press
+    const handleKeyPress = (event) => {
+        if (event.key === "Enter" && !loading) {
+            event.preventDefault(); 
+            sendMessage();
+        }
+    };
+
     return (
         <Layout> 
         <div className="chatbot-container">
             <h1>Chatbot</h1>
-            <div className="chat-history">
+            <div className="chat-history" ref={chatHistoryRef}>
                 {messages.map((message, index) => (
                     <div key={index} className={`message ${message.sender}`}>
                         <strong>{message.sender === "user" ? "You" : "Bot"}:</strong>
@@ -105,6 +121,7 @@ export default function Chatbot() {
                     type="text"
                     value={input}
                     onChange={(e) => setInput(e.target.value)}
+                    onKeyDown={handleKeyPress} 
                     placeholder="Type your message here..."
                     disabled={loading}
                 />
