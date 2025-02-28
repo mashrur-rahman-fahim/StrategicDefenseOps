@@ -1,7 +1,7 @@
 import { Nunito } from 'next/font/google'
-import { Toaster } from 'sonner'
 import '@/app/global.css'
 import 'bootstrap/dist/css/bootstrap.min.css'
+import { Toaster } from 'sonner'
 
 const nunitoFont = Nunito({
     subsets: ['latin'],
@@ -12,8 +12,8 @@ const RootLayout = ({ children }) => {
     return (
         <html lang="en" className={nunitoFont.className}>
             <body className="antialiased">
-                {children}
                 <Toaster position="bottom-right" theme='light' richColors />
+                {children}
             </body>
         </html>
     )
