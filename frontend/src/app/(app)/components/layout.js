@@ -14,11 +14,13 @@ export default function Layout({ children }) {
   const router = useRouter();
   const pathname = usePathname();
 
+  // Map routes to menu items
   useEffect(() => {
     const routeToItemMap = {
       '/dashboard': 'dashboard',
       '/operation': 'operation',
       '/report': 'reports',
+      '/resources': 'resources', // Added resources mapping
     };
     setSelectedItem(routeToItemMap[pathname] || '');
   }, [pathname]);
@@ -27,21 +29,28 @@ export default function Layout({ children }) {
     return <Loading />;
   }
 
+  // Toggle sidebar open/close
   const toggleSidebar = () => {
     setIsSidebarOpen(!isSidebarOpen);
   };
 
+  // Handle navigation to different routes
   const handleNavigation = (item) => {
-    setSelectedItem(item.toLowerCase());
-    toggleSidebar();
-
     const routes = {
       dashboard: "/dashboard",
       operation: "/operation",
       reports: "/report",
+      resources: "/resources", // Added resources route
     };
 
-    router.push(routes[item.toLowerCase()]);
+    const route = routes[item.toLowerCase()];
+    if (route) {
+      setSelectedItem(item.toLowerCase());
+      toggleSidebar();
+      router.push(route); // Navigate to the selected page
+    } else {
+      console.error(`Route not found for item: ${item}`);
+    }
   };
 
   return (

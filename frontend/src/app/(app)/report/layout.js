@@ -12,13 +12,13 @@ export default function RootLayout({children}){
         return <Loading/>;
     }
     return (
-          <Layout>  
+        <Layout> 
         <div className="chatbot-navigation">
             
         <Navigation  logout={logout}/>
         
         <main>{children}</main>
     </div>
-      </Layout> 
-    );
+    </Layout> 
+    )
 }
