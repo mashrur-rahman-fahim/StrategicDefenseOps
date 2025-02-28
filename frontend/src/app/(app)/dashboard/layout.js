@@ -14,13 +14,13 @@ export default function Layout({ children }) {
   const router = useRouter();
   const pathname = usePathname();
 
-  // Map routes to menu items
   useEffect(() => {
     const routeToItemMap = {
       '/dashboard': 'dashboard',
       '/operation': 'operation',
       '/report': 'reports',
-      '/resources': 'resources', // Added resources mapping
+      '/resources': 'resources', 
+      '/chatbot':'chatbot',
     };
     setSelectedItem(routeToItemMap[pathname] || '');
   }, [pathname]);
@@ -29,25 +29,25 @@ export default function Layout({ children }) {
     return <Loading />;
   }
 
-  // Toggle sidebar open/close
   const toggleSidebar = () => {
     setIsSidebarOpen(!isSidebarOpen);
   };
 
-  // Handle navigation to different routes
+ 
   const handleNavigation = (item) => {
     const routes = {
       dashboard: "/dashboard",
       operation: "/operation",
       reports: "/report",
-      resources: "/resources", // Added resources route
+      resources: "/resources", 
+      chatbot:"/chatbot"
     };
 
     const route = routes[item.toLowerCase()];
     if (route) {
       setSelectedItem(item.toLowerCase());
       toggleSidebar();
-      router.push(route); // Navigate to the selected page
+      router.push(route); 
     } else {
       console.error(`Route not found for item: ${item}`);
     }
@@ -56,10 +56,9 @@ export default function Layout({ children }) {
   return (
     <html lang="en">
       <body>
-        {/* Navbar */}
+       
         <Navbar toggleSidebar={toggleSidebar} user={user} logout={logout} />
 
-        {/* Sidebar */}
         <Sidebar
           isOpen={isSidebarOpen}
           toggleSidebar={toggleSidebar}
@@ -67,7 +66,7 @@ export default function Layout({ children }) {
           handleNavigation={handleNavigation}
         />
 
-        {/* Content */}
+        
         <div className="content">
           {children}
         </div>

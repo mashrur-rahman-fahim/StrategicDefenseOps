@@ -35,7 +35,7 @@ const Sidebar = ({ isOpen, toggleSidebar, selectedItem, handleNavigation }) => {
       </div>
 
       <nav className="menu">
-        {["Dashboard", "Resources", "Operation", "Reports"].map((item) => (
+        {["Dashboard", "Resources", "Operation", "Reports","Chatbot"].map((item) => (
           <div
             key={item}
             className={`menu-item ${selectedItem === item.toLowerCase() ? "active" : ""}`}
