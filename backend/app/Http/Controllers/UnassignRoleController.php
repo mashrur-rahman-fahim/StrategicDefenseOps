@@ -1,7 +1,7 @@
 <?php
 
 namespace App\Http\Controllers;
-
+use Illuminate\Support\Facades\DB;
 use App\Models\User;
 use App\Services\UnassignRoleService;
 use Illuminate\Http\JsonResponse;
@@ -28,86 +28,125 @@ class UnassignRoleController extends Controller
         $request->validate([
             'managerEmail' => 'required|email|exists:users,email',
         ]);
-
+    
         $parentId = auth()->id();
         $parent = User::find($parentId);
-
+    
+        // Check if the parent is authorized (must be a role_id 1 user)
         if (!$parent || $parent->role_id !== 1) {
             return response()->json(['message' => 'Unauthorized'], 403);
         }
-
-        $manager = $this->unassignRoleService->unassignRole($request->managerEmail, 2, $parentId);
-
-        return $manager ? response()->json([$manager]) && $this->logActivity($parentId, $manager, 'Manager') //Audit Log
-            : response()->json(['message' => 'Manager not found or not assigned'], 404);
+    
+        DB::beginTransaction();
+        try {
+            $manager = $this->unassignRoleService->unassignRole($request->managerEmail, 2, $parentId);
+    
+            if (!$manager) {
+                DB::rollBack();
+                return response()->json(['message' => 'Manager not found or not assigned'], 404);
+            }
+    
+            DB::commit();
+            return response()->json(['manager' => $manager]);
+        } catch (\Exception $e) {
+            DB::rollBack();
+            Log::error('Error unassigning manager role: ' . $e->getMessage());
+            return response()->json(['message' => 'An error occurred while unassigning the manager role'], 500);
+        }
     }
-
-    /* 
-     * Function : operatorUnassign
-     * Description : Unassigns an operator role from a user by either a parent or a manager.
-     * @param Request $request - The request object containing the operator's email.
-     * @return JsonResponse - Returns a JSON response with the unassigned operator data or an error message.
-     */
+    
     public function operatorUnassign(Request $request): JsonResponse
     {
         $request->validate([
             'operatorEmail' => 'required|email|exists:users,email',
         ]);
-
+    
         $parentId = auth()->id();
         $parent = User::find($parentId);
-
+    
+        // Check if the parent is authorized
         if (!$parent) {
             return response()->json(['message' => 'Unauthorized'], 403);
         }
-
-        if ($parent->role_id == 1) {
-            $request->validate(['managerEmail' => 'required|email|exists:users,email']);
-            $manager = User::where('email', $request->managerEmail)->where('role_id', 2)->where('parent_id', $parentId)->first();
-
-            if ($manager) {
+    
+        DB::beginTransaction();
+        try {
+            if ($parent->role_id == 1) {
+                $request->validate(['managerEmail' => 'required|email|exists:users,email']);
+                $manager = User::where('email', $request->managerEmail)
+                    ->where('role_id', 2)
+                    ->where('parent_id', $parentId)
+                    ->first();
+    
+                if (!$manager) {
+                    DB::rollBack();
+                    return response()->json(['message' => 'Manager not found or not authorized'], 404);
+                }
+    
                 $operator = $this->unassignRoleService->unassignRole($request->operatorEmail, 3, $manager->id);
-                return response()->json([$operator], 200);
+            } else {
+                $operator = $this->unassignRoleService->unassignRole($request->operatorEmail, 3, $parentId);
             }
-        } else {
-            $operator = $this->unassignRoleService->unassignRole($request->operatorEmail, 3, $parentId);
+    
+            if (!$operator) {
+                DB::rollBack();
+                return response()->json(['message' => 'Operator not found or not assigned'], 404);
+            }
+    
+            DB::commit();
+            return response()->json(['operator' => $operator]);
+        } catch (\Exception $e) {
+            DB::rollBack();
+            Log::error('Error unassigning operator role: ' . $e->getMessage());
+            return response()->json(['message' => 'An error occurred while unassigning the operator role'], 500);
         }
-
-        return isset($operator) ? response()->json([$operator]) &&  $this->logUnassignActivity($parentId, $operator, 'Operator') // Audit Log
-            : response()->json(['message' => 'Operator not found or not assigned'], 404);
     }
-
-    /* 
-     * Function : viewerUnassign
-     * Description : Unassigns a viewer role from a user by either a parent or a manager.
-     * @param Request $request - The request object containing the viewer's email.
-     * @return JsonResponse - Returns a JSON response with the unassigned viewer data or an error message.
-     */
+    
     public function viewerUnassign(Request $request): JsonResponse
     {
         $request->validate([
             'viewerEmail' => 'required|email|exists:users,email',
         ]);
-
+    
         $parentId = auth()->id();
         $parent = User::find($parentId);
-
+    
+        // Check if the parent is authorized
         if (!$parent) {
             return response()->json(['message' => 'Unauthorized'], 403);
         }
-
-        if ($parent->role_id == 1) {
-            $request->validate(['managerEmail' => 'required|email|exists:users,email']);
-            $manager = User::where('email', $request->managerEmail)->where('role_id', 2)->where('parent_id', $parentId)->first();
-            if ($manager) {
+    
+        DB::beginTransaction();
+        try {
+            if ($parent->role_id == 1) {
+                $request->validate(['managerEmail' => 'required|email|exists:users,email']);
+                $manager = User::where('email', $request->managerEmail)
+                    ->where('role_id', 2)
+                    ->where('parent_id', $parentId)
+                    ->first();
+    
+                if (!$manager) {
+                    DB::rollBack();
+                    return response()->json(['message' => 'Manager not found or not authorized'], 404);
+                }
+    
                 $viewer = $this->unassignRoleService->unassignRole($request->viewerEmail, 4, $manager->id);
+            } else {
+                $viewer = $this->unassignRoleService->unassignRole($request->viewerEmail, 4, $parentId);
             }
-        } else {
-            $viewer = $this->unassignRoleService->unassignRole($request->viewerEmail, 4, $parentId);
+    
+            if (!$viewer) {
+                DB::rollBack();
+                return response()->json(['message' => 'Viewer not found or not assigned'], 404);
+            }
+    
+            DB::commit();
+            return response()->json(['viewer' => $viewer]);
+        } catch (\Exception $e) {
+            DB::rollBack();
+            Log::error('Error unassigning viewer role: ' . $e->getMessage());
+            return response()->json(['message' => 'An error occurred while unassigning the viewer role'], 500);
         }
-
-        return isset($viewer) ? response()->json([$viewer]) && $this->logUnassignActivity($parentId, $viewer, 'Viewer') // Audit Log
-            : response()->json(['message' => 'Viewer not found or not assigned'], 404);
     }
 
     /* 
