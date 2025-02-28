@@ -9,7 +9,7 @@ import Layout from '../components/layout'
 import Loading from '../Loading'
 
 export default function Resources() {
-    //const { user } = useAuth({ middleware: 'auth', redirectIfAuthenticated: '/resources' });
+    const { user } = useAuth({ middleware: 'auth', redirectIfAuthenticated: '/resources' })
     const [resourceData, setResourceData] = useState([])
     const [loading, setLoading] = useState(true)
     const [error, setError] = useState(null)
@@ -252,12 +252,12 @@ export default function Resources() {
                     <>
                         <div className="d-flex justify-content-between align-items-center mt-4">
                             <h1 className="mb-4">Resource Overview</h1>
-                            <Button
+                            {user.role_id === 1 && (<Button
                                 variant="outline-primary"
                                 className="mb-4"
                                 onClick={handleOpenModal}>
                                 New Resource
-                            </Button>
+                            </Button>)}
                         </div>
 
                         <Row className="g-3 mb-4">
