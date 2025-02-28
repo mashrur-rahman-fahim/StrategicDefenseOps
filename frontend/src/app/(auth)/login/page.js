@@ -137,6 +137,14 @@ const Login = () => {
                             className="w-full bg-black text-white py-2 rounded-md font-bold">
                             Continue with Google
                         </button>
+
+                        {/* Don't have an account? */}
+                        <p className="text-center mt-3">
+                            <Link href="/register" className="text-white underline">
+                                Don't have an account?
+                            </Link>
+                        </p>
+                        
                     </form>
                 </div>
             </div>
