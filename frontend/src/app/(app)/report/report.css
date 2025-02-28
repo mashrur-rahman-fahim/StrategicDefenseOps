@@ -1,0 +1,73 @@
+/* Ensure all text is dark */
+
+
+/* Input fields */
+input[type="text"] {
+    color: #333; /* Dark text for inputs */
+    background-color: #fff; /* White background for inputs */
+    border: 1px solid #ccc; /* Light gray border */
+    padding: 8px;
+    border-radius: 4px;
+    width: 100%;
+}
+
+/* Buttons */
+button {
+    color: #fff; /* White text for buttons */
+    background-color: #007bff; /* Blue background for buttons */
+    border: none;
+    padding: 8px 16px;
+    border-radius: 4px;
+    cursor: pointer;
+}
+
+button:disabled {
+    background-color: #ccc; /* Gray background for disabled buttons */
+    cursor: not-allowed;
+}
+
+/* Chat history/messages */
+.chat-history {
+    background-color: #f9f9f9; /* Light gray background for chat history */
+    padding: 10px;
+    border-radius: 4px;
+    margin-top: 10px;
+}
+
+.message {
+    margin-bottom: 10px;
+}
+
+.message.bot {
+    color: #333; /* Dark text for bot messages */
+}
+
+.message.user {
+    color: #333; /* Dark text for user messages */
+}
+
+/* Markdown content */
+.react-markdown {
+    color: #333; /* Dark text for Markdown content */
+}
+
+/* Report container */
+.report-container {
+    max-width: 800px;
+    margin: 0 auto;
+    padding: 20px;
+    background-color: #fff; /* White background for the container */
+    border: 1px solid #ddd; /* Light gray border */
+    border-radius: 8px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1); /* Subtle shadow */
+}
+
+/* Headings */
+h1, h2, h3 {
+    color: #333; /* Dark text for headings */
+}
+
+/* Paragraphs */
+p {
+    color: #333; /* Dark text for paragraphs */
+}

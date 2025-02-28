@@ -33,6 +33,7 @@ class ReportController extends Controller
 
 
         $info = $this->reportService->getReport($operationId, auth()->id(),$data);
+       
         // return response( $report["operation"]->id);
         if(!$info){
             return response()->json(['error' => 'Failed to generate report'], 500);
@@ -53,18 +54,14 @@ class ReportController extends Controller
             // Stream the AI response in chunks
             foreach ($this->ollamaService->generateResponse($prompt) as $chunk) {
                 if (!empty($chunk)) {
-                    // Split by word count and track the total length
-                    $words = explode(' ', $chunk);
-                    $wordCount += count($words);
-
-                    // Accumulate the report content
+                    echo $chunk . "\n"; // Preserve formatting (Markdown-friendly)
                     $reportContent .= $chunk . " ";
 
-                    // Flush output to keep the stream responsive
                     if (ob_get_level() > 0) {
                         ob_flush();
                     }
                     flush();
+                    usleep(50000); // Slight delay for smooth streaming
                 }
             }
 
@@ -79,7 +76,7 @@ class ReportController extends Controller
                 'report_type' => $data['report_type']
             ]);
 
-            echo $report;
+            
         });
     }
 }
