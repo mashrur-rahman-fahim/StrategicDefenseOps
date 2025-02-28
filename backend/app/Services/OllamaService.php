@@ -27,14 +27,9 @@ class OllamaService
                     'stream' => true, // Set to true if you want streamed responses
                     'options' => [
                         'temperature' => 0.5,
-                     
-                        'top_p' => 0.9, // Nucleus sampling (higher = more diverse output)
-                        'repeat_penalty' => 1.2, // Reduces repetition
-                        'presence_penalty' => 1.2, // Encourages new words
-                        'frequency_penalty' => 0.8, // Lessens overuse of frequent words
                        
-                       
-                    ],
+                        'top_p' => 0.9, // Nucleus sampling (higher = more diverse output)            
+                                        ],
                 ]
                 
             ]);
