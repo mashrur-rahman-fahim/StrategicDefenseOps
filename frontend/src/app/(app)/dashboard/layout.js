@@ -36,19 +36,11 @@ export default function RootLayout({ children }) {
 
         
         <div className="content">
-         
-          {selectedItem === 'dashboard' && <Dashboard />}
-          
-          {selectedItem === 'resourceUsage' && (
-            <div>
-              <h1>Resource Usage</h1>
-              <p>Displaying resource usage information.</p>
-            </div>
-          )}
-          
           {children}
         </div>
       </body>
     </html>
   );
 }
+
+

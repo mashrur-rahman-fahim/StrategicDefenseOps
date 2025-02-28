@@ -1,9 +1,12 @@
-'use client';
+
+"use client";
 import React, { useEffect, useRef } from "react";
+import { useRouter } from "next/navigation"; // Import useRouter
 import "./sidebar.css";
 
 const Sidebar = ({ isOpen, toggleSidebar, selectedItem, setSelectedItem }) => {
   const sidebarRef = useRef();
+  const router = useRouter(); // Initialize Next.js router
 
   useEffect(() => {
     const handleClickOutside = (event) => {
@@ -18,6 +21,21 @@ const Sidebar = ({ isOpen, toggleSidebar, selectedItem, setSelectedItem }) => {
     };
   }, [isOpen, toggleSidebar]);
 
+  // Function to handle navigation
+  const handleNavigation = (item) => {
+    setSelectedItem(item.toLowerCase());
+    toggleSidebar();
+
+    // Define route paths based on selected menu item
+    const routes = {
+      dashboard: "/dashboard",
+      reports: "/report",
+      // Add more routes as needed
+    };
+
+    router.push(routes[item.toLowerCase()]); // Navigate to the selected page
+  };
+
   return (
     <div ref={sidebarRef} className={`sidebar ${isOpen ? "open" : ""}`}>
       <button className="back-button" onClick={toggleSidebar}>←</button>
@@ -29,8 +47,6 @@ const Sidebar = ({ isOpen, toggleSidebar, selectedItem, setSelectedItem }) => {
           alt="Profile"
           className="profile-pic"
         />
-
-
         <h2>Simon Riley</h2>
         <p className="rank">Lieutenant</p>
       </div>
@@ -40,16 +56,12 @@ const Sidebar = ({ isOpen, toggleSidebar, selectedItem, setSelectedItem }) => {
           <div
             key={item}
             className={`menu-item ${selectedItem === item.toLowerCase() ? "active" : ""}`}
-            onClick={() => {
-              setSelectedItem(item.toLowerCase());
-              toggleSidebar();
-            }}
+            onClick={() => handleNavigation(item)}
           >
             {item}
           </div>
         ))}
       </nav>
-
     </div>
   );
 };
