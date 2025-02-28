@@ -8,10 +8,14 @@ const ResourceFormModal = ({ show, handleClose, refreshResources}) => {
   const [resourceType, setResourceType] = useState('');
   const [formData, setFormData] = useState({});
   const [loading, setLoading] = useState(false);
+  const [image, setImage] = useState(null);
+  const [imagePreview, setImagePreview] = useState(null);
 
   // Reset form when modal closes or type changes
   const resetForm = () => {
     setFormData({});
+    setImage(null);
+    setImagePreview(null);
   };
 
   const handleTypeChange = (e) => {
@@ -24,13 +28,22 @@ const ResourceFormModal = ({ show, handleClose, refreshResources}) => {
     setFormData({ ...formData, [name]: value });
   };
 
+  const handleImageChange = (e) => {
+    const file = e.target.files[0];
+    if (file) {
+      setImage(file);
+      // Create preview URL for the selected image
+      const previewUrl = URL.createObjectURL(file);
+      setImagePreview(previewUrl);
+    }
+  };
+
   const handleSubmit = async (e) => {
     e.preventDefault();
     setLoading(true);
     
     try {
       let endpoint = '';
-      let payload = { ...formData };
       
       // Set endpoint based on resource type
       switch (resourceType) {
@@ -50,13 +63,30 @@ const ResourceFormModal = ({ show, handleClose, refreshResources}) => {
           throw new Error('Invalid resource type');
       }
 
-      // Add count as integer
-      if (payload.weapon_count) payload.weapon_count = parseInt(payload.weapon_count);
-      if (payload.vehicle_count) payload.vehicle_count = parseInt(payload.vehicle_count);
-      if (payload.personnel_count) payload.personnel_count = parseInt(payload.personnel_count);
-      if (payload.equipment_count) payload.equipment_count = parseInt(payload.equipment_count);
+      // Create form data object for file upload
+      const formDataObj = new FormData();
       
-      const response = await axios.post(endpoint, payload);
+      // Add all form fields to FormData
+      Object.keys(formData).forEach(key => {
+        formDataObj.append(key, formData[key]);
+      });
+      
+      if (formData.weapon_count) formDataObj.set('weapon_count', parseInt(formData.weapon_count));
+      if (formData.vehicle_count) formDataObj.set('vehicle_count', parseInt(formData.vehicle_count));
+      if (formData.personnel_count) formDataObj.set('personnel_count', parseInt(formData.personnel_count));
+      if (formData.equipment_count) formDataObj.set('equipment_count', parseInt(formData.equipment_count));
+      
+      // Add image if it exists
+      if (image) {
+        formDataObj.append('image', image);
+      }
+      
+      const response = await axios.post(endpoint, formDataObj, {
+        headers: {
+          'Content-Type': 'multipart/form-data'
+        }
+      });
+      
       console.log('Resource added:', response.data);
 
       toast.success(response?.data?.message || 'Resource added successfully');
@@ -328,17 +358,46 @@ const ResourceFormModal = ({ show, handleClose, refreshResources}) => {
             </Form.Select>
           </Form.Group>
           
-          {resourceType && renderFormFields()}
-          
           {resourceType && (
-            <div className="d-flex justify-content-end mt-4">
-              <Button variant="secondary" className="me-2" onClick={handleClose}>
-                Cancel
-              </Button>
-              <Button variant="primary" type="submit" disabled={loading}>
-                {loading ? 'Saving...' : 'Save Resource'}
-              </Button>
-            </div>
+            <>
+              {renderFormFields()}
+              
+              {/* Image Upload Section */}
+              <Form.Group className="mb-4">
+                <Form.Label>Image</Form.Label>
+                <Form.Control 
+                  type="file" 
+                  onChange={handleImageChange}
+                  accept="image/*"
+                />
+                <Form.Text className="text-muted">
+                  Upload an image for this resource
+                </Form.Text>
+              </Form.Group>
+              
+              {/* Image Preview */}
+              {imagePreview && (
+                <div className="mb-4">
+                  <p className="mb-2">Image Preview:</p>
+                  <div className="border p-2 d-inline-block">
+                    <img 
+                      src={imagePreview} 
+                      alt="Preview" 
+                      style={{ maxWidth: '100%', maxHeight: '200px' }} 
+                    />
+                  </div>
+                </div>
+              )}
+              
+              <div className="d-flex justify-content-end mt-4">
+                <Button variant="secondary" className="me-2" onClick={handleClose}>
+                  Cancel
+                </Button>
+                <Button variant="primary" type="submit" disabled={loading}>
+                  {loading ? 'Saving...' : 'Save Resource'}
+                </Button>
+              </div>
+            </>
           )}
         </Form>
       </Modal.Body>

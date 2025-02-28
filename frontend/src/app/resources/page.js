@@ -67,6 +67,7 @@ export default function Resources() {
         fetchResources()
     }, [])
 
+    //total counts for each resource category
     useEffect(() => {
         const totalWeaponCount = resourceData[1]?.reduce((total, resource) => {
             return total + (resource.weapon_count || 0);
