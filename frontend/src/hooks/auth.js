@@ -24,6 +24,7 @@ export const useAuth = ({ middleware, redirectIfAuthenticated } = {}) => {
                 router.push('/verify-email')
             }),
     )
+   
 
     const csrf = () => axios.get('/sanctum/csrf-cookie')
 
@@ -55,7 +56,12 @@ export const useAuth = ({ middleware, redirectIfAuthenticated } = {}) => {
 
         axios
             .post('/login', props)
-            .then(() => mutate())
+            .then(response => {
+                const token = response.data.token
+                localStorage.setItem('api_token', token)
+
+                mutate()
+            })
             .catch(error => {
                 if (error.response.status !== 422) throw error
 

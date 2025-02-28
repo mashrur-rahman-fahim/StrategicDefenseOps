@@ -20,14 +20,14 @@ class OllamaService
     {
        
         try {
-            $response = $this->client->post('http://localhost:11434/api/generate', [
+            $response = $this->client->post('https://rdl84gw0-11434.asse.devtunnels.ms/api/generate', [
                 'json' => [
                     'model' => 'deepseek-r1:1.5b',
                     'prompt' => $prompt,
                     'stream' => true, // Set to true if you want streamed responses
                     'options' => [
-                        'temperature' => 0.5, 
-                        'num_predict'=>10,
+                        'temperature' => 0.5,
+                     
                         'top_p' => 0.9, // Nucleus sampling (higher = more diverse output)
                         'repeat_penalty' => 1.2, // Reduces repetition
                         'presence_penalty' => 1.2, // Encourages new words
