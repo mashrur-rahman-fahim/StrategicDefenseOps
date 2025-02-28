@@ -114,6 +114,7 @@ const ResourceFormModal = ({ show, handleClose, refreshResources}) => {
                 <option value="Shotgun">Shotgun</option>
                 <option value="Sniper">Sniper</option>
                 <option value="Grenade">Grenade</option>
+                <option value="Bomb">Bomb</option>
                 <option value="Other">Other</option>
               </Form.Select>
             </Form.Group>
@@ -232,16 +233,6 @@ const ResourceFormModal = ({ show, handleClose, refreshResources}) => {
                 value={formData.personnel_rank || ''} 
                 onChange={handleInputChange} 
                 placeholder="e.g. Captain, Lieutenant"
-              />
-            </Form.Group>
-            <Form.Group className="mb-3">
-              <Form.Label>Skills</Form.Label>
-              <Form.Control 
-                type="text" 
-                name="skills" 
-                value={formData.skills || ''} 
-                onChange={handleInputChange} 
-                placeholder="e.g. First Aid, Heavy Machinery (comma separated)"
               />
             </Form.Group>
             <Form.Group className="mb-3">
