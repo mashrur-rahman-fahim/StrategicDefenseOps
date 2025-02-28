@@ -4,6 +4,7 @@ import Loading from "../Loading";
 import Navigation from "./Navigation";
 
 
+
 export default function RootLayout({children}){
     
     const {user,logout}=useAuth({middleware:"auth"});

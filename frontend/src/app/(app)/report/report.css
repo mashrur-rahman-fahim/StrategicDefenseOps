@@ -1,8 +1,11 @@
-/* Ensure all text is dark */
-
+/* Scope styles to a specific container to avoid affecting navbar */
+.main-content {
+    /* Ensure all text is dark */
+    color: #333;
+}
 
 /* Input fields */
-input[type="text"] {
+.main-content input[type="text"] {
     color: #333; /* Dark text for inputs */
     background-color: #fff; /* White background for inputs */
     border: 1px solid #ccc; /* Light gray border */
@@ -12,7 +15,7 @@ input[type="text"] {
 }
 
 /* Buttons */
-button {
+.main-content button {
     color: #fff; /* White text for buttons */
     background-color: #007bff; /* Blue background for buttons */
     border: none;
@@ -21,38 +24,38 @@ button {
     cursor: pointer;
 }
 
-button:disabled {
+.main-content button:disabled {
     background-color: #ccc; /* Gray background for disabled buttons */
     cursor: not-allowed;
 }
 
 /* Chat history/messages */
-.chat-history {
+.main-content .chat-history {
     background-color: #f9f9f9; /* Light gray background for chat history */
     padding: 10px;
     border-radius: 4px;
     margin-top: 10px;
 }
 
-.message {
+.main-content .message {
     margin-bottom: 10px;
 }
 
-.message.bot {
+.main-content .message.bot {
     color: #333; /* Dark text for bot messages */
 }
 
-.message.user {
+.main-content .message.user {
     color: #333; /* Dark text for user messages */
 }
 
 /* Markdown content */
-.react-markdown {
+.main-content .react-markdown {
     color: #333; /* Dark text for Markdown content */
 }
 
 /* Report container */
-.report-container {
+.main-content .report-container {
     max-width: 800px;
     margin: 0 auto;
     padding: 20px;
@@ -63,11 +66,13 @@ button:disabled {
 }
 
 /* Headings */
-h1, h2, h3 {
+.main-content h1, 
+.main-content h2, 
+.main-content h3 {
     color: #333; /* Dark text for headings */
 }
 
 /* Paragraphs */
-p {
+.main-content p {
     color: #333; /* Dark text for paragraphs */
 }

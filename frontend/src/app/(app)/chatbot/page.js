@@ -5,6 +5,7 @@ import ReactMarkdown from "react-markdown";
 import remarkMath from "remark-math";
 import rehypeKatex from "rehype-katex";
 import "katex/dist/katex.min.css";
+import Layout from '../components/layout'; 
 
 export default function Chatbot() {
     const [messages, setMessages] = useState([]);
@@ -83,6 +84,7 @@ export default function Chatbot() {
     };
 
     return (
+        <Layout> 
         <div className="chatbot-container">
             <h1>Chatbot</h1>
             <div className="chat-history">
@@ -112,5 +114,6 @@ export default function Chatbot() {
                 {loading && <button onClick={stopResponse}>Stop</button>}
             </div>
         </div>
+        </Layout> 
     );
 }

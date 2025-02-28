@@ -1,7 +1,8 @@
 "use client";
-
+import Layout from '../components/layout'; 
 export default function Resources() {
   return (
+    <Layout>
     <div className="p-4">
       <h1 className="text-2xl font-bold mb-4">Resources</h1>
       <p className="text-gray-700">
@@ -16,5 +17,6 @@ export default function Resources() {
         </ul>
       </div>
     </div>
+    </Layout>
   );
 }

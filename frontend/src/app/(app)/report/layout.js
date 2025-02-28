@@ -12,6 +12,7 @@ export default function RootLayout({children}){
         return <Loading/>;
     }
     return (
+        
         <div className="chatbot-navigation">
             
         <Navigation  logout={logout}/>

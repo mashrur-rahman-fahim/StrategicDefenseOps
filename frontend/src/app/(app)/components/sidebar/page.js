@@ -1,10 +1,11 @@
-'use client';
+"use client";
 import React, { useEffect, useRef } from "react";
 import "./sidebar.css";
 
-const Sidebar = ({ isOpen, toggleSidebar, selectedItem, setSelectedItem }) => {
+const Sidebar = ({ isOpen, toggleSidebar, selectedItem, handleNavigation }) => {
   const sidebarRef = useRef();
 
+  // Close sidebar when clicking outside
   useEffect(() => {
     const handleClickOutside = (event) => {
       if (isOpen && sidebarRef.current && !sidebarRef.current.contains(event.target)) {
@@ -29,27 +30,24 @@ const Sidebar = ({ isOpen, toggleSidebar, selectedItem, setSelectedItem }) => {
           alt="Profile"
           className="profile-pic"
         />
-
-
         <h2>Simon Riley</h2>
         <p className="rank">Lieutenant</p>
       </div>
 
       <nav className="menu">
-        {["Dashboard", "Resources", "Operation", "Reports"].map((item) => (
+        {["Dashboard", "Resources", "Operation", "Reports","Chatbot"].map((item) => (
           <div
             key={item}
             className={`menu-item ${selectedItem === item.toLowerCase() ? "active" : ""}`}
             onClick={() => {
-              setSelectedItem(item.toLowerCase());
-              toggleSidebar();
+              handleNavigation(item);
+              setTimeout(() => toggleSidebar(), 300); // Close sidebar after navigating
             }}
           >
             {item}
           </div>
         ))}
       </nav>
-
     </div>
   );
 };

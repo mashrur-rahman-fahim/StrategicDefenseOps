@@ -5,6 +5,7 @@ import remarkMath from "remark-math";
 import rehypeKatex from "rehype-katex";
 import "katex/dist/katex.min.css";
 import "./report.css";
+import Layout from '../components/layout'; 
 
 export default function ReportGenerator() {
     const [reportType, setReportType] = useState("");
@@ -88,6 +89,7 @@ export default function ReportGenerator() {
     };
 
     return (
+         <Layout> 
         <div className="p-4 max-w-lg mx-auto border rounded shadow-lg">
             <h1 className="text-xl font-bold mb-4">Generate Report</h1>
             <div className="mb-2">
@@ -142,5 +144,7 @@ export default function ReportGenerator() {
                 </div>
             </div>
         </div>
+        </Layout> 
+        
     );
 }
