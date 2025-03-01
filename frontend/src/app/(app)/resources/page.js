@@ -1,15 +1,29 @@
 'use client'
 import React, { useState, useEffect } from 'react'
-import {Card, Button, Row, Col, Container, Form, InputGroup, Pagination, Dropdown} from 'react-bootstrap'
+import {
+    Card,
+    Button,
+    Row,
+    Col,
+    Container,
+    Form,
+    InputGroup,
+    Pagination,
+    Dropdown,
+} from 'react-bootstrap'
 import { Icon } from '@iconify/react'
 import axios from '@/lib/axios'
 import { useAuth } from '@/hooks/auth'
 import ResourceFormModal from './ResourceFormModal'
 import Layout from '../components/layout'
 import Loading from '../Loading'
+import { toast } from 'sonner';
 
 export default function Resources() {
-    const { user } = useAuth({ middleware: 'auth', redirectIfAuthenticated: '/resources' })
+    const { user } = useAuth({
+        middleware: 'auth',
+        redirectIfAuthenticated: '/resources',
+    })
     const [resourceData, setResourceData] = useState([])
     const [loading, setLoading] = useState(true)
     const [error, setError] = useState(null)
@@ -18,6 +32,8 @@ export default function Resources() {
     const [currentPage, setCurrentPage] = useState(1)
     const [activeFilter, setActiveFilter] = useState('All')
     const [filteredResources, setFilteredResources] = useState([])
+    const [selectedResource, setSelectedResource] = useState(null);
+    const [editModalShow, setEditModalShow] = useState(false);
     const [totalCounts, setTotalCounts] = useState({
         weapons: 0,
         vehicles: 0,
@@ -241,23 +257,64 @@ export default function Resources() {
         )
     }
 
+    const getResourceTypeCategory = (resource) => {
+        if (resource.weapon_name) return 'weapon';
+        if (resource.vehicle_name) return 'vehicle';
+        if (resource.personnel_name) return 'personnel';
+        if (resource.equipment_name) return 'equipment';
+        return '';
+    }
+
+    const handleDelete = async (resource) => {
+        if (window.confirm('Are you sure you want to delete this resource?')) {
+          const resourceName = getResourceName(resource);
+          try {
+            let endpoint = '';
+            const resourceType = getResourceTypeCategory(resource);
+            
+            switch(resourceType) {
+              case 'weapon': endpoint = `/api/delete-weapon/${resource.id}`; break;
+              case 'vehicle': endpoint = `/api/delete-vehicle/${resource.id}`; break;
+              case 'personnel': endpoint = `/api/delete-personnel/${resource.id}`; break;
+              case 'equipment': endpoint = `/api/delete-equipment/${resource.id}`; break;
+              default: throw new Error('Invalid resource type');
+            }
+      
+            await axios.delete(endpoint);
+            toast.success(`${resourceName} deleted successfully` || 'Resource deleted successfully');
+            fetchResources();
+          } catch (error) {
+            console.error('Delete error:', error);
+            toast.error(`Failed to delete ${resourceName}` || 'Failed to delete resource');
+          }
+        }
+      };
+      
+      const handleEdit = (resource) => {
+        const type = getResourceTypeCategory(resource);
+        setSelectedResource({ ...resource, resourceType: type });
+        setEditModalShow(true);
+      };
+
     return (
         <Layout>
             <Container fluid className="p-4">
                 {loading ? (
-                    <Loading text={'Loading Resources...'}/>
+                    <Loading text={'Loading Resources...'} />
                 ) : error ? (
                     <div className="text-center text-danger">{error}</div>
                 ) : (
                     <>
                         <div className="d-flex justify-content-between align-items-center mt-4">
                             <h1 className="mb-4">Resource Overview</h1>
-                            {user.role_id === 1 && (<Button
-                                variant="outline-primary"
-                                className="mb-4"
-                                onClick={handleOpenModal}>
-                                New Resource
-                            </Button>)}
+                            {user.role_id === 1 && (
+                                <Button
+                                    variant="outline-primary"
+                                    className="mb-4"
+                                    onClick={handleOpenModal}>
+                                    New Resource
+                                </Button>
+                            )}
                         </div>
 
                         <Row className="g-3 mb-4">
@@ -483,6 +540,32 @@ export default function Resources() {
                                                                     </span>
                                                                 </div>
                                                             </div>
+                                                            <div className="d-flex gap-2 mt-3">
+                                                                {(user.role_id === 1 || user.role_id === 2) && (
+                                                                    <Button
+                                                                        variant="outline-primary"
+                                                                        size="sm"
+                                                                        onClick={() =>
+                                                                            handleEdit(
+                                                                                resource,
+                                                                            )
+                                                                        }>
+                                                                        <Icon icon="mdi:pencil" />
+                                                                    </Button>
+                                                                )}
+                                                                {user.role_id === 1 && (
+                                                                    <Button
+                                                                        variant="outline-danger"
+                                                                        size="sm"
+                                                                        onClick={() =>
+                                                                            handleDelete(
+                                                                                resource,
+                                                                            )
+                                                                        }>
+                                                                        <Icon icon="mdi:delete" />
+                                                                    </Button>
+                                                                )}
+                                                            </div>
                                                         </Card.Body>
                                                     </Card>
                                                 </Col>
@@ -528,9 +611,14 @@ export default function Resources() {
                         </div>
 
                         <ResourceFormModal
-                            show={showModal}
-                            handleClose={handleCloseModal}
+                            show={showModal || editModalShow}
+                            handleClose={() => {
+                                handleCloseModal();
+                                setEditModalShow(false);
+                                setSelectedResource(null);
+                            }}
                             refreshResources={fetchResources}
+                            resource={selectedResource}
                         />
                     </>
                 )}
