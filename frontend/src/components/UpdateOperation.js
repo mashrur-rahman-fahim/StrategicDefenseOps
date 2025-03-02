@@ -44,7 +44,7 @@ const UpdateOperation = ({ operation, onOperationUpdated }) => {
 
     // Handle operation deletion
     const handleOperationDeleted = operationId => {
-        alert(`Operation with ID ${operationId} deleted successfully`);
+        alert(`Operation with ID ${operationId} deleted successfully`)
     }
 
     return roleId === null ? (
@@ -65,7 +65,7 @@ const UpdateOperation = ({ operation, onOperationUpdated }) => {
                         name="description"
                         value={formData.description}
                         onChange={handleChange}
-                        className="w-full p-2 border rounded"></textarea>
+                        className="w-full p-2 border rounded" />
                     <select
                         name="status"
                         value={formData.status}

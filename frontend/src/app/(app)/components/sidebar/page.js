@@ -6,7 +6,7 @@ import './sidebar.css'
 const Sidebar = ({ isOpen, toggleSidebar, selectedItem, setSelectedItem }) => {
     const sidebarRef = useRef()
     const [userName, setUserName] = useState('Error')
-    const [roleId, setRoleId] = useState(null)
+    const [ setRoleId] = useState(null)
     const [roleName, setRoleName] = useState("")
     const roleMapping = {
         1: 'Admin',

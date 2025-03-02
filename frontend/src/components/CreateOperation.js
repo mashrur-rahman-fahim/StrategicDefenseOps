@@ -122,7 +122,7 @@ const CreateOperation = ({ onOperationCreated }) => {
                         placeholder="Description"
                         onChange={handleChange}
                         required
-                        className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-400 outline-none"></textarea>
+                        className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-400 outline-none" />
                 </div>
                 <div>
                     <select
