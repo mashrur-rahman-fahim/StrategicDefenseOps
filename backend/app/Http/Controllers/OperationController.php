@@ -129,40 +129,40 @@ class OperationController extends Controller
             return response()->json(['error' => 'Unauthorized'], 403);
         }
 
-        $operation = $this->operationService->updateOperation($id, $validatedData, $user->id);
+        // $operation = $this->operationService->updateOperation($id, $validatedData, $user->id);
 
         $updatedOperation = $this->operationService->updateOperation($id, $validatedData, auth()->id());
         if (!$updatedOperation) {
             return response()->json(['error' => 'Failed to update operation'], 500);
         }
         // Audit Log : updated operation 
-        activity()
-            ->causedBy($user)
-            ->performedOn($operation)
-            ->tap(function ($activity) use ($user, $operation, $validatedData) {
-                $activity->log_name = 'operation_update';
-                $activity->user_id = $user->id;
-                $activity->user_name = $user->name;
-                $activity->user_email = $user->email;
-                $activity->role_id = $user->role_id;
-                $activity->description = 'Operation updated: ' . $operation->name;
-                $activity->subject_type = get_class($operation);
-                $activity->subject_id = $operation->id;
-                $activity->causer_type = get_class($user);
-                $activity->causer_id = $user->id;
-                $activity->event = 'Operation Updated';
-                $activity->batch_uuid = \Illuminate\Support\Str::uuid()->toString(); 
-                $activity->created_at = now();
-                $activity->updated_at = now();
-            })
-            ->withProperties([
-                'updated_fields' => $validatedData,
-                'operation_name' => $operation->name,
-                'status' => $operation->status,
-                'budget' => $operation->budget,
-                'timestamp' => now()->toDateTimeString(),
-            ])
-            ->log('Operation updated: ' . $operation->name);
+        // activity()
+        //     ->causedBy($user)
+        //     ->performedOn($operation)
+        //     ->tap(function ($activity) use ($user, $operation, $validatedData) {
+        //         $activity->log_name = 'operation_update';
+        //         $activity->user_id = $user->id;
+        //         $activity->user_name = $user->name;
+        //         $activity->user_email = $user->email;
+        //         $activity->role_id = $user->role_id;
+        //         $activity->description = 'Operation updated: ' . $operation->name;
+        //         $activity->subject_type = get_class($operation);
+        //         $activity->subject_id = $operation->id;
+        //         $activity->causer_type = get_class($user);
+        //         $activity->causer_id = $user->id;
+        //         $activity->event = 'Operation Updated';
+        //         $activity->batch_uuid = \Illuminate\Support\Str::uuid()->toString(); 
+        //         $activity->created_at = now();
+        //         $activity->updated_at = now();
+        //     })
+        //     ->withProperties([
+        //         'updated_fields' => $validatedData,
+        //         'operation_name' => $operation->name,
+        //         'status' => $operation->status,
+        //         'budget' => $operation->budget,
+        //         'timestamp' => now()->toDateTimeString(),
+        //     ])
+        //     ->log('Operation updated: ' . $operation->name);
 
 
         return response()->json($updatedOperation, 200);
