@@ -7,6 +7,7 @@ use App\Http\Controllers\OperationResourcesController;
 
 use App\Http\Controllers\ReportController;
 use App\Http\Controllers\ResourcesController;
+use App\Http\Controllers\RoleViewController;
 use App\Http\Controllers\UnassignRoleController;
 use App\Http\Controllers\UserDetailsController;
 use App\Http\Controllers\WeaponController;
@@ -136,3 +137,4 @@ Route::get('/get-all-resources',[ResourcesController::class,'getAllResources'])-
 Route::post('/ollama/generate', [OllamaController::class, 'generateResponse'])->middleware('auth:sanctum');
 
 
+Route::get('/role-view',[RoleViewController::class,'roleView'])->middleware('auth:sanctum');
