@@ -38,7 +38,6 @@ const Sidebar = ({ isOpen, toggleSidebar, selectedItem, setSelectedItem }) => {
                 const response = await axios.get(
                     `${process.env.NEXT_PUBLIC_BACKEND_URL}/api/user`,
                 )
-                console.log('API response:', response.data)
                 setUserName(response.data.name || 'Unknown')
                 setRoleId(response.data.role_id || 'Unknown')
                 setRoleName(roleMapping[response.data.role_id] || 'Unknown')
