@@ -8,6 +8,7 @@ use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 use Illuminate\Support\Facades\Auth;
 use Carbon\Carbon;
+use Psy\Readline\Hoa\Console;
 use Spatie\Activitylog\Facades\Activity;
 use Illuminate\Support\Str;
 
@@ -94,6 +95,12 @@ class AuthenticatedSessionController extends Controller
     {
         try {
             $user = Auth::user();
+         
+            if (!$user) {
+                return response()->json([
+                    'message' => 'User already logged out or session expired'
+                ], 200);
+            }
 
             // Audit Log : User logout
             // Activity::performedOn($user)
