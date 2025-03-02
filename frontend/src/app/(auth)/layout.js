@@ -1,5 +1,4 @@
-import Link from 'next/link'
-import ApplicationLogo from '@/components/ApplicationLogo'
+
 
 export const metadata = {
     title: 'Strategic Defense Operations',

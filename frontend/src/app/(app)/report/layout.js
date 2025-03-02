@@ -1,17 +1,18 @@
-"use client";
-import { useAuth } from "@/hooks/auth";
-import Loading from "../Loading";
-import Navigation from "../chatbot/Navigation";
+"use client"
+import { useAuth } from "@/hooks/auth"
+import Loading from "../Loading"
+import Navigation from "../chatbot/Navigation"
 
 
 
 export default function RootLayout({children}){
     
-    const {user,logout}=useAuth({middleware:"auth"});
+    const {user,logout}=useAuth({middleware:"auth"})
     if(!user){
-        return <Loading/>;
+        return <Loading/>
     }
     return (
+        
         <div className="chatbot-navigation">
             
         <Navigation  logout={logout}/>
