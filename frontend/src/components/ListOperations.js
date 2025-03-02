@@ -35,7 +35,7 @@ const ListOperations = () => {
             {(!operations || operations.length === 0) ? <p>No operations found.</p> : (
                 operations.map(operation => (
                     <div key={operation.id}>
-                        <h2>{operation.name || "No Name"}</h2>
+                        <h2>{operation.name + operation.id || "No Name"}</h2>
                         <p>{operation.description || "No Description"}</p>
                         <UpdateOperation operation={operation} onOperationUpdated={handleOperationUpdated} />
                         <DeleteOperation operationId={operation.id} onOperationDeleted={handleOperationDeleted} />
