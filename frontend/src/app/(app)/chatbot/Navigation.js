@@ -1,10 +1,8 @@
-"use client";
-export default function Navigation({logout}){
+"use client"
+export default function Navigation(){
     
    
     return(
-        <div>
-           
-        </div>
+        <div />
     )
 }

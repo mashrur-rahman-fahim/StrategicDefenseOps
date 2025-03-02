@@ -1,23 +1,23 @@
-"use client";
-import React, { useState, useEffect } from "react";
-import "./navbar.css";
+"use client"
+import React, { useState, useEffect } from "react"
+import "./navbar.css"
 
 const Navbar = ({ title, toggleSidebar, user, logout }) => {
-  const [isDropdownOpen, setDropdownOpen] = useState(false);
-  const [showLogoutPrompt, setShowLogoutPrompt] = useState(false);
-  const [isLoggingOut, setIsLoggingOut] = useState(false);
+  const [isDropdownOpen, setDropdownOpen] = useState(false)
+  const [showLogoutPrompt, setShowLogoutPrompt] = useState(false)
+  const [isLoggingOut, setIsLoggingOut] = useState(false)
 
   useEffect(() => {
-    setDropdownOpen(false); 
-  }, [title]); 
+    setDropdownOpen(false) 
+  }, [title]) 
 
-  const handleLogoutClick = () => setShowLogoutPrompt(true);
-  const handleCancelLogout = () => setShowLogoutPrompt(false);
+  const handleLogoutClick = () => setShowLogoutPrompt(true)
+  const handleCancelLogout = () => setShowLogoutPrompt(false)
 
   const handleConfirmLogout = () => {
-    setIsLoggingOut(true);
-    logout();
-  };
+    setIsLoggingOut(true)
+    logout()
+  }
 
   return (
     <header className="bg-white shadow navbar">
@@ -62,7 +62,7 @@ const Navbar = ({ title, toggleSidebar, user, logout }) => {
         <h2 className="font-semibold text-xl text-gray-800 leading-tight">{title}</h2>
       </div>
     </header>
-  );
-};
+  )
+}
 
-export default Navbar;
+export default Navbar

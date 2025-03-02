@@ -1,4 +1,4 @@
-import Layout from '../components/layout'; 
+import Layout from '../components/layout' 
 
 export default function Operation() {
   return (
@@ -18,5 +18,5 @@ export default function Operation() {
         </div>
       </div>
     </Layout>
-  );
+  )
 }

@@ -1,16 +1,16 @@
-'use client';
+'use client'
 
-import Button from '@/components/Button';
-import { useAuth } from '@/hooks/auth';
-import { useState } from 'react';
+import Button from '@/components/Button'
+import { useAuth } from '@/hooks/auth'
+import { useState } from 'react'
 
 const Page = () => {
     const { logout, resendEmailVerification } = useAuth({
         middleware: 'auth',
         redirectIfAuthenticated: '/dashboard',
-    });
+    })
 
-    const [status, setStatus] = useState(null);
+    const [status, setStatus] = useState(null)
 
     return (
         <div className="min-h-screen flex items-center justify-center bg-gray-900 text-gray-300 p-6 w-full"
@@ -43,7 +43,7 @@ const Page = () => {
                 </div>
             </div>
         </div>
-    );
-};
+    )
+}
 
-export default Page;
+export default Page

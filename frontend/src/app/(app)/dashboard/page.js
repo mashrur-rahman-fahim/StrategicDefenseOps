@@ -1,7 +1,7 @@
-'use client';
-import React, { useState } from "react";
+'use client'
+import React, { useState } from "react"
 
-import "./dashboard.css";
+import "./dashboard.css"
 
 const Dashboard = () => {
 
@@ -24,7 +24,7 @@ const Dashboard = () => {
       visible: true,
       selected: false,
     },
-  ]);
+  ])
 
 
   const [newOperation, setNewOperation] = useState({
@@ -32,39 +32,39 @@ const Dashboard = () => {
     status: "ongoing",
     startDate: "",
     endDate: "",
-  });
+  })
 
 
-  const [editing, setEditing] = useState(null);
+  const [editing, setEditing] = useState(null)
 
 
-  const [error, setError] = useState("");
+  const [error, setError] = useState("")
 
  
   const isValidDate = (date) => {
-    const regex = /^\d{2}\/\d{2}\/\d{2}$/; 
-    if (!regex.test(date)) return false;
+    const regex = /^\d{2}\/\d{2}\/\d{2}$/ 
+    if (!regex.test(date)) return false
 
-    const [day, month, year] = date.split("/");
-    const parsedDate = new Date(`20${year}-${month}-${day}`);
-    return parsedDate instanceof Date && !isNaN(parsedDate);
-  };
+    const [day, month, year] = date.split("/")
+    const parsedDate = new Date(`20${year}-${month}-${day}`)
+    return parsedDate instanceof Date && !isNaN(parsedDate)
+  }
 
 
   const addOperation = () => {
     if (!newOperation.name || !newOperation.startDate || !newOperation.endDate) {
-      setError("All fields are required.");
-      return;
+      setError("All fields are required.")
+      return
     }
 
     if (!isValidDate(newOperation.startDate)) {
-      setError("Invalid start date. Please use DD/MM/YY format.");
-      return;
+      setError("Invalid start date. Please use DD/MM/YY format.")
+      return
     }
 
     if (!isValidDate(newOperation.endDate)) {
-      setError("Invalid end date. Please use DD/MM/YY format.");
-      return;
+      setError("Invalid end date. Please use DD/MM/YY format.")
+      return
     }
 
     const newOp = {
@@ -75,42 +75,42 @@ const Dashboard = () => {
       endDate: newOperation.endDate,
       visible: true,
       selected: false,
-    };
+    }
 
 
-    setOperations((prev) => [...prev, newOp]);
+    setOperations((prev) => [...prev, newOp])
 
 
-    setNewOperation({ name: "", status: "ongoing", startDate: "", endDate: "" });
-    setError(""); 
-  };
+    setNewOperation({ name: "", status: "ongoing", startDate: "", endDate: "" })
+    setError("") 
+  }
 
   
   const updateOperation = () => {
     if (!editing.name || !editing.startDate || !editing.endDate) {
-      setError("All fields are required.");
-      return;
+      setError("All fields are required.")
+      return
     }
 
     if (!isValidDate(editing.startDate)) {
-      setError("Invalid start date. Please use DD/MM/YY format.");
-      return;
+      setError("Invalid start date. Please use DD/MM/YY format.")
+      return
     }
 
     if (!isValidDate(editing.endDate)) {
-      setError("Invalid end date. Please use DD/MM/YY format.");
-      return;
+      setError("Invalid end date. Please use DD/MM/YY format.")
+      return
     }
 
 
     setOperations((prev) =>
       prev.map((op) => (op.id === editing.id ? { ...op, ...editing } : op))
-    );
+    )
 
 
-    setEditing(null);
-    setError(""); 
-  };
+    setEditing(null)
+    setError("") 
+  }
 
 
   const toggleVisibility = (id) => {
@@ -118,8 +118,8 @@ const Dashboard = () => {
       prev.map((op) =>
         op.id === id ? { ...op, visible: !op.visible } : op
       )
-    );
-  };
+    )
+  }
 
 
   const handleSelect = (id) => {
@@ -127,28 +127,28 @@ const Dashboard = () => {
       prev.map((op) =>
         op.id === id ? { ...op, selected: !op.selected } : op
       )
-    );
-  };
+    )
+  }
 
 
   const deleteSelectedOperations = () => {
-    setOperations((prev) => prev.filter((op) => !op.selected));
-  };
+    setOperations((prev) => prev.filter((op) => !op.selected))
+  }
 
 
   const deleteOperation = (id) => {
-    setOperations((prev) => prev.filter((op) => op.id !== id));
-  };
+    setOperations((prev) => prev.filter((op) => op.id !== id))
+  }
 
 
   const toggleEditing = (id) => {
     if (editing && editing.id === id) {
-      setEditing(null); 
+      setEditing(null) 
     } else {
-      const operationToEdit = operations.find((op) => op.id === id);
-      setEditing({ ...operationToEdit }); 
+      const operationToEdit = operations.find((op) => op.id === id)
+      setEditing({ ...operationToEdit }) 
     }
-  };
+  }
 
   return (
     <div className="dashboard">
@@ -213,7 +213,7 @@ const Dashboard = () => {
         <table className="operations-table">
           <thead>
             <tr>
-              <th></th>
+              <th />
               <th>OP Name</th>
               <th>Status</th>
               <th>Start Date</th>
@@ -294,9 +294,9 @@ const Dashboard = () => {
       <div className="resource-usage-section">
         <h2>Resource Usage</h2>
         <div className="legend">
-          <span className="legend-item available"></span> Available
-          <span className="legend-item in-use"></span> In use
-          <span className="legend-item maintenance"></span> Under Maintenance
+          <span className="legend-item available" /> Available
+          <span className="legend-item in-use" /> In use
+          <span className="legend-item maintenance" /> Under Maintenance
         </div>
         <div className="resource-chart">
           <svg width="100" height="100">
@@ -312,7 +312,7 @@ const Dashboard = () => {
       </div>
     </div>
     
-  );
-};
+  )
+}
 
-export default Dashboard;
+export default Dashboard

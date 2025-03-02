@@ -68,6 +68,10 @@ class OperationService
     public function getAllOperations($userId)
     {
         $user = User::where('id', $userId)->first();
+        if($user->role_id==2 && $user->parent_id!=null){
+            $user=User::find($user->parent_id);
+            $userId=$user->id;
+        }
         if ($user->role_id == 1 || ($user->parent_id == $userId && $user->role_id == 2)) {
             $operations = DB::select('select * from operations o where o.created_by=? ', [$userId]);
             return [count($operations), $operations];

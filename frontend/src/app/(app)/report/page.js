@@ -1,34 +1,34 @@
-"use client";
-import { useState, useRef } from "react";
-import ReactMarkdown from "react-markdown";
-import remarkMath from "remark-math";
-import rehypeKatex from "rehype-katex";
-import "katex/dist/katex.min.css";
-import "./report.css";
-import Layout from '../components/layout'; 
+"use client"
+import { useState, useRef } from "react"
+import ReactMarkdown from "react-markdown"
+import remarkMath from "remark-math"
+import rehypeKatex from "rehype-katex"
+import "katex/dist/katex.min.css"
+import "./report.css"
+import Layout from '../components/layout' 
 
 export default function ReportGenerator() {
-    const [reportType, setReportType] = useState("");
-    const [operationStatus, setOperationStatus] = useState("");
-    const [messages, setMessages] = useState([]); // Use messages array for chat-like display
-    const [loading, setLoading] = useState(false);
-    const abortControllerRef = useRef(null);
-    const operationId = 8; // Replace with actual operation ID
+    const [reportType, setReportType] = useState("")
+    const [operationStatus, setOperationStatus] = useState("")
+    const [messages, setMessages] = useState([]) // Use messages array for chat-like display
+    const [loading, setLoading] = useState(false)
+    const abortControllerRef = useRef(null)
+    const operationId = 8 // Replace with actual operation ID
 
     const generateReport = async () => {
-        setMessages([]); // Clear previous messages
-        setLoading(true);
+        setMessages([]) // Clear previous messages
+        setLoading(true)
 
-        abortControllerRef.current = new AbortController();
-        const { signal } = abortControllerRef.current;
+        abortControllerRef.current = new AbortController()
+        const { signal } = abortControllerRef.current
 
         try {
-            const token = localStorage.getItem("api_token"); // Assuming you use a token for auth
+            const token = localStorage.getItem("api_token") // Assuming you use a token for auth
             const headers = {
                 "Content-Type": "application/json",
                 Authorization: token ? `Bearer ${token}` : "",
                 "X-Requested-With": "XMLHttpRequest",
-            };
+            }
 
             const response = await fetch(`${process.env.NEXT_PUBLIC_BACKEND_URL}/api/generate-report/${operationId}`, {
                 method: "POST",
@@ -39,54 +39,54 @@ export default function ReportGenerator() {
                     operation_status: operationStatus,
                 }),
                 signal, // Pass the AbortController signal
-            });
+            })
 
-            if (!response.body) throw new Error("No response body");
+            if (!response.body) throw new Error("No response body")
 
-            const reader = response.body.getReader();
-            const decoder = new TextDecoder();
-            let botResponse = "";
+            const reader = response.body.getReader()
+            const decoder = new TextDecoder()
+            let botResponse = ""
 
             // Add a "bot" message to the messages array
-            setMessages((prev) => [...prev, { sender: "bot", text: "" }]);
+            setMessages((prev) => [...prev, { sender: "bot", text: "" }])
 
             while (true) {
-                const { done, value } = await reader.read();
-                if (done) break;
+                const { done, value } = await reader.read()
+                if (done) break
 
-                const chunk = decoder.decode(value, { stream: true });
-                botResponse += chunk;
+                const chunk = decoder.decode(value, { stream: true })
+                botResponse += chunk
 
                 // Update the last "bot" message with the new chunk
                 setMessages((prev) => {
-                    const lastMessage = prev[prev.length - 1];
+                    const lastMessage = prev[prev.length - 1]
                     if (lastMessage.sender === "bot") {
-                        return [...prev.slice(0, -1), { sender: "bot", text: botResponse }];
+                        return [...prev.slice(0, -1), { sender: "bot", text: botResponse }]
                     }
-                    return [...prev, { sender: "bot", text: botResponse }];
-                });
+                    return [...prev, { sender: "bot", text: botResponse }]
+                })
 
-                await new Promise((resolve) => setTimeout(resolve, 50)); // Throttle updates
+                await new Promise((resolve) => setTimeout(resolve, 50)) // Throttle updates
             }
         } catch (error) {
             if (error.name === "AbortError") {
-                setMessages((prev) => [...prev, { sender: "bot", text: "Report generation stopped." }]);
+                setMessages((prev) => [...prev, { sender: "bot", text: "Report generation stopped." }])
             } else {
-                console.error("Error generating report:", error);
-                setMessages((prev) => [...prev, { sender: "bot", text: "An error occurred. Please try again." }]);
+                console.error("Error generating report:", error)
+                setMessages((prev) => [...prev, { sender: "bot", text: "An error occurred. Please try again." }])
             }
         } finally {
-            setLoading(false);
+            setLoading(false)
         }
-    };
+    }
 
     const stopReportGeneration = () => {
         if (abortControllerRef.current) {
-            abortControllerRef.current.abort();
-            abortControllerRef.current = null;
-            setLoading(false);
+            abortControllerRef.current.abort()
+            abortControllerRef.current = null
+            setLoading(false)
         }
-    };
+    }
 
     return (
          <Layout> 
@@ -146,5 +146,5 @@ export default function ReportGenerator() {
         </div>
         </Layout> 
         
-    );
+    )
 }

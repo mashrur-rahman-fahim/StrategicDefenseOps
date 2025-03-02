@@ -1,23 +1,23 @@
-"use client";
-import React, { useEffect, useRef } from "react";
-import "./sidebar.css";
+"use client"
+import React, { useEffect, useRef } from "react"
+import "./sidebar.css"
 
 const Sidebar = ({ isOpen, toggleSidebar, selectedItem, handleNavigation }) => {
-  const sidebarRef = useRef();
+  const sidebarRef = useRef()
 
   // Close sidebar when clicking outside
   useEffect(() => {
     const handleClickOutside = (event) => {
       if (isOpen && sidebarRef.current && !sidebarRef.current.contains(event.target)) {
-        toggleSidebar();
+        toggleSidebar()
       }
-    };
+    }
 
-    document.addEventListener("mousedown", handleClickOutside);
+    document.addEventListener("mousedown", handleClickOutside)
     return () => {
-      document.removeEventListener("mousedown", handleClickOutside);
-    };
-  }, [isOpen, toggleSidebar]);
+      document.removeEventListener("mousedown", handleClickOutside)
+    }
+  }, [isOpen, toggleSidebar])
 
   return (
     <div ref={sidebarRef} className={`sidebar ${isOpen ? "open" : ""}`}>
@@ -40,8 +40,8 @@ const Sidebar = ({ isOpen, toggleSidebar, selectedItem, handleNavigation }) => {
             key={item}
             className={`menu-item ${selectedItem === item.toLowerCase() ? "active" : ""}`}
             onClick={() => {
-              handleNavigation(item);
-              setTimeout(() => toggleSidebar(), 300); // Close sidebar after navigating
+              handleNavigation(item)
+              setTimeout(() => toggleSidebar(), 300) // Close sidebar after navigating
             }}
           >
             {item}
@@ -49,7 +49,7 @@ const Sidebar = ({ isOpen, toggleSidebar, selectedItem, handleNavigation }) => {
         ))}
       </nav>
     </div>
-  );
-};
+  )
+}
 
-export default Sidebar;
+export default Sidebar

@@ -1,4 +1,4 @@
-"use client";
+"use client"
 import useSWR from 'swr'
 import axios from '@/lib/axios'
 import { useEffect } from 'react'
@@ -125,7 +125,7 @@ export const useAuth = ({ middleware, redirectIfAuthenticated } = {}) => {
 
         if (user && middleware === 'auth' && !user?.email_verified_at){
          
-            router.push('/verify-email');}
+            router.push('/verify-email')}
 
         if (
             window.location.pathname === '/verify-email' &&
@@ -136,7 +136,7 @@ export const useAuth = ({ middleware, redirectIfAuthenticated } = {}) => {
             router.push(redirectIfAuthenticated)}
         if (middleware === 'auth' && error){ 
            
-            logout();
+            logout()
 
 
         }

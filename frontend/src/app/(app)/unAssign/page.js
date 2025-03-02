@@ -1,43 +1,43 @@
-"use client";
-import React, { useState } from 'react';
-import axios from '@/lib/axios';
-import "./unAssign.css";
+"use client"
+import React, { useState } from 'react'
+import axios from '@/lib/axios'
+import "./unAssign.css"
 
 export default function UnAssign({ user }) {
-    const [email, setEmail] = useState('');
-    const [role, setRole] = useState('manager');
-    const [managerEmail, setManagerEmail] = useState('');
-    const [message, setMessage] = useState('');
+    const [email, setEmail] = useState('')
+    const [role, setRole] = useState('manager')
+    const [managerEmail, setManagerEmail] = useState('')
+    const [message, setMessage] = useState('')
 
     const handleUnassign = async () => {
         try {
-            let endpoint = '';
-            let data = {};
+            let endpoint = ''
+            let data = {}
 
             switch (role) {
                 case 'manager':
-                    endpoint = '/api/manager-unassign';
-                    data = { managerEmail: email };
-                    break;
+                    endpoint = '/api/manager-unassign'
+                    data = { managerEmail: email }
+                    break
                 case 'operator':
-                    endpoint = '/api/operator-unassign';
-                    data = { operatorEmail: email, managerEmail };
-                    break;
+                    endpoint = '/api/operator-unassign'
+                    data = { operatorEmail: email, managerEmail }
+                    break
                 case 'viewer':
-                    endpoint = '/api/viewer-unassign';
-                    data = { viewerEmail: email, managerEmail };
-                    break;
+                    endpoint = '/api/viewer-unassign'
+                    data = { viewerEmail: email, managerEmail }
+                    break
                 default:
-                    setMessage('Invalid role selected');
-                    return;
+                    setMessage('Invalid role selected')
+                    return
             }
 
-            const response = await axios.post(endpoint, data);
-            setMessage(`Success: ${response.data.message}`);
+            const response = await axios.post(endpoint, data)
+            setMessage(`Success: ${response.data.message}`)
         } catch (error) {
-            setMessage(`Error: ${error.response?.data?.message || error.message}`);
+            setMessage(`Error: ${error.response?.data?.message || error.message}`)
         }
-    };
+    }
 
     return (
         <div className='unassign'>
@@ -79,5 +79,5 @@ export default function UnAssign({ user }) {
             <button onClick={handleUnassign}>Unassign Role</button>
             {message && <p>{message}</p>}
         </div>
-    );
+    )
 }

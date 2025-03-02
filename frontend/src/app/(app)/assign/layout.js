@@ -1,11 +1,11 @@
-'use client';
+'use client'
 
-import { useAuth } from "@/hooks/auth";
-import Assign from "./page";
+import { useAuth } from "@/hooks/auth"
+import Assign from "./page"
 
 
 export default function RootLayout({children}){
-    const {user,logout}=useAuth({middleware:"auth"});
+    const {user}=useAuth({middleware:"auth"})
     
     
   

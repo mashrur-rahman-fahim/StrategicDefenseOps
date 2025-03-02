@@ -1,4 +1,4 @@
-"use client";
+"use client"
 
 export default function Resources() {
   return (
@@ -16,5 +16,5 @@ export default function Resources() {
         </ul>
       </div>
     </div>
-  );
+  )
 }

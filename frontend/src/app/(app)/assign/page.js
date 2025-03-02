@@ -1,49 +1,49 @@
-"use client";
-import { useState, useEffect } from "react";
-import axios from "@/lib/axios";
+"use client"
+import { useState, useEffect } from "react"
+import axios from "@/lib/axios"
 
 export default function Assign({ user }) {
-    const [role, setRole] = useState(null);
-    const [managerEmail, setManagerEmail] = useState("");
-    const [operatorEmail, setOperatorEmail] = useState("");
-    const [viewerEmail, setViewerEmail] = useState("");
-    const [assignedManagerEmail, setAssignedManagerEmail] = useState("");
+    const [role, setRole] = useState(null)
+    const [managerEmail, setManagerEmail] = useState("")
+    const [operatorEmail, setOperatorEmail] = useState("")
+    const [viewerEmail, setViewerEmail] = useState("")
+    const [assignedManagerEmail, setAssignedManagerEmail] = useState("")
 
     useEffect(() => {
         if (user) {
-            setRole(user.role_id);
+            setRole(user.role_id)
         }
-    }, [user]);
+    }, [user])
 
     const assignRole = async (roleType) => {
         try {
-            let payload = {};
-            let endpoint = "";
+            let payload = {}
+            let endpoint = ""
 
             if (roleType === "manager") {
-                endpoint = "/api/manager-assign";
-                payload = { managerEmail };
+                endpoint = "/api/manager-assign"
+                payload = { managerEmail }
             } else if (roleType === "operator") {
-                endpoint = "/api/operator-assign";
-                payload = { operatorEmail, managerEmail: assignedManagerEmail };
+                endpoint = "/api/operator-assign"
+                payload = { operatorEmail, managerEmail: assignedManagerEmail }
             } else if (roleType === "viewer") {
-                endpoint = "/api/viewer-assign";
-                payload = { viewerEmail, managerEmail: assignedManagerEmail };
+                endpoint = "/api/viewer-assign"
+                payload = { viewerEmail, managerEmail: assignedManagerEmail }
             }
 
-            const response = await axios.post(endpoint, payload);
-            console.log(response.data);
-            alert(response.data.message || "Role assigned successfully");
+            const response = await axios.post(endpoint, payload)
+            console.log(response.data)
+            alert(response.data.message || "Role assigned successfully")
 
             // Clear input fields after assignment
-            if (roleType === "manager") setManagerEmail("");
-            if (roleType === "operator") setOperatorEmail("");
-            if (roleType === "viewer") setViewerEmail("");
+            if (roleType === "manager") setManagerEmail("")
+            if (roleType === "operator") setOperatorEmail("")
+            if (roleType === "viewer") setViewerEmail("")
         } catch (error) {
-            console.error("Error assigning role", error.response?.data || error.message);
-            alert(error.response?.data?.message || "Failed to assign role");
+            console.error("Error assigning role", error.response?.data || error.message)
+            alert(error.response?.data?.message || "Failed to assign role")
         }
-    };
+    }
 
     return (
         <div className="assign p-4">
@@ -75,5 +75,5 @@ export default function Assign({ user }) {
                 </div>
             )}
         </div>
-    );
+    )
 }
