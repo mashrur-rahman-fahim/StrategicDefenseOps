@@ -10,12 +10,13 @@ const Dashboard = () => {
     const [roleId, setRoleId] = useState(null);
     const [roleName, setRoleName] = useState('');
     const [operations, setOperations] = useState([]);
+    const [loading, setLoading] = useState(true);
 
     const roleMapping = {
-      1: 'Admin',
-      2: 'Manager',
-      3: 'Operator',
-      4: 'Viewer',
+        1: 'Admin',
+        2: 'Manager',
+        3: 'Operator',
+        4: 'Viewer',
     };
 
     useEffect(() => {
@@ -28,6 +29,8 @@ const Dashboard = () => {
                 setRoleName(roleMapping[response.data.role_id] || 'Unknown');
             } catch (error) {
                 console.error('Error fetching user details:', error);
+            } finally {
+                setLoading(false);
             }
         };
 
@@ -41,8 +44,14 @@ const Dashboard = () => {
     return (
         <div className="dashboard">
             <h2>Welcome, {userName} ({roleName})</h2>
-            {roleId === 1 && <CreateOperation onOperationCreated={handleOperationCreated} />}
-            <ListOperations />
+            {loading ? (
+                <p>Loading...</p>
+            ) : (
+                <>
+                    {roleId === 1 && <CreateOperation onOperationCreated={handleOperationCreated} />}
+                    <ListOperations />
+                </>
+            )}
         </div>
     );
 };
