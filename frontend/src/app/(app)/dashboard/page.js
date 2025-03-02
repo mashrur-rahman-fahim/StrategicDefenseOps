@@ -40,8 +40,8 @@ const Dashboard = () => {
 
     return (
         <div className="dashboard">
-            <h1>Welcome, {userName} ({roleName})</h1>
-            <CreateOperation onOperationCreated={handleOperationCreated} />
+            <h2>Welcome, {userName} ({roleName})</h2>
+            {roleId === 1 && <CreateOperation onOperationCreated={handleOperationCreated} />}
             <ListOperations />
         </div>
     );

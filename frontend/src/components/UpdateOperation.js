@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from 'react'
 import axios from '../lib/axios'
+import DeleteOperation from './DeleteOperation'
 
 const UpdateOperation = ({ operation, onOperationUpdated }) => {
     const [roleId, setRoleId] = useState(null)
@@ -39,6 +40,11 @@ const UpdateOperation = ({ operation, onOperationUpdated }) => {
             console.error('Error updating operation:', error)
             alert('Failed to update operation')
         }
+    }
+
+    // Handle operation deletion
+    const handleOperationDeleted = operationId => {
+        alert(`Operation with ID ${operationId} deleted successfully`);
     }
 
     return roleId === null ? (
@@ -139,11 +145,19 @@ const UpdateOperation = ({ operation, onOperationUpdated }) => {
                         </li>
                     </ul>
                     {roleId !== 4 && (
-                        <button
-                            onClick={() => setIsEditing(true)}
-                            className="mt-3 px-4 py-2 bg-green-500 text-white rounded">
-                            Update
-                        </button>
+                        <div className="flex gap-3">
+                            <button
+                                onClick={() => setIsEditing(true)}
+                                className="px-4 py-0.5 bg-green-500 text-white rounded">
+                                Update
+                            </button>
+                            {roleId == 1 && (
+                                <DeleteOperation
+                                    operationId={operation.id}
+                                    onOperationDeleted={handleOperationDeleted}
+                                />
+                            )}
+                        </div>
                     )}
                 </div>
             )}

@@ -6,6 +6,7 @@ import DeleteOperation from './DeleteOperation'
 const ListOperations = () => {
     const [roleId, setRoleId] = useState(null)
     const [operations, setOperations] = useState([])
+    const [loading, setLoading] = useState(true)  // Track loading state
 
     useEffect(() => {
         const fetchUserDetails = async () => {
@@ -30,8 +31,10 @@ const ListOperations = () => {
                 )
                 const operationsData = response.data[1] || []
                 setOperations(operationsData)
+                setLoading(false)  // Data has been fetched, stop loading
             } catch (error) {
                 console.error('Error fetching operations:', error)
+                setLoading(false)  // Stop loading even if there's an error
             }
         }
 
@@ -52,28 +55,17 @@ const ListOperations = () => {
 
     return (
         <div>
-            {!operations || operations.length === 0 ? (
-                <p>No operations found.</p>
-            ) : (
+            {loading ? (
+                <p>Loading...</p>) : operations.length === 0 ? (
+                <p>No operations found.</p> ) : (
                 operations.map(operation => (
                     <div key={operation.id}>
                         <h2>{operation.name || 'No Name'}</h2>
                         <p>{operation.description || 'No Description'}</p>
-
-                        
-                                <UpdateOperation
-                                    operation={operation}
-                                    onOperationUpdated={handleOperationUpdated}
-                                />
-                          
-                        {roleId == 1 && (
-                            <>
-                                <DeleteOperation
-                                    operationId={operation.id}
-                                    onOperationDeleted={handleOperationDeleted}
-                                />
-                            </>
-                        )}
+                        <UpdateOperation
+                            operation={operation}
+                            onOperationUpdated={handleOperationUpdated}
+                        />
                     </div>
                 ))
             )}
