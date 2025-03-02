@@ -10,7 +10,10 @@
     position: fixed;
     left: -250px;
     transition: left 0.3s ease-in-out;
+    z-index: 1000;
   }
+
+  
   
   .sidebar.open {
     left: 0;

@@ -5,6 +5,7 @@ import Navbar from '../components/navbar/page';
 import Sidebar from '../components/sidebar/page';
 import { useAuth } from '@/hooks/auth';
 import Loading from '../Loading';
+import { Toaster } from 'sonner';
 
 export default function Layout({ children }) {
   const { user } = useAuth({ middleware: 'auth' });
@@ -56,6 +57,7 @@ export default function Layout({ children }) {
   return (
     <html lang="en">
       <body>
+        <Toaster position="bottom-right" theme='light' richColors />
        
         <Navbar toggleSidebar={toggleSidebar} user={user} logout={logout} />
 
