@@ -49,9 +49,6 @@ const ListOperations = () => {
         )
     }
 
-    const handleOperationDeleted = operationId => {
-        setOperations(operations.filter(op => op.id !== operationId))
-    }
 
     return (
         <div>
