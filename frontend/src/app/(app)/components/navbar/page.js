@@ -2,7 +2,7 @@
 import React, { useState, useEffect } from "react"
 import "./navbar.css"
 
-const Navbar = ({ title, toggleSidebar, user, logout }) => {
+const Navbar = ({ title, toggleSidebar, logout }) => {
   const [isDropdownOpen, setDropdownOpen] = useState(false)
   const [showLogoutPrompt, setShowLogoutPrompt] = useState(false)
   const [isLoggingOut, setIsLoggingOut] = useState(false)

@@ -3,7 +3,7 @@ import React, { useState } from 'react'
 import axios from '@/lib/axios'
 import "./unAssign.css"
 
-export default function UnAssign({ user }) {
+export default function UnAssign( ) {
     const [email, setEmail] = useState('')
     const [role, setRole] = useState('manager')
     const [managerEmail, setManagerEmail] = useState('')
