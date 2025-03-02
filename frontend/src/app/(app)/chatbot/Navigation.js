@@ -1,13 +1,8 @@
-"use client";
-export default function Navigation({logout}){
+"use client"
+export default function Navigation(){
     
    
     return(
-        <div>
-           <button type="button" onClick={logout}>
-            logout
-            
-            </button> 
-        </div>
+        <div />
     )
 }

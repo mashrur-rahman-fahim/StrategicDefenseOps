@@ -36,6 +36,7 @@ class OperationService
             $operation = Operation::find($operation->id);
             $operation->updated_by = $user->id;
             $operation->update($data);
+            return $operation;
         } elseif ($user->role_id == 3 && $user->parent_id != null) {
             $manager = User::find($user->parent_id);
             if ($manager && $manager->parent_id != null) {
@@ -44,6 +45,7 @@ class OperationService
                 $operation = Operation::find($operation->id);
                 $operation->updated_by = $user->id;
                 $operation->update($data);
+                return $operation;
             }
             return false;
         }

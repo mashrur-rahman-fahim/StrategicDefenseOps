@@ -1,12 +1,11 @@
 import React, { useEffect, useState } from 'react'
 import axios from '../lib/axios'
 import UpdateOperation from './UpdateOperation'
-import DeleteOperation from './DeleteOperation'
 
 const ListOperations = () => {
-    const [roleId, setRoleId] = useState(null)
+    const [setRoleId] = useState(null)
     const [operations, setOperations] = useState([])
-    const [loading, setLoading] = useState(true)  // Track loading state
+    const [loading, setLoading] = useState(true) // Track loading state
 
     useEffect(() => {
         const fetchUserDetails = async () => {
@@ -31,10 +30,10 @@ const ListOperations = () => {
                 )
                 const operationsData = response.data[1] || []
                 setOperations(operationsData)
-                setLoading(false)  // Data has been fetched, stop loading
+                setLoading(false) // Data has been fetched, stop loading
             } catch (error) {
                 console.error('Error fetching operations:', error)
-                setLoading(false)  // Stop loading even if there's an error
+                setLoading(false) // Stop loading even if there's an error
             }
         }
 
@@ -49,12 +48,17 @@ const ListOperations = () => {
         )
     }
 
+<<<<<<< HEAD
 
+=======
+>>>>>>> f8e84d97afa57eb7024559109a48e562e354158b
     return (
         <div>
             {loading ? (
-                <p>Loading...</p>) : operations.length === 0 ? (
-                <p>No operations found.</p> ) : (
+                <p>Loading...</p>
+            ) : operations.length === 0 ? (
+                <p>No operations found.</p>
+            ) : (
                 operations.map(operation => (
                     <div key={operation.id}>
                         <h2>{operation.name || 'No Name'}</h2>

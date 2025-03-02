@@ -7,6 +7,7 @@ use App\Http\Controllers\OperationResourcesController;
 
 use App\Http\Controllers\ReportController;
 use App\Http\Controllers\ResourcesController;
+use App\Http\Controllers\RoleViewController;
 use App\Http\Controllers\UnassignRoleController;
 use App\Http\Controllers\UserDetailsController;
 use App\Http\Controllers\WeaponController;
@@ -40,7 +41,7 @@ Route::middleware('auth:sanctum')->group(function () {
     // Role Assignment
     Route::controller(AssignRoleController::class)->group(function () {
         Route::post('/manager-assign', 'managerAssign');
-        Route::post('/temp', 'temp');
+
         Route::post('/operator-assign', 'operatorAssign');
         Route::post('/viewer-assign', 'viewerAssign');
     });
@@ -122,17 +123,18 @@ Route::get('/get-all-personnel', [PersonnelController::class, 'getAllPersonnel']
 // Search personnel by name
 Route::get('/search-personnel/{personnelName}', [PersonnelController::class, 'getPersonnelByName'])->middleware('auth:sanctum');
 
-Route::post('/add-operation-resources/{operationId}', [OperationResourcesController::class,'createOperationResource'])->middleware('auth:sanctum');
+Route::post('/add-operation-resources/{operationId}', [OperationResourcesController::class, 'createOperationResource'])->middleware('auth:sanctum');
 
-Route::get('/get-operation-resources/{operationId}',[OperationResourcesController::class,'getAllOperationResources'])->middleware('auth:sanctum');
+Route::get('/get-operation-resources/{operationId}', [OperationResourcesController::class, 'getAllOperationResources'])->middleware('auth:sanctum');
 
-Route::put('/update-operation-resources/{operationId}',[OperationResourcesController::class,'updateOperationResource'])->middleware('auth:sanctum');
+Route::put('/update-operation-resources/{operationId}', [OperationResourcesController::class, 'updateOperationResource'])->middleware('auth:sanctum');
 
-Route::post('/generate-report/{operationId}',[ReportController::class,'generateReport'])->middleware('auth:sanctum');
+Route::post('/generate-report/{operationId}', [ReportController::class, 'generateReport'])->middleware('auth:sanctum');
 
-Route::get('/get-all-resources',[ResourcesController::class,'getAllResources'])->middleware('auth:sanctum');
+Route::get('/get-all-resources', [ResourcesController::class, 'getAllResources'])->middleware('auth:sanctum');
 
 
 Route::post('/ollama/generate', [OllamaController::class, 'generateResponse'])->middleware('auth:sanctum');
 
 
+Route::get('/role-view', [RoleViewController::class, 'roleView'])->middleware('auth:sanctum');

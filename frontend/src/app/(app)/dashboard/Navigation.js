@@ -9,6 +9,10 @@ import { DropdownButton } from '@/components/DropdownLink'
 //import { useAuth } from '@/hooks/auth'
 //import { usePathname } from 'next/navigation'
 import { useState } from 'react'
+import { useAuth } from '@/hooks/auth'
+import Link from 'next/link'
+import NavLink from '@/components/NavLink'
+import { usePathname } from 'next/navigation'
 
 const Navigation = ({ user }) => {
     const { logout } = useAuth()

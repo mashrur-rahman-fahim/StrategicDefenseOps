@@ -29,67 +29,53 @@ class AssignRoleController extends Controller
         $request->validate([
             'managerEmail' => 'required|email|exists:users,email',
         ]);
+    
         $parentId = auth()->id();
         $result = $this->assignRoleService->managerAssign($request->managerEmail, $parentId);
-
-        // Audit Log 
+    
+        // Audit Log
         $status = $result ? 'success' : 'failed';
         $assignedUser = User::where('email', $request->managerEmail)->first();
-        $this->logActivity($parentId, $assignedUser, 'Manager', $status);
-
-        return response()->json($result);
+        // $this->logActivity($parentId, $assignedUser, 'Manager', $status);
+    
+        return response()->json(['success' => $result]);
     }
-
-
-    /**
-     * Function : operatorAssign
-     * Description : This function assigns the "Operator" role to a user and optionally assigns a manager to the operator.
-     * @param Request $request - The request containing the operator's email and optional manager's email.
-     * @return JsonResponse - The response containing the result of role assignment.
-     */
+    
     public function operatorAssign(Request $request): JsonResponse
     {
         $parentId = auth()->id();
         $data = $request->validate([
             'operatorEmail' => 'required|email|exists:users,email',
-            'managerEmail' => 'nullable|email|exists:users,email'
+            'managerEmail' => 'nullable|email|exists:users,email',
         ]);
-
-        $result = $this->assignRoleService->operatorAssign($parentId,  $data['operatorEmail'], $data['managerEmail'] ?? null);
-
+    
+        $result = $this->assignRoleService->operatorAssign($parentId, $data['operatorEmail'], $data['managerEmail'] ?? null);
+    
         // Audit Log
         $status = $result ? 'success' : 'failed';
         $assignedUser = User::where('email', $data['operatorEmail'])->first();
-        $this->logActivity($parentId, $assignedUser, 'Operator', $status);
-
-        return response()->json($result);
+        // $this->logActivity($parentId, $assignedUser, 'Operator', $status);
+    
+        return response()->json(['success' => $result]);
     }
-
-
-    /**
-     * Function : viewerAssign
-     * Description : This function assigns the "Viewer" role to a user and optionally assigns a manager to the viewer.
-     * @param Request $request - The request containing the viewer's email and optional manager's email.
-     * @return JsonResponse - The response containing the result of role assignment.
-     */
+    
     public function viewerAssign(Request $request): JsonResponse
     {
         $parentId = auth()->id();
         $data = $request->validate([
             'viewerEmail' => 'required|email|exists:users,email',
-            'managerEmail' => 'nullable|email|exists:users,email'
+            'managerEmail' => 'nullable|email|exists:users,email',
         ]);
-
-        $result = $this->assignRoleService->assignViewer($parentId,  $data['viewerEmail'], $data['managerEmail'] ?? null,);
-
+    
+        $result = $this->assignRoleService->assignViewer($parentId, $data['viewerEmail'], $data['managerEmail'] ?? null);
+    
         // Audit Log
         $status = $result ? 'success' : 'failed';
         $assignedUser = User::where('email', $data['viewerEmail'])->first();
-        $this->logActivity($parentId, $assignedUser, 'Viewer', $status);
-
-        return response()->json($result);
+        // $this->logActivity($parentId, $assignedUser, 'Viewer', $status);
+    
+        return response()->json(['success' => $result]);
     }
-
 
 
     /** 
