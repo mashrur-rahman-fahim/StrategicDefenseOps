@@ -9,10 +9,10 @@ const Sidebar = ({ isOpen, toggleSidebar, selectedItem, setSelectedItem }) => {
     const [roleId, setRoleId] = useState(null)
     const [roleName, setRoleName] = useState("")
     const roleMapping = {
-        1: 'Viewer',
-        2: 'Operator',
-        3: 'Manager',
-        4: 'Operator',
+        1: 'Admin',
+        2: 'Manager',
+        3: 'Operator',
+        4: 'Viewer',
     }
 
     useEffect(() => {
