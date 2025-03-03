@@ -1,18 +1,18 @@
-"use client";
-import { useState, useEffect } from 'react';
-import { useRouter, usePathname } from 'next/navigation';
-import Navbar from '../components/navbar/page';
-import Sidebar from '../components/sidebar/page';
-import { useAuth } from '@/hooks/auth';
-import Loading from '../Loading';
+"use client"
+import { useState, useEffect } from 'react'
+import { useRouter, usePathname } from 'next/navigation'
+import Navbar from '../components/navbar/page'
+import Sidebar from '../components/sidebar/page'
+import { useAuth } from '@/hooks/auth'
+import Loading from '../Loading'
 
 export default function Layout({ children }) {
-  const { user } = useAuth({ middleware: 'auth' });
-  const [isSidebarOpen, setIsSidebarOpen] = useState(false);
-  const [selectedItem, setSelectedItem] = useState('');
-  const { logout } = useAuth();
-  const router = useRouter();
-  const pathname = usePathname();
+  const { user } = useAuth({ middleware: 'auth' })
+  const [isSidebarOpen, setIsSidebarOpen] = useState(false)
+  const [selectedItem, setSelectedItem] = useState('')
+  const { logout } = useAuth()
+  const router = useRouter()
+  const pathname = usePathname()
 
   useEffect(() => {
     const routeToItemMap = {
@@ -21,17 +21,17 @@ export default function Layout({ children }) {
       '/report': 'reports',
       '/resources': 'resources', 
       '/chatbot':'chatbot',
-    };
-    setSelectedItem(routeToItemMap[pathname] || '');
-  }, [pathname]);
+    }
+    setSelectedItem(routeToItemMap[pathname] || '')
+  }, [pathname])
 
   if (!user) {
-    return <Loading />;
+    return <Loading />
   }
 
   const toggleSidebar = () => {
-    setIsSidebarOpen(!isSidebarOpen);
-  };
+    setIsSidebarOpen(!isSidebarOpen)
+  }
 
  
   const handleNavigation = (item) => {
@@ -41,17 +41,17 @@ export default function Layout({ children }) {
       reports: "/report",
       resources: "/resources", 
       chatbot:"/chatbot"
-    };
-
-    const route = routes[item.toLowerCase()];
-    if (route) {
-      setSelectedItem(item.toLowerCase());
-      toggleSidebar();
-      router.push(route); 
-    } else {
-      console.error(`Route not found for item: ${item}`);
     }
-  };
+
+    const route = routes[item.toLowerCase()]
+    if (route) {
+      setSelectedItem(item.toLowerCase())
+      toggleSidebar()
+      router.push(route) 
+    } else {
+      console.error(`Route not found for item: ${item}`)
+    }
+  }
 
   return (
     <html lang="en">
@@ -72,5 +72,5 @@ export default function Layout({ children }) {
         </div>
       </body>
     </html>
-  );
+  )
 }

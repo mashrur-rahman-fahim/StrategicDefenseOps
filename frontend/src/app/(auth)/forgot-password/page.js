@@ -1,24 +1,24 @@
 'use client'
 
-import { useState } from 'react';
-import { useAuth } from '@/hooks/auth';
-import AuthSessionStatus from '@/app/(auth)/AuthSessionStatus';
-import Link from 'next/link';
+import { useState } from 'react'
+import { useAuth } from '@/hooks/auth'
+import AuthSessionStatus from '@/app/(auth)/AuthSessionStatus'
+import Link from 'next/link'
 
 const Page = () => {
     const { forgotPassword } = useAuth({
         middleware: 'guest',
         redirectIfAuthenticated: '/dashboard',
-    });
+    })
 
-    const [email, setEmail] = useState('');
-    const [errors, setErrors] = useState([]);
-    const [status, setStatus] = useState(null);
+    const [email, setEmail] = useState('')
+    const [errors, setErrors] = useState([])
+    const [status, setStatus] = useState(null)
 
     const submitForm = event => {
-        event.preventDefault();
-        forgotPassword({ email, setErrors, setStatus });
-    };
+        event.preventDefault()
+        forgotPassword({ email, setErrors, setStatus })
+    }
 
     return (
         <div className="flex h-screen w-screen">
@@ -65,14 +65,14 @@ const Page = () => {
 
             {/* Right Side - Image with Gradient Overlay */}
             <div className="flex-1 h-full relative">
-                <div className="absolute inset-0 bg-gradient-to-r from-black/70 via-transparent to-black/30"></div>
+                <div className="absolute inset-0 bg-gradient-to-r from-black/70 via-transparent to-black/30" />
                 <div
                     className="absolute inset-0 bg-cover bg-center"
                     style={{ backgroundImage: `url('/forgot1.jpg')` }}
-                ></div>
+                 />
             </div>
         </div>
-    );
-};
+    )
+}
 
-export default Page;
+export default Page

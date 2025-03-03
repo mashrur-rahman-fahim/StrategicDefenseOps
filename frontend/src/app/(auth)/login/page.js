@@ -64,7 +64,7 @@ const Login = () => {
                             className="w-full px-4 py-2 rounded-md border border-gray-600 mb-3 bg-white text-black placeholder-gray-500"
                             value={email}
                             onChange={e => setEmail(e.target.value)}
-                            autocomplete="email"
+                            autoComplete="email"
                             required
                         />
                         {errors.email && (
@@ -137,20 +137,28 @@ const Login = () => {
                             className="w-full bg-black text-white py-2 rounded-md font-bold">
                             Continue with Google
                         </button>
+
+                        {/* Don't have an account? */}
+                        <p className="text-center mt-3">
+                            <Link href="/register" className="text-white underline">
+                                Don't have an account?
+                            </Link>
+                        </p>
+                        
                     </form>
                 </div>
             </div>
 
             {/* Right Side - Image with Gradient Overlay */}
             <div className="flex-1 h-full relative">
-                <div className="absolute inset-0 bg-gradient-to-r from-black/70 via-transparent to-black/30"></div>
+                <div className="absolute inset-0 bg-gradient-to-r from-black/70 via-transparent to-black/30" />
                 <div
                     className="absolute inset-0 bg-cover bg-center"
                     style={{
                         backgroundImage: `url('/login1.jpg')`,
                         backgroundSize: 'cover',
                         backgroundPosition: 'center',
-                    }}></div>
+                    }} />
             </div>
         </div>
     )

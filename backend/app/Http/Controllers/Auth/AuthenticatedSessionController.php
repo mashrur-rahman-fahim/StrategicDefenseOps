@@ -8,6 +8,7 @@ use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 use Illuminate\Support\Facades\Auth;
 use Carbon\Carbon;
+use Psy\Readline\Hoa\Console;
 use Spatie\Activitylog\Facades\Activity;
 use Illuminate\Support\Str;
 
@@ -34,28 +35,28 @@ class AuthenticatedSessionController extends Controller
             }
             
             // Audit Log : User login
-            Activity::performedOn($user)
-                ->causedBy(Auth::user())
-                ->tap(function ($activity) use ($user) {
-                    $activity->user_id = $user->id;
-                    $activity->user_name = $user->name;
-                    $activity->user_email = $user->email;
-                    $activity->role_id = $user->role_id;
-                    $activity->log_name = 'Login';
-                    $activity->subject_type = 'App\Models\User';
-                    $activity->subject_id = $user->id;
-                    $activity->causer_type = 'App\Models\User';
-                    $activity->causer_id = $user->id;
-                    $activity->batch_uuid = Str::uuid()->toString();
-                    $activity->event = "LoggedIn";
-                })
-                ->withProperties([
-                    'user_id' => $user->id,
-                    'name' => $user->name,
-                    'email' => $user->email,
-                    'role_id' => $user->role_id,
-                ])
-                ->log('User logged in');
+            // Activity::performedOn($user)
+            //     ->causedBy(Auth::user())
+            //     ->tap(function ($activity) use ($user) {
+            //         $activity->user_id = $user->id;
+            //         $activity->user_name = $user->name;
+            //         $activity->user_email = $user->email;
+            //         $activity->role_id = $user->role_id;
+            //         $activity->log_name = 'Login';
+            //         $activity->subject_type = 'App\Models\User';
+            //         $activity->subject_id = $user->id;
+            //         $activity->causer_type = 'App\Models\User';
+            //         $activity->causer_id = $user->id;
+            //         $activity->batch_uuid = Str::uuid()->toString();
+            //         $activity->event = "LoggedIn";
+            //     })
+            //     ->withProperties([
+            //         'user_id' => $user->id,
+            //         'name' => $user->name,
+            //         'email' => $user->email,
+            //         'role_id' => $user->role_id,
+            //     ])
+            //     ->log('User logged in');
 
 
             // Set the token expiration time (e.g., 120 minutes)
@@ -94,30 +95,36 @@ class AuthenticatedSessionController extends Controller
     {
         try {
             $user = Auth::user();
+         
+            if (!$user) {
+                return response()->json([
+                    'message' => 'User already logged out or session expired'
+                ], 200);
+            }
 
             // Audit Log : User logout
-            Activity::performedOn($user)
-                ->causedBy(Auth::user())
-                ->tap(function ($activity) use ($user) {
-                    $activity->user_id = $user->id;
-                    $activity->user_name = $user->name;
-                    $activity->user_email = $user->email;
-                    $activity->role_id = $user->role_id;
-                    $activity->log_name = 'Logout';
-                    $activity->subject_type = 'App\Models\User';
-                    $activity->subject_id = $user->id;
-                    $activity->causer_type = 'App\Models\User';
-                    $activity->causer_id = $user->id;
-                    $activity->batch_uuid = Str::uuid()->toString();
-                    $activity->event = "LoggedOut";
-                })
-                ->withProperties([
-                    'user_id' => $user->id,
-                    'name' => $user->name,
-                    'email' => $user->email,
-                    'role_id' => $user->role_id,
-                ])
-                ->log('User logged out');
+            // Activity::performedOn($user)
+            //     ->causedBy(Auth::user())
+            //     ->tap(function ($activity) use ($user) {
+            //         $activity->user_id = $user->id;
+            //         $activity->user_name = $user->name;
+            //         $activity->user_email = $user->email;
+            //         $activity->role_id = $user->role_id;
+            //         $activity->log_name = 'Logout';
+            //         $activity->subject_type = 'App\Models\User';
+            //         $activity->subject_id = $user->id;
+            //         $activity->causer_type = 'App\Models\User';
+            //         $activity->causer_id = $user->id;
+            //         $activity->batch_uuid = Str::uuid()->toString();
+            //         $activity->event = "LoggedOut";
+            //     })
+            //     ->withProperties([
+            //         'user_id' => $user->id,
+            //         'name' => $user->name,
+            //         'email' => $user->email,
+            //         'role_id' => $user->role_id,
+            //     ])
+            //     ->log('User logged out');
 
 
 

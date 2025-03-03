@@ -36,6 +36,7 @@ class OperationService
             $operation = Operation::find($operation->id);
             $operation->updated_by = $user->id;
             $operation->update($data);
+            return $operation;
         } elseif ($user->role_id == 3 && $user->parent_id != null) {
             $manager = User::find($user->parent_id);
             if ($manager && $manager->parent_id != null) {
@@ -44,6 +45,7 @@ class OperationService
                 $operation = Operation::find($operation->id);
                 $operation->updated_by = $user->id;
                 $operation->update($data);
+                return $operation;
             }
             return false;
         }
@@ -68,6 +70,10 @@ class OperationService
     public function getAllOperations($userId)
     {
         $user = User::where('id', $userId)->first();
+        if($user->role_id==2 && $user->parent_id!=null){
+            $user=User::find($user->parent_id);
+            $userId=$user->id;
+        }
         if ($user->role_id == 1 || ($user->parent_id == $userId && $user->role_id == 2)) {
             $operations = DB::select('select * from operations o where o.created_by=? ', [$userId]);
             return [count($operations), $operations];
