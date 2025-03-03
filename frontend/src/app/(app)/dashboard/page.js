@@ -4,6 +4,7 @@ import axios from '../../../lib/axios'
 import CreateOperation from '../../../components/CreateOperation'
 import ListOperations from '../../../components/ListOperations'
 import './dashboard.css'
+import Layout from '@/components/layout'
 
 const Dashboard = () => {
     const [userName, setUserName] = useState('Unknown')
@@ -42,17 +43,19 @@ const Dashboard = () => {
     }
 
     return (
-        <div className="dashboard">
-            <h2>Welcome, {userName} ({roleName})</h2>
-            {loading ? (
-                <p>Loading...</p>
-            ) : (
-                <>
-                    {roleId === 1 && <CreateOperation onOperationCreated={handleOperationCreated} />}
-                    <ListOperations />
-                </>
-            )}
-        </div>
+        <Layout>
+            <div className="dashboard">
+                <h2>Welcome, {userName} ({roleName})</h2>
+                {loading ? (
+                    <p>Loading...</p>
+                ) : (
+                    <>
+                        {roleId === 1 && <CreateOperation onOperationCreated={handleOperationCreated} />}
+                        <ListOperations />
+                    </>
+                )}
+            </div>
+        </Layout>
     )
 }
 

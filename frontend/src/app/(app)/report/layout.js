@@ -1,6 +1,6 @@
 "use client"
 import { useAuth } from "@/hooks/auth"
-import Loading from "../Loading"
+import Loading from "../../../components/Loading"
 import Navigation from "../chatbot/Navigation"
 
 
