@@ -105,36 +105,29 @@ Route::middleware('auth:sanctum')->controller(PersonnelController::class)->group
     Route::get('/search-personnel/{personnelName}', 'getPersonnelByName');
 });
 
+// Operation Resources Routes: Add, Update, Get All
+Route::middleware('auth:sanctum')->controller(OperationResourcesController::class)->group(function () {
+    Route::post('/add-operation-resources/{operationId}', 'createOperationResource');
+    Route::get('/get-operation-resources/{operationId}', 'getAllOperationResources');
+    Route::put('/update-operation-resources/{operationId}', 'updateOperationResource');
+});
 
+// Report Routes: Generate Report
+Route::middleware('auth:sanctum')->controller(ReportController::class)->group(function () {
+    Route::post('/generate-report/{operationId}', 'generateReport');
+});
 
+// Resources Routes: Get All Resources
+Route::middleware('auth:sanctum')->controller(ResourcesController::class)->group(function () {
+    Route::get('/get-all-resources', 'getAllResources');
+});
 
-// Add a new personnel
-Route::post('/add-personnel', [PersonnelController::class, 'addPersonnel'])->middleware('auth:sanctum');
+// Ollama Routes: Generate Response
+Route::middleware('auth:sanctum')->controller(OllamaController::class)->group(function () {
+    Route::post('/ollama/generate', 'generateResponse');
+});
 
-// Update an existing personnel
-Route::put('/update-personnel/{personnelId}', [PersonnelController::class, 'updatePersonnel'])->middleware('auth:sanctum');
-
-// Delete a personnel
-Route::delete('/delete-personnel/{personnelId}', [PersonnelController::class, 'deletePersonnel'])->middleware('auth:sanctum');
-
-// Get all personnel
-Route::get('/get-all-personnel', [PersonnelController::class, 'getAllPersonnel'])->middleware('auth:sanctum');
-
-// Search personnel by name
-Route::get('/search-personnel/{personnelName}', [PersonnelController::class, 'getPersonnelByName'])->middleware('auth:sanctum');
-
-Route::post('/add-operation-resources/{operationId}', [OperationResourcesController::class, 'createOperationResource'])->middleware('auth:sanctum');
-
-Route::get('/get-operation-resources/{operationId}', [OperationResourcesController::class, 'getAllOperationResources'])->middleware('auth:sanctum');
-
-Route::put('/update-operation-resources/{operationId}', [OperationResourcesController::class, 'updateOperationResource'])->middleware('auth:sanctum');
-
-Route::post('/generate-report/{operationId}', [ReportController::class, 'generateReport'])->middleware('auth:sanctum');
-
-Route::get('/get-all-resources', [ResourcesController::class, 'getAllResources'])->middleware('auth:sanctum');
-
-
-Route::post('/ollama/generate', [OllamaController::class, 'generateResponse'])->middleware('auth:sanctum');
-
-
-Route::get('/role-view', [RoleViewController::class, 'roleView'])->middleware('auth:sanctum');
+// Role View Routes: View Role
+Route::middleware('auth:sanctum')->controller(RoleViewController::class)->group(function () {
+    Route::get('/role-view', 'roleView');
+});

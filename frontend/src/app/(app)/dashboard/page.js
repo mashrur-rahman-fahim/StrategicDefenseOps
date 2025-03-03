@@ -51,11 +51,12 @@ const Dashboard = () => {
                     <p>Loading...</p>
                 ) : (
                     <>  
-                        <UsersUnderAdmin />
+                        {/* <UsersUnderAdmin /> */}
+
+                        {roleId === 1 && <CreateOperation onOperationCreated={handleOperationCreated} />}
+                        <ListOperations />
 
 
-                        {/* {roleId === 1 && <CreateOperation onOperationCreated={handleOperationCreated} />}
-                        <ListOperations /> */}
                     </>
                 )}
             </div>
