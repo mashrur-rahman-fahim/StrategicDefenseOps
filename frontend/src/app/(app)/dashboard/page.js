@@ -3,6 +3,7 @@ import React, { useEffect, useState } from 'react'
 import axios from '../../../lib/axios'
 import CreateOperation from '../../../components/CreateOperation'
 import ListOperations from '../../../components/ListOperations'
+import UsersUnderAdmin from '@/components/UsersUnderAdmin'
 import './dashboard.css'
 import Layout from '@/components/layout'
 
@@ -49,9 +50,12 @@ const Dashboard = () => {
                 {loading ? (
                     <p>Loading...</p>
                 ) : (
-                    <>
-                        {roleId === 1 && <CreateOperation onOperationCreated={handleOperationCreated} />}
-                        <ListOperations />
+                    <>  
+                        <UsersUnderAdmin />
+
+
+                        {/* {roleId === 1 && <CreateOperation onOperationCreated={handleOperationCreated} />}
+                        <ListOperations /> */}
                     </>
                 )}
             </div>

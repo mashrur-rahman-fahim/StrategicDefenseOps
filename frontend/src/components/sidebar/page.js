@@ -55,13 +55,6 @@ const Sidebar = ({ isOpen, toggleSidebar, selectedItem, handleNavigation }) => {
 
             {/* Profile  */}
             <div className="profile">
-                {/* Profile Picture */}
-                {/* <img
-          src="https://www.lexpress.fr/resizer/BtP_kaudrTSss-e5I9p9gCwh0gk=/arc-photo-lexpress/eu-central-1-prod/public/ENBOXHVYU5EOVLIYIJ6NNM5ET4.jpg"
-          alt="Profile"
-          className="profile-pic"
-        /> */}
-
                 {/* Profile Name */}
                 <h2>{userName}</h2>
                 <p className="rank">Role : {roleName}</p>
