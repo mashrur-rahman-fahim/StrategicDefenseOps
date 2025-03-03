@@ -9,7 +9,7 @@ use Illuminate\Http\Request;
 class RoleViewController extends Controller
 {
     protected RoleViewService $roleViewService;
-    public function __construct(RoleViewService $roleViewService){
+     public function __construct(RoleViewService $roleViewService){
         $this->roleViewService = $roleViewService;
     }
     public function roleView(){
