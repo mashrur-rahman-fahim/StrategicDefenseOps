@@ -23,7 +23,7 @@ class OperationService
     {
         $user = User::find($userId);
         if ($user->role_id == 1) {
-            $operation = DB::selectOne("select * from Operations o where o.created_by=? and o.id=?", [$userId, $id]);
+            $operation = DB::selectOne("select * from operations o where o.created_by=? and o.id=?", [$userId, $id]);
             $operation = Operation::find($operation->id);
 
             $operation->updated_by = $userId;
@@ -32,7 +32,7 @@ class OperationService
             return $operation;
         } elseif ($user->role_id == 2 && $user->parent_id != null) {
             $userId = $user->parent_id;
-            $operation = DB::selectOne("select * from Operations o where o.created_by=? and o.id=?", [$userId, $id]);
+            $operation = DB::selectOne("select * from operations o where o.created_by=? and o.id=?", [$userId, $id]);
             $operation = Operation::find($operation->id);
             $operation->updated_by = $user->id;
             $operation->update($data);
@@ -41,7 +41,7 @@ class OperationService
             $manager = User::find($user->parent_id);
             if ($manager && $manager->parent_id != null) {
                 $userId = $manager->parent_id;
-                $operation = DB::selectOne("select * from Operations o where o.created_by=? and o.id=?", [$userId, $id]);
+                $operation = DB::selectOne("select * from operations o where o.created_by=? and o.id=?", [$userId, $id]);
                 $operation = Operation::find($operation->id);
                 $operation->updated_by = $user->id;
                 $operation->update($data);
@@ -53,7 +53,7 @@ class OperationService
     }
     public function deleteOperation($id, $userId)
     {
-        $operation = DB::selectOne("select * from Operations o where o.created_by=? and o.id=?",[$userId,$id]);
+        $operation = DB::selectOne("select * from operations o where o.created_by=? and o.id=?",[$userId,$id]);
 
         
         if ($operation ) {
