@@ -15,8 +15,8 @@ import { Icon } from '@iconify/react'
 import axios from '@/lib/axios'
 import { useAuth } from '@/hooks/auth'
 import ResourceFormModal from './ResourceFormModal'
-import Layout from '../components/layout'
-import Loading from '../Loading'
+import Layout from '@/components/layout'
+import Loading from '../../../components/Loading'
 import { toast } from 'sonner'
 
 export default function Resources() {

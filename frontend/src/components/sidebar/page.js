@@ -1,12 +1,11 @@
 'use client'
 import React, { useEffect, useRef, useState } from 'react'
-import axios from '../../../../lib/axios'
+import axios from '@/lib/axios'
 import './sidebar.css'
 
-const Sidebar = ({ isOpen, toggleSidebar, selectedItem, setSelectedItem }) => {
+const Sidebar = ({ isOpen, toggleSidebar, selectedItem, handleNavigation }) => {
     const sidebarRef = useRef()
     const [userName, setUserName] = useState('Error')
-    const [ setRoleId] = useState(null)
     const [roleName, setRoleName] = useState("")
     const roleMapping = {
         1: 'Admin',
@@ -36,10 +35,9 @@ const Sidebar = ({ isOpen, toggleSidebar, selectedItem, setSelectedItem }) => {
         const fetchUserDetails = async () => {
             try {
                 const response = await axios.get(
-                    `${process.env.NEXT_PUBLIC_BACKEND_URL}/api/user`,
+                    `/api/user`,
                 )
-                setUserName(response.data.name || 'Unknown')
-                setRoleId(response.data.role_id || 'Unknown')
+                setUserName(response?.data.name || 'Unknown')
                 setRoleName(roleMapping[response.data.role_id] || 'Unknown')
             } catch (error) {
                 console.error('Error fetching user details:', error)
@@ -76,7 +74,7 @@ const Sidebar = ({ isOpen, toggleSidebar, selectedItem, setSelectedItem }) => {
                             key={item}
                             className={`menu-item ${selectedItem === item.toLowerCase() ? 'active' : ''}`}
                             onClick={() => {
-                                setSelectedItem(item.toLowerCase())
+                                handleNavigation(item.toLowerCase())
                                 toggleSidebar()
                             }}>
                             {item}
