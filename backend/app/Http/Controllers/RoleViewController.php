@@ -17,7 +17,10 @@ class RoleViewController extends Controller
         if($user->role_id==1){
             $managers=$this->roleViewService->downView($user,2);
            $underManager=[];
-            foreach($managers as $manager){
+          
+            for($i=0;$i<count($managers[1]);$i++){
+           
+                echo "hi";
                $underManager[$manager]=[ 'operators'=>$this->roleViewService->downView($manager,3),
                 'viewers'=>$this->roleViewService->downView($manager,4)];
               
