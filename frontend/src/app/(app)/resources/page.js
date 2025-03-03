@@ -68,7 +68,7 @@ export default function Resources() {
     const fetchResources = async () => {
         try {
             setLoading(true)
-            const response = await axios.get('/api/get-all-resources')
+            const response = await axios.get(`/api/get-all-resources`)
             console.log('Resources:', response.data)
             setResourceData(response.data)
             setFilteredResources(response.data[1] || [])
