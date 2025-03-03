@@ -1,11 +1,11 @@
-"use client";
-import { useState, useEffect } from 'react';
-import { useRouter, usePathname } from 'next/navigation';
-import Navbar from '../components/navbar/page';
-import Sidebar from '../components/sidebar/page';
-import { useAuth } from '@/hooks/auth';
-import Loading from '../Loading';
-import { Toaster } from 'sonner';
+"use client"
+import { useState, useEffect } from 'react'
+import { useRouter, usePathname } from 'next/navigation'
+import Navbar from '../components/navbar/page'
+import Sidebar from '../components/sidebar/page'
+import { useAuth } from '@/hooks/auth'
+import Loading from '../Loading'
+import { Toaster } from 'sonner'
 
 export default function Layout({ children }) {
   const { user } = useAuth({ middleware: 'auth' })

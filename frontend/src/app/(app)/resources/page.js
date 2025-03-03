@@ -17,7 +17,7 @@ import { useAuth } from '@/hooks/auth'
 import ResourceFormModal from './ResourceFormModal'
 import Layout from '../components/layout'
 import Loading from '../Loading'
-import { toast } from 'sonner';
+import { toast } from 'sonner'
 
 export default function Resources() {
     const { user } = useAuth({
@@ -32,8 +32,8 @@ export default function Resources() {
     const [currentPage, setCurrentPage] = useState(1)
     const [activeFilter, setActiveFilter] = useState('All')
     const [filteredResources, setFilteredResources] = useState([])
-    const [selectedResource, setSelectedResource] = useState(null);
-    const [editModalShow, setEditModalShow] = useState(false);
+    const [selectedResource, setSelectedResource] = useState(null)
+    const [editModalShow, setEditModalShow] = useState(false)
     const [totalCounts, setTotalCounts] = useState({
         weapons: 0,
         vehicles: 0,
@@ -258,43 +258,43 @@ export default function Resources() {
     }
 
     const getResourceTypeCategory = (resource) => {
-        if (resource.weapon_name) return 'weapon';
-        if (resource.vehicle_name) return 'vehicle';
-        if (resource.personnel_name) return 'personnel';
-        if (resource.equipment_name) return 'equipment';
-        return '';
+        if (resource.weapon_name) return 'weapon'
+        if (resource.vehicle_name) return 'vehicle'
+        if (resource.personnel_name) return 'personnel'
+        if (resource.equipment_name) return 'equipment'
+        return ''
     }
 
     const handleDelete = async (resource) => {
         if (window.confirm('Are you sure you want to delete this resource?')) {
-          const resourceName = getResourceName(resource);
+          const resourceName = getResourceName(resource)
           try {
-            let endpoint = '';
-            const resourceType = getResourceTypeCategory(resource);
+            let endpoint = ''
+            const resourceType = getResourceTypeCategory(resource)
             
             switch(resourceType) {
-              case 'weapon': endpoint = `/api/delete-weapon/${resource.id}`; break;
-              case 'vehicle': endpoint = `/api/delete-vehicle/${resource.id}`; break;
-              case 'personnel': endpoint = `/api/delete-personnel/${resource.id}`; break;
-              case 'equipment': endpoint = `/api/delete-equipment/${resource.id}`; break;
-              default: throw new Error('Invalid resource type');
+              case 'weapon': endpoint = `/api/delete-weapon/${resource.id}`; break
+              case 'vehicle': endpoint = `/api/delete-vehicle/${resource.id}`; break
+              case 'personnel': endpoint = `/api/delete-personnel/${resource.id}`; break
+              case 'equipment': endpoint = `/api/delete-equipment/${resource.id}`; break
+              default: throw new Error('Invalid resource type')
             }
       
-            await axios.delete(endpoint);
-            toast.success(`${resourceName} deleted successfully` || 'Resource deleted successfully');
-            fetchResources();
+            await axios.delete(endpoint)
+            toast.success(`${resourceName} deleted successfully` || 'Resource deleted successfully')
+            fetchResources()
           } catch (error) {
-            console.error('Delete error:', error);
-            toast.error(`Failed to delete ${resourceName}` || 'Failed to delete resource');
+            console.error('Delete error:', error)
+            toast.error(`Failed to delete ${resourceName}` || 'Failed to delete resource')
           }
         }
-      };
+      }
       
       const handleEdit = (resource) => {
-        const type = getResourceTypeCategory(resource);
-        setSelectedResource({ ...resource, resourceType: type });
-        setEditModalShow(true);
-      };
+        const type = getResourceTypeCategory(resource)
+        setSelectedResource({ ...resource, resourceType: type })
+        setEditModalShow(true)
+      }
 
     return (
         <Layout>
@@ -613,9 +613,9 @@ export default function Resources() {
                         <ResourceFormModal
                             show={showModal || editModalShow}
                             handleClose={() => {
-                                handleCloseModal();
-                                setEditModalShow(false);
-                                setSelectedResource(null);
+                                handleCloseModal()
+                                setEditModalShow(false)
+                                setSelectedResource(null)
                             }}
                             refreshResources={fetchResources}
                             resource={selectedResource}
