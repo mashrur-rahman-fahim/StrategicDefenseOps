@@ -17,7 +17,7 @@ jobs:
         uses: actions/checkout@v3
 
       - name: Navigate to backend directory
-        run: cd backend
+        run: cd .\backend\
 
       - name: Set up PHP
         uses: shivammathur/setup-php@v2
@@ -39,7 +39,7 @@ jobs:
         uses: actions/checkout@v3
 
       - name: Navigate to frontend directory
-        run: cd frontend
+        run: cd .\frontend\
 
       - name: Set up Node.js
         uses: actions/setup-node@v3
