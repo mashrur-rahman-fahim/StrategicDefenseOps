@@ -16,8 +16,7 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v3
 
-      - name: Navigate to backend directory
-        run: cd \backend\
+      
 
       - name: Set up PHP
         uses: shivammathur/setup-php@v2
@@ -27,6 +26,7 @@ jobs:
           coverage: none
 
       - name: Install Composer dependencies
+        working-directory: ./backend
         run: composer install --prefer-dist --no-progress
 
       
@@ -38,8 +38,7 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v3
 
-      - name: Navigate to frontend directory
-        run: cd \frontend\
+    
 
       - name: Set up Node.js
         uses: actions/setup-node@v3
@@ -47,9 +46,11 @@ jobs:
           node-version: '20' # Use the Node.js version your Next.js app requires
 
       - name: Install npm dependencies
+        working-directory: ./frontend
         run: npm install
 
       
 
       - name: Run Next.js build
+        working-directory: ./frontend
         run: npm run build
