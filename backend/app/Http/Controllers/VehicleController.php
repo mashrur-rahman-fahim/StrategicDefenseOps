@@ -226,7 +226,7 @@ class VehicleController extends Controller
 
             // Audit Log : vehicle deletion 
             activity()
-                ->performedOn(Vehicle::find($vehicleId))
+                ->performedOn(new Vehicle())
                 ->causedBy($user)
                 ->tap(function ($activity) use ($user, $vehicleId) {
                     $activity->log_name = "vehicle_deletion";
@@ -236,7 +236,7 @@ class VehicleController extends Controller
                     $activity->role_id = $user->role_id;
                     $activity->description = "Vehicle deleted with ID: " . $vehicleId;
                     $activity->subject_id = $vehicleId;
-                    $activity->subject_type = get_class(Vehicle::find($vehicleId));
+                    $activity->subject_type = Vehicle::class;
                     $activity->causer_id = $user->id;
                     $activity->causer_type = get_class($user);
                 })
