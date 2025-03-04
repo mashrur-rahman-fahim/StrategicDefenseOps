@@ -309,7 +309,7 @@ export default function Resources() {
                             <h1 className="mb-4">Resource Overview</h1>
                             {user.role_id === 1 && (
                                 <Button
-                                    variant="outline-primary"
+                                    variant="primary"
                                     className="mb-4"
                                     onClick={handleOpenModal}>
                                     New Resource
@@ -394,7 +394,7 @@ export default function Resources() {
                             <div className="d-flex justify-content-between align-items-center mb-4">
                                 <Dropdown>
                                     <Dropdown.Toggle
-                                        variant="primary"
+                                        variant="outline-primary"
                                         id="dropdown-filter"
                                         className="px-4">
                                         <Icon
@@ -486,7 +486,7 @@ export default function Resources() {
                                                     md={6}
                                                     lg={4}>
                                                     <Card className="shadow-sm h-100">
-                                                        <Card.Img
+                                                        {/* <Card.Img
                                                             variant="top"
                                                             src={getResourceImage(
                                                                 resource,
@@ -499,7 +499,7 @@ export default function Resources() {
                                                                 objectFit:
                                                                     'cover',
                                                             }}
-                                                        />
+                                                        /> */}
                                                         <Card.Body>
                                                             <Card.Title className="fs-4">
                                                                 {getResourceName(

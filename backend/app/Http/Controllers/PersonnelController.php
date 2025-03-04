@@ -140,7 +140,11 @@ class PersonnelController extends Controller
         try {
             // Validate input data
             $data = $request->validate([
-                'personnel_count' => 'nullable|integer|min:1',
+                'personnel_name' => 'required|string|max:200',
+                'personnel_description' => 'nullable|string',
+                'personnel_count' => 'required|integer|min:1',
+                'personnel_category' => 'required|string|max:200',
+                'personnel_type' => 'nullable|string|max:200',
                 'personnel_rank' => 'nullable|string|max:200',
                 'skills' => 'nullable|string|max:200',
             ]);

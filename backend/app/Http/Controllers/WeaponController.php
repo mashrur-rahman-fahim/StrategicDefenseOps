@@ -140,7 +140,15 @@ class WeaponController extends Controller
         try {
             // Validate input data
             $data = $request->validate([
-                'weapon_count' => 'nullable|integer|min:0',
+                'weapon_name' => 'required|string|max:255',
+                'weapon_description' => 'nullable|string',
+                'weapon_count' => 'required|integer|min:1',
+                'weapon_category' => 'nullable|string|max:100',
+                'weapon_type' => 'nullable|string|max:100',
+                'weapon_model' => 'nullable|string|max:100',
+                'weapon_manufacturer' => 'nullable|string|max:150',
+                'weapon_weight' => 'nullable|numeric|min:0',
+                'weapon_range' => 'nullable|integer|min:0',
             ]);
 
             // Check user authorization

@@ -9,8 +9,8 @@ const ResourceFormModal = ({ show, handleClose, refreshResources, resource}) => 
   const [resourceType, setResourceType] = useState('')
   const [formData, setFormData] = useState({})
   const [loading, setLoading] = useState(false)
-  const [image, setImage] = useState(null)
-  const [imagePreview, setImagePreview] = useState(null)
+  //const [image, setImage] = useState(null)
+  //const [imagePreview, setImagePreview] = useState(null)
   const isEditMode = !!resource
 
   useEffect(() => {
@@ -48,9 +48,9 @@ const ResourceFormModal = ({ show, handleClose, refreshResources, resource}) => 
         })
       }
       // Set image preview if existing image exists
-      if (resource?.image) {
-        setImagePreview(resource?.image)
-      }
+      // if (resource?.image) {
+      //   setImagePreview(resource?.image)
+      // }
     } else {
       resetForm()
     }
@@ -59,8 +59,8 @@ const ResourceFormModal = ({ show, handleClose, refreshResources, resource}) => 
   // Reset form when modal closes or type changes
   const resetForm = () => {
     setFormData({})
-    setImage(null)
-    setImagePreview(null)
+    // setImage(null)
+    // setImagePreview(null)
   }
 
   const handleTypeChange = (e) => {
@@ -73,15 +73,15 @@ const ResourceFormModal = ({ show, handleClose, refreshResources, resource}) => 
     setFormData({ ...formData, [name]: value })
   }
 
-  const handleImageChange = (e) => {
-    const file = e.target.files[0]
-    if (file) {
-      setImage(file)
-      // Create preview URL for the selected image
-      const previewUrl = URL.createObjectURL(file)
-      setImagePreview(previewUrl)
-    }
-  }
+  // const handleImageChange = (e) => {
+  //   const file = e.target.files[0]
+  //   if (file) {
+  //     setImage(file)
+  //     // Create preview URL for the selected image
+  //     const previewUrl = URL.createObjectURL(file)
+  //     setImagePreview(previewUrl)
+  //   }
+  // }
 
   const handleSubmit = async (e) => {
     e.preventDefault()
@@ -119,29 +119,29 @@ const ResourceFormModal = ({ show, handleClose, refreshResources, resource}) => 
           }
       }
       // Create form data object for file upload
-      const formDataObj = new FormData()
+      //const formDataObj = new FormData()
       
-      console.log('Form data:', formData)
-      Object.keys(formData).forEach(key => {
-        formDataObj.append(key, formData[key])
-      })
+      // Object.keys(formData).forEach(key => {
+      //   formDataObj.append(key, formData[key])
+      // })
       
-      if (formData.weapon_count) formDataObj.set('weapon_count', parseInt(formData.weapon_count))
-      if (formData.vehicle_count) formDataObj.set('vehicle_count', parseInt(formData.vehicle_count))
-      if (formData.personnel_count) formDataObj.set('personnel_count', parseInt(formData.personnel_count))
-      if (formData.equipment_count) formDataObj.set('equipment_count', parseInt(formData.equipment_count))
+      // if (formData.weapon_count) formDataObj.set('weapon_count', parseInt(formData.weapon_count))
+      // if (formData.vehicle_count) formDataObj.set('vehicle_count', parseInt(formData.vehicle_count))
+      // if (formData.personnel_count) formDataObj.set('personnel_count', parseInt(formData.personnel_count))
+      // if (formData.equipment_count) formDataObj.set('equipment_count', parseInt(formData.equipment_count))
       
       // Add image if it exists
-      if (image) {
-        formDataObj.append('image', image)
-      }
+      // if (image) {
+      //   formDataObj.append('image', image)
+      // }
       
-      console.log([...formDataObj.entries()])
+      //console.log([...formDataObj.entries()])
+      console.log('Form data:', formData)
       const response = await axios({
         method,
         url: endpoint,
-        data: formDataObj,
-        headers: { 'Content-Type': 'multipart/form-data'}
+        data: formData,
+        // headers: { 'Content-Type': 'multipart/form-data'}
       })
       console.log('response:', response.data)
       
@@ -213,6 +213,7 @@ const ResourceFormModal = ({ show, handleClose, refreshResources, resource}) => 
                 name="weapon_serial_number" 
                 value={formData.weapon_serial_number || ''} 
                 onChange={handleInputChange} 
+                disabled={isEditMode}
                 required 
               />
             </Form.Group>
@@ -267,6 +268,7 @@ const ResourceFormModal = ({ show, handleClose, refreshResources, resource}) => 
                 name="vehicle_serial_number" 
                 value={formData.vehicle_serial_number || ''} 
                 onChange={handleInputChange} 
+                disabled={isEditMode}
                 required 
               />
             </Form.Group>
@@ -330,6 +332,7 @@ const ResourceFormModal = ({ show, handleClose, refreshResources, resource}) => 
                 name="personnel_serial_number" 
                 value={formData.personnel_serial_number || ''} 
                 onChange={handleInputChange} 
+                disabled={isEditMode}
                 required 
               />
             </Form.Group>
@@ -383,6 +386,7 @@ const ResourceFormModal = ({ show, handleClose, refreshResources, resource}) => 
                 name="equipment_serial_number" 
                 value={formData.equipment_serial_number || ''} 
                 onChange={handleInputChange} 
+                disabled={isEditMode}
                 required 
               />
             </Form.Group>
@@ -421,7 +425,7 @@ const ResourceFormModal = ({ show, handleClose, refreshResources, resource}) => 
               {renderFormFields()}
               
               {/* Image Upload Section */}
-              <Form.Group className="mb-4">
+              {/* <Form.Group className="mb-4">
                 <Form.Label>Image</Form.Label>
                 <Form.Control 
                   type="file" 
@@ -431,10 +435,10 @@ const ResourceFormModal = ({ show, handleClose, refreshResources, resource}) => 
                 <Form.Text className="text-muted">
                   Upload an image for this resource
                 </Form.Text>
-              </Form.Group>
+              </Form.Group> */}
               
               {/* Image Preview */}
-              {imagePreview && (
+              {/* {imagePreview && (
                 <div className="mb-4">
                   <p className="mb-2">Image Preview:</p>
                   <div className="border p-2 d-inline-block">
@@ -445,7 +449,7 @@ const ResourceFormModal = ({ show, handleClose, refreshResources, resource}) => 
                     />
                   </div>
                 </div>
-              )}
+              )} */}
               
               <div className="d-flex justify-content-end mt-4">
                 <Button variant="secondary" className="me-2" onClick={handleClose}>

@@ -135,7 +135,9 @@ class EquipmentController extends Controller
         try {
             // Validate input data
             $data = $request->validate([
-                'equipment_count' => 'nullable|integer|min:1',
+                'equipment_name' => 'required|string|max:200',
+                'equipment_description' => 'nullable|string',
+                'equipment_count' => 'required|integer|min:1',
                 'equipment_category' => 'nullable|string|max:200',
                 'equipment_type' => 'nullable|string|max:200',
                 'equipment_manufacturer' => 'nullable|string|max:200',

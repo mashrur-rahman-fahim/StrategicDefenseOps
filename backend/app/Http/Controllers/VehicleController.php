@@ -140,7 +140,13 @@ class VehicleController extends Controller
         try {
             // Validate input data
             $data = $request->validate([
-                'vehicle_count' => 'nullable|integer|min:0',
+                'vehicle_name' => 'required|string|max:200',
+                'vehicle_description' => 'nullable|string',
+                'vehicle_count' => 'required|integer|min:1',
+                'vehicle_type' => 'nullable|string|max:200',
+                'vehicle_category' => 'nullable|string|max:200',
+                'vehicle_model' => 'nullable|string|max:200',
+                'vehicle_manufacturer' => 'nullable|string|max:200',
                 'vehicle_capacity' => 'nullable|integer|min:0',
             ]);
 
