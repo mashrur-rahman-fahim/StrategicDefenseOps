@@ -3,16 +3,13 @@
 namespace App\Http\Controllers;
 
 use App\Models\User;
+use App\Providers\RouteServiceProvider;
 use Exception;
 use Illuminate\Http\Request;
-use Laravel\Socialite\Facades\Socialite;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
-use App\Providers\RouteServiceProvider;
-use Illuminate\Http\RedirectResponse;
 use Illuminate\Support\Facades\Log;
-
-use Spatie\Activitylog\Facades\Activity;
+use Laravel\Socialite\Facades\Socialite;
 
 class SocialiteController extends Controller
 {
@@ -27,13 +24,14 @@ class SocialiteController extends Controller
             $googleUser = Socialite::driver('google')->user();
             $role = $request->query('role', 1); // Default to role 1 if not provided
 
-            if (!in_array($role, [1, 2, 3, 4])) {
+            if (! in_array($role, [1, 2, 3, 4])) {
                 return redirect()->route('login')->with('error', 'Invalid role specified.');
             }
 
             $user = User::where('google_id', $googleUser->id)->first();
             if ($user) {
                 Auth::login($user);
+
                 return redirect()->intended(
                     config('app.frontend_url').RouteServiceProvider::HOME.'?verified=1'
                 );
@@ -49,15 +47,16 @@ class SocialiteController extends Controller
 
                 if ($userData) {
                     Auth::login($userData);
+
                     return redirect()->intended(
                         config('app.frontend_url').RouteServiceProvider::HOME.'?verified=1'
                     );
                 }
             }
         } catch (\Laravel\Socialite\Two\InvalidStateException $e) {
-            Log::error('InvalidStateException: ' . $e->getMessage());
-            Log::error('Session State: ' . session()->get('state'));
-            Log::error('Request State: ' . $request->input('state'));
+            Log::error('InvalidStateException: '.$e->getMessage());
+            Log::error('Session State: '.session()->get('state'));
+            Log::error('Request State: '.$request->input('state'));
             throw $e;
         } catch (Exception $e) {
             return redirect()->route('login')->with('error', 'An error occurred during authentication.');

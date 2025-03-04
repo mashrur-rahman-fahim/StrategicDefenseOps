@@ -4,8 +4,6 @@ namespace App\Http\Controllers;
 
 use App\Services\UserDetailsService;
 use Illuminate\Http\Request;
-use Spatie\Activitylog\Facades\Activity;
-
 
 class UserDetailsController extends Controller
 {
@@ -20,17 +18,17 @@ class UserDetailsController extends Controller
     {
         $userId = auth()->id();
 
-        if (!$userId) {
+        if (! $userId) {
             // Audit Log : unauthorized access attempt
             activity()
-                ->performedOn(new \App\Models\User())
+                ->performedOn(new \App\Models\User)
                 ->causedBy(null)
                 ->tap(function ($activity) {
-                    $activity->log_name = "user_details_access";
+                    $activity->log_name = 'user_details_access';
                     $activity->user_id = 0;
-                    $activity->user_name = "Unknown";
-                    $activity->user_email = "Unknown";
-                    $activity->description = "Unauthorized attempt to access user details.";
+                    $activity->user_name = 'Unknown';
+                    $activity->user_email = 'Unknown';
+                    $activity->description = 'Unauthorized attempt to access user details.';
                     $activity->subject_type = "App\Models\User";
                     $activity->subject_id = null;
                     $activity->causer_type = "App\Models\User";
@@ -43,7 +41,7 @@ class UserDetailsController extends Controller
                 ->log('Unauthorized Access to User Details');
 
             return response()->json([
-                'message' => 'Unauthorized'
+                'message' => 'Unauthorized',
             ], 401);
         }
 
@@ -55,11 +53,11 @@ class UserDetailsController extends Controller
                 ->performedOn($user)
                 ->causedBy($request->user())
                 ->tap(function ($activity) use ($request, $user) {
-                    $activity->log_name = "user_details_access";
+                    $activity->log_name = 'user_details_access';
                     $activity->user_id = $request->user()->id;
                     $activity->user_name = $request->user()->name ?? 'Unknown';
                     $activity->user_email = $request->user()->email ?? 'Unknown';
-                    $activity->description = "Successfully retrieved user details.";
+                    $activity->description = 'Successfully retrieved user details.';
                     $activity->subject_type = "App\Models\User";
                     $activity->subject_id = $user->id;
                     $activity->causer_type = "App\Models\User";
@@ -80,11 +78,11 @@ class UserDetailsController extends Controller
         activity()
             ->causedBy($request->user())
             ->tap(function ($activity) use ($request, $userId) {
-                $activity->log_name = "user_details_access";
+                $activity->log_name = 'user_details_access';
                 $activity->user_id = $request->user()->id;
                 $activity->user_name = $request->user()->name ?? 'Unknown';
                 $activity->user_email = $request->user()->email ?? 'Unknown';
-                $activity->description = "Failed to retrieve user details, user not found.";
+                $activity->description = 'Failed to retrieve user details, user not found.';
                 $activity->subject_type = "App\Models\User";
                 $activity->subject_id = null;
                 $activity->causer_type = "App\Models\User";
@@ -96,9 +94,8 @@ class UserDetailsController extends Controller
             ])
             ->log('Failed to Retrieve User Details (User Not Found)');
 
-
         return response()->json([
-            'message' => 'User not found'
+            'message' => 'User not found',
         ], 404);
     }
 }

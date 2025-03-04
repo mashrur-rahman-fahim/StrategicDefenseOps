@@ -46,8 +46,7 @@ class Operation extends Model
     public function resources()
     {
         return $this->belongsToMany(Resources::class, 'operation_resources', 'operation_id', 'resource_id')
-                    ->withPivot('resource_count')
-                    ->withTimestamps();
+            ->withPivot('resource_count')
+            ->withTimestamps();
     }
-    
 }

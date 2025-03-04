@@ -2,11 +2,8 @@
 
 namespace App\Http\Controllers;
 
-use Illuminate\Http\Request;
 use App\Models\AuditLog;
 use App\Models\User;
-use Illuminate\Support\Facades\Auth;
-
 
 class AuditLogController extends Controller
 {

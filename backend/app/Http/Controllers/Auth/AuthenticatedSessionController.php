@@ -1,22 +1,20 @@
 <?php
+
 namespace App\Http\Controllers\Auth;
 
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Auth\LoginRequest;
+use Carbon\Carbon;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 use Illuminate\Support\Facades\Auth;
-use Carbon\Carbon;
-use Psy\Readline\Hoa\Console;
-use Spatie\Activitylog\Facades\Activity;
 use Illuminate\Support\Str;
-
+use Spatie\Activitylog\Facades\Activity;
 
 class AuthenticatedSessionController extends Controller
-{   
-    
-    /* 
+{
+    /*
      * Function : store
      * Description : Handles user authentication and generates an API token.
      * @param LoginRequest $request
@@ -25,15 +23,15 @@ class AuthenticatedSessionController extends Controller
     public function store(LoginRequest $request): JsonResponse
     {
         try {
-         
+
             $request->authenticate();
             $request->session()->regenerate();
 
             $user = Auth::user();
-            if (!$user) {
+            if (! $user) {
                 return response()->json(['message' => 'User not found'], 404);
             }
-            
+
             // Audit Log : User login
             // Activity::performedOn($user)
             //     ->causedBy(Auth::user())
@@ -58,7 +56,6 @@ class AuthenticatedSessionController extends Controller
             //     ])
             //     ->log('User logged in');
 
-
             // Set the token expiration time (e.g., 120 minutes)
             $expiresAt = Carbon::now()->addMinutes(config('session.lifetime'));
 
@@ -73,32 +70,31 @@ class AuthenticatedSessionController extends Controller
             return response()->json([
                 'token' => $token->plainTextToken,
                 'expires_at' => $expiresAt->toDateTimeString(),
-                'message' => 'Login successful'
+                'message' => 'Login successful',
             ], 200);
 
         } catch (\Exception $e) {
             return response()->json([
                 'message' => 'An error occurred during authentication',
-                'error' => config('app.debug') ? $e->getMessage() : null
+                'error' => config('app.debug') ? $e->getMessage() : null,
             ], 500);
         }
     }
 
-
-     /* 
-     * Function : destroy
-     * Description : Logs out the user, deletes tokens, and invalidates the session.
-     * @param Request $request
-     * @return Response
-     */
+    /*
+    * Function : destroy
+    * Description : Logs out the user, deletes tokens, and invalidates the session.
+    * @param Request $request
+    * @return Response
+    */
     public function destroy(Request $request): Response
     {
         try {
             $user = Auth::user();
-         
-            if (!$user) {
+
+            if (! $user) {
                 return response()->json([
-                    'message' => 'User already logged out or session expired'
+                    'message' => 'User already logged out or session expired',
                 ], 200);
             }
 
@@ -126,8 +122,6 @@ class AuthenticatedSessionController extends Controller
             //     ])
             //     ->log('User logged out');
 
-
-
             // Delete all API tokens for the user
             if ($user) {
                 $user->tokens()->delete();
@@ -143,7 +137,7 @@ class AuthenticatedSessionController extends Controller
         } catch (\Exception $e) {
             return response()->json([
                 'message' => 'An error occurred during logout',
-                'error' => config('app.debug') ? $e->getMessage() : null
+                'error' => config('app.debug') ? $e->getMessage() : null,
             ], 500);
         }
     }

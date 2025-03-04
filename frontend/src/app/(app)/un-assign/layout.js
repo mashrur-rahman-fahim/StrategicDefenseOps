@@ -2,7 +2,7 @@
 import { useAuth } from "@/hooks/auth"
 import UnAssign from "./page"
 
-export default function RootLayout({children}){
+export default function RootLayout(){
     const {user}=useAuth({middleware:"auth"})
     
     return(

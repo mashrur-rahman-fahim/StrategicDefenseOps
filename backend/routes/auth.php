@@ -1,6 +1,5 @@
 <?php
 
-
 use App\Http\Controllers\Auth\AuthenticatedSessionController;
 use App\Http\Controllers\Auth\EmailVerificationNotificationController;
 use App\Http\Controllers\Auth\NewPasswordController;
@@ -42,40 +41,36 @@ Route::post('/logout', [AuthenticatedSessionController::class, 'destroy'])
     ->middleware('auth')
     ->name('logout'); */
 
-
-
 // Routes accessible only to guests
 Route::middleware('guest')->group(function () {
     Route::post('/register', [RegisteredUserController::class, 'store'])
-         ->name('register');
+        ->name('register');
 
     Route::post('/login', [AuthenticatedSessionController::class, 'store'])
-         ->name('login');
+        ->name('login');
 
     Route::post('/forgot-password', [PasswordResetLinkController::class, 'store'])
-         ->name('password.email');
+        ->name('password.email');
 
     Route::post('/reset-password', [NewPasswordController::class, 'store'])
-         ->name('password.store');
+        ->name('password.store');
 });
 
 // Routes requiring authentication and additional safeguards
 Route::middleware(['auth', 'signed', 'throttle:6,1'])->group(function () {
     Route::get('/verify-email/{id}/{hash}', VerifyEmailController::class)
-         ->name('verification.verify');
+        ->name('verification.verify');
 });
 
 Route::middleware(['auth', 'throttle:6,1'])->group(function () {
     Route::post('/email/verification-notification', [EmailVerificationNotificationController::class, 'store'])
-         ->name('verification.send');
+        ->name('verification.send');
 });
 
 // Authenticated user routes
 Route::middleware('auth:sanctum')->group(function () {
     Route::post('/logout', [AuthenticatedSessionController::class, 'destroy'])
-         ->name('logout');
+        ->name('logout');
 });
 
-
 // Route::get('/me', [UserDetailsController::class, 'getUserDetails'])->middleware('auth');
-

@@ -2,20 +2,21 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\User;
 use App\Models\Equipment;
-use App\Services\ResourceServices;
+use App\Models\User;
 use App\Services\EquipmentService;
+use App\Services\ResourceServices;
 use Exception;
+use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Validation\ValidationException;
 use Spatie\Activitylog\Facades\Activity;
-use Illuminate\Http\JsonResponse;
 
 class EquipmentController extends Controller
 {
     protected EquipmentService $equipmentService;
+
     protected ResourceServices $resourceServices;
 
     public function __construct(EquipmentService $equipmentService, ResourceServices $resourceServices)
@@ -27,7 +28,7 @@ class EquipmentController extends Controller
     /**
      * Function : addEquipment
      * Description : Adds a new equipment, validates inputs, inserts into database, and logs activity.
-     * @param Request $request
+     *
      * @return JsonResponse
      */
     public function addEquipment(Request $request)
@@ -49,7 +50,7 @@ class EquipmentController extends Controller
 
             // Check user authorization
             $user = User::find(auth()->id());
-            if (!$user || $user->role_id !== 1) {
+            if (! $user || $user->role_id !== 1) {
                 return response()->json(['error' => 'Unauthorized'], 403);
             }
 
@@ -62,15 +63,15 @@ class EquipmentController extends Controller
             try {
                 // Insert equipment
                 $equipment = $this->equipmentService->addEquipment($data);
-                if (!$equipment) {
-                    throw new Exception("Failed to add equipment");
+                if (! $equipment) {
+                    throw new Exception('Failed to add equipment');
                 }
 
                 // Link resource to equipment
                 $resourceData['equipment_id'] = $equipment->id;
                 $resource = $this->resourceServices->addResource($resourceData);
-                if (!$resource) {
-                    throw new Exception("Failed to add resource");
+                if (! $resource) {
+                    throw new Exception('Failed to add resource');
                 }
 
                 // Commit transaction
@@ -86,12 +87,12 @@ class EquipmentController extends Controller
                         $activity->user_name = $user->name;
                         $activity->user_email = $user->email;
                         $activity->role_id = $user->role_id;
-                        $activity->description = 'Equipment created with name: ' . $equipment->equipment_name;
+                        $activity->description = 'Equipment created with name: '.$equipment->equipment_name;
                         $activity->subject_type = get_class($equipment);
                         $activity->subject_id = $equipment->id;
                         $activity->causer_type = get_class($user);
                         $activity->causer_id = $user->id;
-                        $activity->batch_uuid = \Illuminate\Support\Str::uuid()->toString(); 
+                        $activity->batch_uuid = \Illuminate\Support\Str::uuid()->toString();
                         $activity->created_at = now();
                         $activity->updated_at = now();
                     })
@@ -100,9 +101,7 @@ class EquipmentController extends Controller
                         'equipment_count' => $equipment->equipment_count,
                         'timestamp' => now()->toDateTimeString(),
                     ])
-                    ->log('Equipment created with name: ' . $equipment->equipment_name);
-
-
+                    ->log('Equipment created with name: '.$equipment->equipment_name);
 
                 return response()->json([
                     'message' => 'Equipment added successfully',
@@ -112,6 +111,7 @@ class EquipmentController extends Controller
             } catch (Exception $e) {
                 // Rollback transaction on failure
                 DB::rollback();
+
                 return response()->json(['error' => $e->getMessage()], 500);
             }
         } catch (ValidationException $e) {
@@ -119,15 +119,15 @@ class EquipmentController extends Controller
             return response()->json(['error' => $e->errors()], 422);
         } catch (Exception $e) {
             // Handle unexpected errors
-            return response()->json(['error' => 'An unexpected error occurred: ' . $e->getMessage()], 500);
+            return response()->json(['error' => 'An unexpected error occurred: '.$e->getMessage()], 500);
         }
     }
 
     /**
      * Function : updateEquipment
      * Description : Updates an existing equipment's details and logs activity.
-     * @param Request $request
-     * @param int $equipmentId
+     *
+     * @param  int  $equipmentId
      * @return JsonResponse
      */
     public function updateEquipment(Request $request, $equipmentId)
@@ -145,14 +145,14 @@ class EquipmentController extends Controller
 
             // Check user authorization
             $user = User::find(auth()->id());
-            if (!$user || $user->role_id > 2) {
+            if (! $user || $user->role_id > 2) {
                 return response()->json(['error' => 'Unauthorized'], 403);
             }
 
             $equipment = Equipment::find($equipmentId);
             // Update equipment
             $updatedEquipment = $this->equipmentService->updateEquipment($data, $equipmentId, auth()->id());
-            if (!$updatedEquipment) {
+            if (! $updatedEquipment) {
                 return response()->json(['error' => 'Failed to update equipment'], 500);
             }
 
@@ -170,25 +170,23 @@ class EquipmentController extends Controller
                     $activity->user_name = $user->name;
                     $activity->user_email = $user->email;
                     $activity->role_id = $user->role_id;
-                    $activity->description = 'Equipment updated with name: ' . $equipment->equipment_name;
+                    $activity->description = 'Equipment updated with name: '.$equipment->equipment_name;
                     $activity->subject_type = get_class($equipment);
                     $activity->subject_id = $equipment->id;
                     $activity->causer_type = get_class($user);
                     $activity->causer_id = $user->id;
                     $activity->event = 'updated';
-                    $activity->batch_uuid = \Illuminate\Support\Str::uuid()->toString(); 
+                    $activity->batch_uuid = \Illuminate\Support\Str::uuid()->toString();
                     $activity->created_at = now();
                     $activity->updated_at = now();
                 })
                 ->withProperties([
                     'equipment_name' => $equipment->equipment_name,
                     'equipment_count' => $equipment->equipment_count,
-                    'updated_fields' => $updatedFields, 
-                    'timestamp' => now()->toDateTimeString(), 
+                    'updated_fields' => $updatedFields,
+                    'timestamp' => now()->toDateTimeString(),
                 ])
-                ->log('Equipment updated with name: ' . $equipment->equipment_name);
-
-
+                ->log('Equipment updated with name: '.$equipment->equipment_name);
 
             return response()->json(['equipment' => $updatedEquipment]);
         } catch (ValidationException $e) {
@@ -196,14 +194,15 @@ class EquipmentController extends Controller
             return response()->json(['error' => $e->errors()], 422);
         } catch (Exception $e) {
             // Handle unexpected errors
-            return response()->json(['error' => 'An unexpected error occurred: ' . $e->getMessage()], 500);
+            return response()->json(['error' => 'An unexpected error occurred: '.$e->getMessage()], 500);
         }
     }
 
     /**
      * Function : deleteEquipment
      * Description : Deletes the specified equipment and logs activity.
-     * @param int $equipmentId
+     *
+     * @param  int  $equipmentId
      * @return JsonResponse
      */
     public function deleteEquipment($equipmentId)
@@ -211,7 +210,7 @@ class EquipmentController extends Controller
         try {
             // Check user authorization
             $user = User::find(auth()->id());
-            if (!$user || $user->role_id !== 1) {
+            if (! $user || $user->role_id !== 1) {
                 return response()->json(['error' => 'Unauthorized'], 403);
             }
 
@@ -220,7 +219,7 @@ class EquipmentController extends Controller
 
             // Delete equipment
             $deletedEquipment = $this->equipmentService->deleteEquipment($equipmentId, auth()->id());
-            if (!$deletedEquipment) {
+            if (! $deletedEquipment) {
                 return response()->json(['error' => 'Failed to delete equipment'], 500);
             }
 
@@ -234,7 +233,7 @@ class EquipmentController extends Controller
                     $activity->user_name = $user->name;
                     $activity->user_email = $user->email;
                     $activity->role_id = $user->role_id;
-                    $activity->description = 'Equipment deleted with ID: ' . $equipmentId;
+                    $activity->description = 'Equipment deleted with ID: '.$equipmentId;
                     $activity->subject_type = get_class($equipment);
                     $activity->subject_id = $equipmentId;
                     $activity->causer_type = get_class($user);
@@ -246,22 +245,22 @@ class EquipmentController extends Controller
                 })
                 ->withProperties([
                     'equipment_name' => $equipment->equipment_name,
-                    'equipment_id' => $equipmentId,  
-                    'timestamp' => now()->toDateTimeString(), 
+                    'equipment_id' => $equipmentId,
+                    'timestamp' => now()->toDateTimeString(),
                 ])
-                ->log('Equipment deleted with ID: ' . $equipmentId);
-
+                ->log('Equipment deleted with ID: '.$equipmentId);
 
             return response()->json(['equipment' => $deletedEquipment]);
         } catch (Exception $e) {
             // Handle unexpected errors
-            return response()->json(['error' => 'An unexpected error occurred: ' . $e->getMessage()], 500);
+            return response()->json(['error' => 'An unexpected error occurred: '.$e->getMessage()], 500);
         }
     }
 
     /**
      * Function : getAllEquipment
      * Description : Retrieves all equipment based on user authorization.
+     *
      * @return JsonResponse
      */
     public function getAllEquipment()
@@ -269,23 +268,25 @@ class EquipmentController extends Controller
         try {
             // Check user authorization
             $user = User::find(auth()->id());
-            if (!$user || $user->role_id > 2) {
+            if (! $user || $user->role_id > 2) {
                 return response()->json(['error' => 'Unauthorized'], 403);
             }
 
             // Fetch all equipment
             $equipment = $this->equipmentService->getAllEquipment(auth()->id());
+
             return response()->json($equipment);
         } catch (Exception $e) {
             // Handle unexpected errors
-            return response()->json(['error' => 'An unexpected error occurred: ' . $e->getMessage()], 500);
+            return response()->json(['error' => 'An unexpected error occurred: '.$e->getMessage()], 500);
         }
     }
 
     /**
      * Function : getEquipmentByName
      * Description : Retrieves equipment by its name based on user authorization.
-     * @param string $equipmentName
+     *
+     * @param  string  $equipmentName
      * @return JsonResponse
      */
     public function getEquipmentByName($equipmentName)
@@ -293,20 +294,20 @@ class EquipmentController extends Controller
         try {
             // Check user authorization
             $user = User::find(auth()->id());
-            if (!$user || $user->role_id > 2) {
+            if (! $user || $user->role_id > 2) {
                 return response()->json(['error' => 'Unauthorized'], 403);
             }
 
             // Fetch equipment by name
             $equipment = $this->equipmentService->getEquipmentByName($equipmentName, auth()->id());
-            if (!$equipment) {
+            if (! $equipment) {
                 return response()->json(['error' => 'Equipment not found'], 404);
             }
 
             return response()->json($equipment);
         } catch (Exception $e) {
             // Handle unexpected errors
-            return response()->json(['error' => 'An unexpected error occurred: ' . $e->getMessage()], 500);
+            return response()->json(['error' => 'An unexpected error occurred: '.$e->getMessage()], 500);
         }
     }
 }

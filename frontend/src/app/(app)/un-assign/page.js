@@ -57,7 +57,7 @@ export default function UnAssign({ user }) {
         return (
             <div className="container mt-4">
                 <div className="alert alert-danger text-center">
-                    <i className="bi bi-lock-fill"></i> ❌ You do not have permission to unassign users.
+                    <i className="bi bi-lock-fill" /> ❌ You do not have permission to unassign users.
                 </div>
             </div>
         )
@@ -67,7 +67,7 @@ export default function UnAssign({ user }) {
         <div className="container mt-4">
             <div className="card shadow-lg p-4">
                 <h2 className="text-danger mb-3">
-                    <i className="bi bi-person-x-fill"></i> Unassign Role
+                    <i className="bi bi-person-x-fill" /> Unassign Role
                 </h2>
 
                 <div className="mb-3">
@@ -109,7 +109,7 @@ export default function UnAssign({ user }) {
                 )}
 
                 <button className="btn btn-danger w-100" onClick={handleUnassign}>
-                    <i className="bi bi-trash"></i> Unassign Role
+                    <i className="bi bi-trash" /> Unassign Role
                 </button>
 
                 {message && (

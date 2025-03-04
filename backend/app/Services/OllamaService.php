@@ -1,4 +1,5 @@
 <?php
+
 namespace App\Services;
 
 use GuzzleHttp\Client;
@@ -31,14 +32,14 @@ class OllamaService
                         'min_p' => 0.1,
                         'repeat_last_n' => 64,
                         'repeat_penalty' => 1.5,
-                        "num_batch" => 4,
-                        "num_gpu" => 1,
-                        "main_gpu" => 0,
-                        "low_vram" => true,
-                        "use_mmap"=> true,
-                        "num_thread"=> 12
+                        'num_batch' => 4,
+                        'num_gpu' => 1,
+                        'main_gpu' => 0,
+                        'low_vram' => true,
+                        'use_mmap' => true,
+                        'num_thread' => 12,
                     ],
-                ]
+                ],
 
             ]);
 
@@ -46,8 +47,8 @@ class OllamaService
             yield from $this->processStream($body);
 
         } catch (\Exception $e) {
-            \Log::error('Ollama API Error: ' . $e->getMessage());
-            yield "**Error:** Unable to generate a response.";
+            \Log::error('Ollama API Error: '.$e->getMessage());
+            yield '**Error:** Unable to generate a response.';
         }
     }
 
@@ -55,7 +56,7 @@ class OllamaService
     {
         $buffer = ''; // Buffer to handle incomplete JSON objects
 
-        while (!$body->eof()) {
+        while (! $body->eof()) {
             $chunk = $body->read(1024); // Read 1024 bytes at a time
             $buffer .= $chunk; // Append chunk to buffer
 
@@ -69,22 +70,22 @@ class OllamaService
                     continue; // Skip invalid JSON
                 }
 
-                if (!empty($json['response'])) {
+                if (! empty($json['response'])) {
                     // Clean the response: Remove unwanted tags and fix LaTeX formatting
                     $cleanedResponse = $this->cleanResponse($json['response']);
                     yield $cleanedResponse; // Yield the cleaned response text
                 }
 
-                if (!empty($json['done'])) {
+                if (! empty($json['done'])) {
                     return; // Stop processing when done
                 }
             }
         }
 
         // Process any remaining data in the buffer
-        if (!empty($buffer)) {
+        if (! empty($buffer)) {
             $json = json_decode(trim($buffer), true);
-            if (json_last_error() === JSON_ERROR_NONE && !empty($json['response'])) {
+            if (json_last_error() === JSON_ERROR_NONE && ! empty($json['response'])) {
                 $cleanedResponse = $this->cleanResponse($json['response']);
                 yield $cleanedResponse;
             }
@@ -95,7 +96,6 @@ class OllamaService
     {
         // Remove unwanted tags like <think></think>
         $response = str_replace(['<think>', '</think>'], '', $response);
-
 
         return trim($response);
     }

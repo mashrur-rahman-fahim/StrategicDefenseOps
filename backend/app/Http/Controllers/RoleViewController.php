@@ -4,7 +4,6 @@ namespace App\Http\Controllers;
 
 use App\Models\User;
 use App\Services\RoleViewService;
-use Illuminate\Http\Request;
 
 class RoleViewController extends Controller
 {
@@ -19,7 +18,7 @@ class RoleViewController extends Controller
     {
         $user = User::find(auth()->id());
 
-        if (!$user) {
+        if (! $user) {
             return response()->json(['message' => 'User not found'], 404);
         }
 
@@ -49,7 +48,7 @@ class RoleViewController extends Controller
             $underManagers[] = [
                 'manager' => $manager,
                 'operators' => $this->roleViewService->downView($manager, 3),
-                'viewers' => $this->roleViewService->downView($manager, 4)
+                'viewers' => $this->roleViewService->downView($manager, 4),
             ];
         }
 
@@ -61,7 +60,7 @@ class RoleViewController extends Controller
         return response()->json([
             'admin' => $this->roleViewService->upView($user),
             'operators' => $this->roleViewService->downView($user, 3),
-            'viewers' => $this->roleViewService->downView($user, 4)
+            'viewers' => $this->roleViewService->downView($user, 4),
         ], 200);
     }
 
@@ -69,10 +68,10 @@ class RoleViewController extends Controller
     {
         $manager = $this->roleViewService->upView($user);
         $admin = $this->roleViewService->upView($manager);
-        
+
         return response()->json([
             'admin' => $admin,
-            'manager' => $manager
+            'manager' => $manager,
         ], 200);
     }
 }

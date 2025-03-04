@@ -8,7 +8,9 @@ use Illuminate\Database\Eloquent\Model;
 class Weapon extends Model
 {
     use HasFactory;
+
     protected $table = 'weapon';
+
     protected $fillable = [
         'weapon_name',
         'weapon_description',
@@ -20,8 +22,9 @@ class Weapon extends Model
         'weapon_serial_number',
         'weapon_weight',
         'weapon_range',
-        'authorized_by'
+        'authorized_by',
     ];
+
     protected $casts = [
         'weapon_count' => 'integer',
         'weapon_weight' => 'decimal:2',
@@ -37,5 +40,4 @@ class Weapon extends Model
     {
         return $this->hasOne(Resources::class, 'weapon_id');
     }
-
 }

@@ -1,11 +1,12 @@
 <?php
 
 namespace App\Http\Controllers;
-use Illuminate\Support\Facades\DB;
+
 use App\Models\User;
 use App\Services\UnassignRoleService;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 use Spatie\Activitylog\Facades\Activity;
 
 class UnassignRoleController extends Controller
@@ -17,7 +18,7 @@ class UnassignRoleController extends Controller
         $this->unassignRoleService = $unassignRoleService;
     }
 
-    /* 
+    /*
      * Function : managerUnassign
      * Description : Unassigns a manager role from a user by the parent (manager).
      * @param Request $request - The request object containing the manager's email.
@@ -28,46 +29,49 @@ class UnassignRoleController extends Controller
         $request->validate([
             'managerEmail' => 'required|email|exists:users,email',
         ]);
-    
+
         $admin = auth()->id();
         $admin = User::find($admin);
-    
+
         // Check if the parent is authorized (must be a role_id 1 user)
-        if (!$admin || $admin->role_id !== 1) {
+        if (! $admin || $admin->role_id !== 1) {
             return response()->json(['message' => 'Unauthorized'], 403);
         }
-    
+
         DB::beginTransaction();
         try {
             $manager = $this->unassignRoleService->unassignRole($request->managerEmail, 2, $admin->parent_id);
-    
-            if (!$manager) {
+
+            if (! $manager) {
                 DB::rollBack();
+
                 return response()->json(['message' => 'Manager not found or not assigned'], 404);
             }
-    
+
             DB::commit();
+
             return response()->json(['manager' => $manager]);
         } catch (\Exception $e) {
             DB::rollBack();
+
             return response()->json(['message' => 'An error occurred while unassigning the manager role'], 500);
         }
     }
-    
+
     public function operatorUnassign(Request $request): JsonResponse
     {
         $request->validate([
             'operatorEmail' => 'required|email|exists:users,email',
         ]);
-    
+
         $parentId = auth()->id();
         $parent = User::find($parentId);
-    
+
         // Check if the parent is authorized
-        if (!$parent) {
+        if (! $parent) {
             return response()->json(['message' => 'Unauthorized'], 403);
         }
-    
+
         DB::beginTransaction();
         try {
             if ($parent->role_id == 1) {
@@ -76,44 +80,48 @@ class UnassignRoleController extends Controller
                     ->where('role_id', 2)
                     ->where('parent_id', $parentId)
                     ->first();
-    
-                if (!$manager) {
+
+                if (! $manager) {
                     DB::rollBack();
+
                     return response()->json(['message' => 'Manager not found or not authorized'], 404);
                 }
-    
+
                 $operator = $this->unassignRoleService->unassignRole($request->operatorEmail, 3, $manager->id);
             } else {
                 $operator = $this->unassignRoleService->unassignRole($request->operatorEmail, 3, $parentId);
             }
-    
-            if (!$operator) {
+
+            if (! $operator) {
                 DB::rollBack();
+
                 return response()->json(['message' => 'Operator not found or not assigned'], 404);
             }
-    
+
             DB::commit();
+
             return response()->json(['operator' => $operator]);
         } catch (\Exception $e) {
             DB::rollBack();
+
             return response()->json(['message' => 'An error occurred while unassigning the operator role'], 500);
         }
     }
-    
+
     public function viewerUnassign(Request $request): JsonResponse
     {
         $request->validate([
             'viewerEmail' => 'required|email|exists:users,email',
         ]);
-    
+
         $parentId = auth()->id();
         $parent = User::find($parentId);
-    
+
         // Check if the parent is authorized
-        if (!$parent) {
+        if (! $parent) {
             return response()->json(['message' => 'Unauthorized'], 403);
         }
-    
+
         DB::beginTransaction();
         try {
             if ($parent->role_id == 1) {
@@ -122,31 +130,35 @@ class UnassignRoleController extends Controller
                     ->where('role_id', 2)
                     ->where('parent_id', $parentId)
                     ->first();
-    
-                if (!$manager) {
+
+                if (! $manager) {
                     DB::rollBack();
+
                     return response()->json(['message' => 'Manager not found or not authorized'], 404);
                 }
-    
+
                 $viewer = $this->unassignRoleService->unassignRole($request->viewerEmail, 4, $manager->id);
             } else {
                 $viewer = $this->unassignRoleService->unassignRole($request->viewerEmail, 4, $parentId);
             }
-    
-            if (!$viewer) {
+
+            if (! $viewer) {
                 DB::rollBack();
+
                 return response()->json(['message' => 'Viewer not found or not assigned'], 404);
             }
-    
+
             DB::commit();
+
             return response()->json(['viewer' => $viewer]);
         } catch (\Exception $e) {
             DB::rollBack();
+
             return response()->json(['message' => 'An error occurred while unassigning the viewer role'], 500);
         }
     }
 
-    /* 
+    /*
      * Function : logUnassignActivity
      * Description : Logs the activity of unassigning a role from a user.
      * @param int $parentId - The ID of the parent user performing the unassignment.
@@ -161,7 +173,7 @@ class UnassignRoleController extends Controller
                 ->causedBy(auth()->user())
                 ->performedOn($unassignedUser)
                 ->tap(function ($activity) use ($parentId, $unassignedUser, $role) {
-                    $activity->log_name = "role_unassignment";
+                    $activity->log_name = 'role_unassignment';
                     $activity->user_id = auth()->user()->id;
                     $activity->user_name = auth()->user()->name;
                     $activity->user_email = auth()->user()->email;

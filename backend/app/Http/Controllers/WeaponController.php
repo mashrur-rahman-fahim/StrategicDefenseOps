@@ -9,14 +9,13 @@ use App\Services\WeaponService;
 use Exception;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
-use Spatie\Activitylog\Facades\Activity;
-use Illuminate\Support\Facades\Auth;
 use Illuminate\Validation\ValidationException;
-
+use Spatie\Activitylog\Facades\Activity;
 
 class WeaponController extends Controller
 {
     protected WeaponService $weaponService;
+
     protected ResourceServices $resourceServices;
 
     public function __construct(WeaponService $weaponService, ResourceServices $resourceServices)
@@ -25,7 +24,7 @@ class WeaponController extends Controller
         $this->resourceServices = $resourceServices;
     }
 
-    /* 
+    /*
      * Function : createWeapon
      * Description : Creates a new weapon in the system, validates input, and logs the activity.
      * @param Request $request - The incoming HTTP request containing the weapon data.
@@ -53,7 +52,7 @@ class WeaponController extends Controller
 
             // Check user authorization
             $user = User::find(auth()->id());
-            if (!$user || $user->role_id !== 1) {
+            if (! $user || $user->role_id !== 1) {
                 return response()->json(['error' => 'Unauthorized'], 403);
             }
 
@@ -66,15 +65,15 @@ class WeaponController extends Controller
             try {
                 // Insert weapon
                 $weapon = $this->weaponService->addWeapon($data);
-                if (!$weapon) {
-                    throw new Exception("Failed to add weapon");
+                if (! $weapon) {
+                    throw new Exception('Failed to add weapon');
                 }
 
                 // Link resource to weapon
                 $resourceData['weapon_id'] = $weapon->id;
                 $resource = $this->resourceServices->addResource($resourceData);
-                if (!$resource) {
-                    throw new Exception("Failed to add resource");
+                if (! $resource) {
+                    throw new Exception('Failed to add resource');
                 }
 
                 // Commit transaction
@@ -85,12 +84,12 @@ class WeaponController extends Controller
                     ->performedOn($weapon)
                     ->causedBy($user)
                     ->tap(function ($activity) use ($user, $weapon) {
-                        $activity->log_name = "weapon_creation";
+                        $activity->log_name = 'weapon_creation';
                         $activity->user_id = $user->id;
                         $activity->user_name = $user->name;
                         $activity->user_email = $user->email;
                         $activity->role_id = $user->role_id;
-                        $activity->description = "Weapon created with name: " . $weapon->name;
+                        $activity->description = 'Weapon created with name: '.$weapon->name;
                         $activity->subject_id = $weapon->id;
                         $activity->subject_type = get_class($weapon);
                         $activity->causer_id = $user->id;
@@ -104,10 +103,9 @@ class WeaponController extends Controller
                         'weapon_name' => $weapon->name,
                         'weapon_id' => $weapon->id,
                         'weapon_price' => $weapon->price,
-                        'additional_info' => 'Created weapon with price ' . $weapon->price
+                        'additional_info' => 'Created weapon with price '.$weapon->price,
                     ])
                     ->log('Weapon Created');
-
 
                 return response()->json([
                     'message' => 'Weapon added successfully',
@@ -117,6 +115,7 @@ class WeaponController extends Controller
             } catch (Exception $e) {
                 // Rollback transaction on failure
                 DB::rollback();
+
                 return response()->json(['error' => $e->getMessage()], 500);
             }
         } catch (ValidationException $e) {
@@ -124,11 +123,11 @@ class WeaponController extends Controller
             return response()->json(['error' => $e->errors()], 422);
         } catch (Exception $e) {
             // Handle unexpected errors
-            return response()->json(['error' => 'An unexpected error occurred: ' . $e->getMessage()], 500);
+            return response()->json(['error' => 'An unexpected error occurred: '.$e->getMessage()], 500);
         }
     }
 
-    /* 
+    /*
      * Function : updateWeapon
      * Description : Updates an existing weapon, validating the input and logging the update activity.
      * @param Request $request - The incoming HTTP request containing updated weapon data.
@@ -153,13 +152,13 @@ class WeaponController extends Controller
 
             // Check user authorization
             $user = User::find(auth()->id());
-            if (!$user || $user->role_id > 2) {
+            if (! $user || $user->role_id > 2) {
                 return response()->json(['error' => 'Unauthorized'], 403);
             }
 
             // Update weapon
             $updatedWeapon = $this->weaponService->updateWeapon($data, $weaponId, auth()->id());
-            if (!$updatedWeapon) {
+            if (! $updatedWeapon) {
                 return response()->json(['error' => 'Failed to update weapon'], 500);
             }
 
@@ -168,12 +167,12 @@ class WeaponController extends Controller
                 ->performedOn($updatedWeapon)
                 ->causedBy($user)
                 ->tap(function ($activity) use ($user, $updatedWeapon) {
-                    $activity->log_name = "weapon_update";
+                    $activity->log_name = 'weapon_update';
                     $activity->user_id = $user->id;
                     $activity->user_name = $user->name;
                     $activity->user_email = $user->email;
                     $activity->role_id = $user->role_id;
-                    $activity->description = "Weapon updated with name: " . $updatedWeapon->name;
+                    $activity->description = 'Weapon updated with name: '.$updatedWeapon->name;
                     $activity->subject_id = $updatedWeapon->id;
                     $activity->subject_type = get_class($updatedWeapon);
                     $activity->causer_id = $user->id;
@@ -186,10 +185,9 @@ class WeaponController extends Controller
                     'role_id' => $user->role_id,
                     'weapon_id' => $updatedWeapon->id,
                     'weapon_name' => $updatedWeapon->name,
-                    'updated_fields' => $data
+                    'updated_fields' => $data,
                 ])
                 ->log('Weapon Updated');
-
 
             return response()->json(['weapon' => $updatedWeapon]);
         } catch (ValidationException $e) {
@@ -197,12 +195,11 @@ class WeaponController extends Controller
             return response()->json(['error' => $e->errors()], 422);
         } catch (Exception $e) {
             // Handle unexpected errors
-            return response()->json(['error' => 'An unexpected error occurred: ' . $e->getMessage()], 500);
+            return response()->json(['error' => 'An unexpected error occurred: '.$e->getMessage()], 500);
         }
     }
 
-
-    /* 
+    /*
      * Function : deleteWeapon
      * Description : Deletes a weapon based on the given ID and logs the deletion activity.
      * @param int $id - The ID of the weapon to be deleted.
@@ -213,27 +210,27 @@ class WeaponController extends Controller
         try {
             // Check user authorization
             $user = User::find(auth()->id());
-            if (!$user || $user->role_id !== 1) {
+            if (! $user || $user->role_id !== 1) {
                 return response()->json(['error' => 'Unauthorized'], 403);
             }
 
             // Delete weapon
             $deletedWeapon = $this->weaponService->deleteWeapon($weaponId, auth()->id());
-            if (!$deletedWeapon) {
+            if (! $deletedWeapon) {
                 return response()->json(['error' => 'Failed to delete weapon'], 500);
             }
 
             // Audit Log : deleted weapon
             activity()
-                ->performedOn(new Weapon()) 
+                ->performedOn(new Weapon)
                 ->causedBy($user)
                 ->tap(function ($activity) use ($user, $weaponId) {
-                    $activity->log_name = "weapon_deletion";
+                    $activity->log_name = 'weapon_deletion';
                     $activity->user_id = $user->id;
                     $activity->user_name = $user->name;
                     $activity->user_email = $user->email;
                     $activity->role_id = $user->role_id;
-                    $activity->description = "Weapon deleted with ID: " . $weaponId;
+                    $activity->description = 'Weapon deleted with ID: '.$weaponId;
                     $activity->subject_id = $weaponId;
                     $activity->subject_type = 'App\Models\Weapon';
                     $activity->causer_id = $user->id;
@@ -244,15 +241,14 @@ class WeaponController extends Controller
                     'user_name' => $user->name,
                     'user_email' => $user->email,
                     'role_id' => $user->role_id,
-                    'deleted_weapon_id' => $weaponId
+                    'deleted_weapon_id' => $weaponId,
                 ])
                 ->log('Weapon Deleted');
-
 
             return response()->json(['weapon' => $deletedWeapon]);
         } catch (Exception $e) {
             // Handle unexpected errors
-            return response()->json(['error' => 'An unexpected error occurred: ' . $e->getMessage()], 500);
+            return response()->json(['error' => 'An unexpected error occurred: '.$e->getMessage()], 500);
         }
     }
 }

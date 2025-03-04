@@ -1,28 +1,20 @@
 <?php
 
 use App\Http\Controllers\AssignRoleController;
+use App\Http\Controllers\EquipmentController;
+use App\Http\Controllers\OllamaController;
 use App\Http\Controllers\OperationController;
-
 use App\Http\Controllers\OperationResourcesController;
-
+use App\Http\Controllers\PersonnelController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\ReportController;
 use App\Http\Controllers\ResourcesController;
 use App\Http\Controllers\RoleViewController;
 use App\Http\Controllers\UnassignRoleController;
 use App\Http\Controllers\UserDetailsController;
+use App\Http\Controllers\VehicleController;
 use App\Http\Controllers\WeaponController;
 use Illuminate\Support\Facades\Route;
-use App\Http\Controllers\OllamaController;
-use App\Http\Controllers\VehicleController;
-use App\Http\Controllers\PersonnelController;
-use App\Http\Controllers\EquipmentController;
-use App\Http\Controllers\AuditLogController;
-
-
-
-
-
 
 /*
 |--------------------------------------------------------------------------
@@ -34,8 +26,6 @@ use App\Http\Controllers\AuditLogController;
 | is assigned the "api" middleware group. Enjoy building your API!
 |
 */
-
-
 
 // Role Assignment/Unassignment :
 Route::middleware('auth:sanctum')->group(function () {
@@ -57,7 +47,6 @@ Route::middleware('auth:sanctum')->group(function () {
     // User Details
     Route::get('/user', [UserDetailsController::class, 'getUserDetails']);
 });
-
 
 // Operation Create, Update, Delete, Search All, Individual Search by Name
 Route::middleware('auth:sanctum')->controller(OperationController::class)->group(function () {
@@ -86,7 +75,6 @@ Route::middleware('auth:sanctum')->controller(VehicleController::class)->group(f
     Route::get('/search-vehicles/{vehicleName}', 'getVehicleByName');
 });
 
-
 // Equipment Add, Update, Delete, Search All, Individual Search by Name
 Route::middleware('auth:sanctum')->controller(EquipmentController::class)->group(function () {
     Route::post('/add-equipment', 'addEquipment');
@@ -96,7 +84,6 @@ Route::middleware('auth:sanctum')->controller(EquipmentController::class)->group
     Route::get('/search-equipment/{equipmentName}', 'getEquipmentByName');
 });
 
-
 // Personnel Add, Update, Delete, Search All, Individual Search by Name
 Route::middleware('auth:sanctum')->controller(PersonnelController::class)->group(function () {
     Route::post('/add-personnel', 'addPersonnel');
@@ -105,9 +92,6 @@ Route::middleware('auth:sanctum')->controller(PersonnelController::class)->group
     Route::get('/get-all-personnel', 'getAllPersonnel');
     Route::get('/search-personnel/{personnelName}', 'getPersonnelByName');
 });
-
-
-
 
 // Add a new personnel
 Route::post('/add-personnel', [PersonnelController::class, 'addPersonnel'])->middleware('auth:sanctum');
@@ -134,12 +118,10 @@ Route::post('/generate-report/{operationId}', [ReportController::class, 'generat
 
 Route::get('/get-all-resources', [ResourcesController::class, 'getAllResources'])->middleware('auth:sanctum');
 
-
 Route::post('/ollama/generate', [OllamaController::class, 'generateResponse'])->middleware('auth:sanctum');
-
 
 Route::get('/role-view', [RoleViewController::class, 'roleView'])->middleware('auth:sanctum');
 
-Route::put('/update-profile',[ProfileController::class,'updateProfile'])->middleware('auth:sanctum');
+Route::put('/update-profile', [ProfileController::class, 'updateProfile'])->middleware('auth:sanctum');
 
-Route::delete('/delete-profile',[ProfileController::class, 'deleteProfile'])->middleware('auth:sanctum');
+Route::delete('/delete-profile', [ProfileController::class, 'deleteProfile'])->middleware('auth:sanctum');

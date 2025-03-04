@@ -8,7 +8,8 @@ use Illuminate\Database\Eloquent\Model;
 class Resources extends Model
 {
     use HasFactory;
-    protected $fillable=[
+
+    protected $fillable = [
         'resources_name',
         'resource_category',
         'weapon_id',
@@ -16,6 +17,7 @@ class Resources extends Model
         'personnel_id',
         'equipment_id',
     ];
+
     public function category()
     {
         return $this->belongsTo(ResourceCategory::class, 'resource_category');
@@ -26,9 +28,8 @@ class Resources extends Model
         return $this->belongsTo(Weapon::class, 'weapon_id');
     }
 
-  
-    public function operationResources(){
-        return $this->hasMany(OperationResources::class,'resource_id');
+    public function operationResources()
+    {
+        return $this->hasMany(OperationResources::class, 'resource_id');
     }
-   
 }

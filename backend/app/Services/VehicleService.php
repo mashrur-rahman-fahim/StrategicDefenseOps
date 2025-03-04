@@ -4,10 +4,8 @@ namespace App\Services;
 
 use App\Models\User;
 use App\Models\Vehicle;
-use Illuminate\Support\Facades\DB;
 use Exception;
-use Spatie\Activitylog\Models\Activity;
-
+use Illuminate\Support\Facades\DB;
 
 class VehicleService
 {
@@ -19,13 +17,15 @@ class VehicleService
         try {
             // Attempt to create the vehicle
             $vehicle = Vehicle::create($data);
-            if (!$vehicle) {
-                throw new Exception("Failed to add vehicle");
+            if (! $vehicle) {
+                throw new Exception('Failed to add vehicle');
             }
+
             return $vehicle;
         } catch (Exception $e) {
             // Log the error and return false
-            error_log("Error adding vehicle: " . $e->getMessage());
+            error_log('Error adding vehicle: '.$e->getMessage());
+
             return false;
         }
     }
@@ -39,19 +39,21 @@ class VehicleService
             // Fetch the vehicle using raw SQL
             $vehicle = DB::select('SELECT * FROM vehicle WHERE authorized_by = ? AND id = ?', [$userId, $vehicleId]);
             if (empty($vehicle)) {
-                throw new Exception("Vehicle not found or unauthorized");
+                throw new Exception('Vehicle not found or unauthorized');
             }
 
             // Delete the vehicle using Eloquent
             $vehicleModel = Vehicle::find($vehicle[0]->id);
-            if (!$vehicleModel) {
-                throw new Exception("Failed to find vehicle for deletion");
+            if (! $vehicleModel) {
+                throw new Exception('Failed to find vehicle for deletion');
             }
             $vehicleModel->delete();
+
             return true;
         } catch (Exception $e) {
             // Log the error and return false
-            error_log("Error deleting vehicle: " . $e->getMessage());
+            error_log('Error deleting vehicle: '.$e->getMessage());
+
             return false;
         }
     }
@@ -63,50 +65,53 @@ class VehicleService
     {
         try {
             $user = User::find($userId);
-            if (!$user) {
-                throw new Exception("User not found");
+            if (! $user) {
+                throw new Exception('User not found');
             }
 
             if ($user->role_id == 1) {
                 // Fetch the vehicle authorized by the user
                 $vehicle = DB::select('SELECT * FROM vehicle WHERE authorized_by = ? AND id = ?', [$userId, $vehicleId]);
                 if (empty($vehicle)) {
-                    throw new Exception("Vehicle not found or unauthorized");
+                    throw new Exception('Vehicle not found or unauthorized');
                 }
 
                 // Update the vehicle using Eloquent
                 $vehicleModel = Vehicle::find($vehicle[0]->id);
-                if (!$vehicleModel) {
-                    throw new Exception("Failed to find vehicle for update");
+                if (! $vehicleModel) {
+                    throw new Exception('Failed to find vehicle for update');
                 }
                 $vehicleModel->update($data);
+
                 return $vehicleModel;
             } elseif ($user->role_id == 2) {
                 // Fetch the admin ID (parent_id) of the user
                 $adminId = DB::selectOne('SELECT parent_id FROM users WHERE id = ?', [$user->id]);
-                if (!$adminId || !$adminId->parent_id) {
-                    throw new Exception("Admin ID not found");
+                if (! $adminId || ! $adminId->parent_id) {
+                    throw new Exception('Admin ID not found');
                 }
 
                 // Fetch the vehicle authorized by the admin
                 $vehicle = DB::select('SELECT * FROM vehicle WHERE authorized_by = ? AND id = ?', [$adminId->parent_id, $vehicleId]);
                 if (empty($vehicle)) {
-                    throw new Exception("Vehicle not found or unauthorized");
+                    throw new Exception('Vehicle not found or unauthorized');
                 }
 
                 // Update the vehicle using Eloquent
                 $vehicleModel = Vehicle::find($vehicle[0]->id);
-                if (!$vehicleModel) {
-                    throw new Exception("Failed to find vehicle for update");
+                if (! $vehicleModel) {
+                    throw new Exception('Failed to find vehicle for update');
                 }
                 $vehicleModel->update($data);
+
                 return $vehicleModel;
             }
 
-            throw new Exception("Unauthorized role");
+            throw new Exception('Unauthorized role');
         } catch (Exception $e) {
             // Log the error and return false
-            error_log("Error updating vehicle: " . $e->getMessage());
+            error_log('Error updating vehicle: '.$e->getMessage());
+
             return false;
         }
     }
@@ -118,36 +123,39 @@ class VehicleService
     {
         try {
             $user = User::find($userId);
-            if (!$user) {
-                throw new Exception("User not found");
+            if (! $user) {
+                throw new Exception('User not found');
             }
 
             if ($user->role_id == 1) {
                 // Fetch vehicles authorized by the user
                 $vehicles = DB::select('SELECT * FROM vehicle WHERE authorized_by = ?', [$userId]);
                 if (empty($vehicles)) {
-                    throw new Exception("No vehicles found");
+                    throw new Exception('No vehicles found');
                 }
+
                 return $vehicles;
             } elseif ($user->role_id == 2) {
                 // Fetch the admin ID (parent_id) of the user
                 $adminId = DB::selectOne('SELECT parent_id FROM users WHERE id = ?', [$userId]);
-                if (!$adminId || !$adminId->parent_id) {
-                    throw new Exception("Admin ID not found");
+                if (! $adminId || ! $adminId->parent_id) {
+                    throw new Exception('Admin ID not found');
                 }
 
                 // Fetch vehicles authorized by the admin
                 $vehicles = DB::select('SELECT * FROM vehicle WHERE authorized_by = ?', [$adminId->parent_id]);
                 if (empty($vehicles)) {
-                    throw new Exception("No vehicles found");
+                    throw new Exception('No vehicles found');
                 }
+
                 return $vehicles;
             }
 
-            throw new Exception("Unauthorized role");
+            throw new Exception('Unauthorized role');
         } catch (Exception $e) {
             // Log the error and return false
-            error_log("Error fetching vehicles: " . $e->getMessage());
+            error_log('Error fetching vehicles: '.$e->getMessage());
+
             return false;
         }
     }
@@ -159,36 +167,39 @@ class VehicleService
     {
         try {
             $user = User::find($userId);
-            if (!$user) {
-                throw new Exception("User not found");
+            if (! $user) {
+                throw new Exception('User not found');
             }
 
             if ($user->role_id == 1) {
                 // Fetch vehicles authorized by the user
-                $vehicles = DB::select('SELECT * FROM vehicle WHERE authorized_by = ? AND vehicle_name LIKE ?', [$userId, '%' . $vehicleName . '%']);
+                $vehicles = DB::select('SELECT * FROM vehicle WHERE authorized_by = ? AND vehicle_name LIKE ?', [$userId, '%'.$vehicleName.'%']);
                 if (empty($vehicles)) {
-                    throw new Exception("No vehicles found");
+                    throw new Exception('No vehicles found');
                 }
+
                 return $vehicles;
             } elseif ($user->role_id == 2) {
                 // Fetch the admin ID (parent_id) of the user
                 $adminId = DB::selectOne('SELECT parent_id FROM users WHERE id = ?', [$userId]);
-                if (!$adminId || !$adminId->parent_id) {
-                    throw new Exception("Admin ID not found");
+                if (! $adminId || ! $adminId->parent_id) {
+                    throw new Exception('Admin ID not found');
                 }
 
                 // Fetch vehicles authorized by the admin
-                $vehicles = DB::select('SELECT * FROM vehicle WHERE authorized_by = ? AND vehicle_name LIKE ?', [$adminId->parent_id, '%' . $vehicleName . '%']);
+                $vehicles = DB::select('SELECT * FROM vehicle WHERE authorized_by = ? AND vehicle_name LIKE ?', [$adminId->parent_id, '%'.$vehicleName.'%']);
                 if (empty($vehicles)) {
-                    throw new Exception("No vehicles found");
+                    throw new Exception('No vehicles found');
                 }
+
                 return $vehicles;
             }
 
-            throw new Exception("Unauthorized role");
+            throw new Exception('Unauthorized role');
         } catch (Exception $e) {
             // Log the error and return false
-            error_log("Error fetching vehicle by name: " . $e->getMessage());
+            error_log('Error fetching vehicle by name: '.$e->getMessage());
+
             return false;
         }
     }

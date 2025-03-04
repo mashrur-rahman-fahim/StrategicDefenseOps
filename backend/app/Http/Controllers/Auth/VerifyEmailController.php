@@ -7,7 +7,6 @@ use App\Providers\RouteServiceProvider;
 use Illuminate\Auth\Events\Verified;
 use Illuminate\Foundation\Auth\EmailVerificationRequest;
 use Illuminate\Http\RedirectResponse;
-use Spatie\Activitylog\Facades\Activity;
 
 class VerifyEmailController extends Controller
 {
@@ -50,9 +49,8 @@ class VerifyEmailController extends Controller
                 ])
                 ->log("Tried to verify email, but email is already verified for {$request->user()->email}");
 
-
             return redirect()->intended(
-                config('app.frontend_url') . RouteServiceProvider::HOME . '?verified=1'
+                config('app.frontend_url').RouteServiceProvider::HOME.'?verified=1'
             );
         }
 
@@ -83,8 +81,8 @@ class VerifyEmailController extends Controller
                 ->withProperties([
                     'assigned_user_name' => $request->user()->name ?? 'N/A',
                     'assigned_user_email' => $request->user()->email ?? 'N/A',
-                    'assigned_role' => null,  
-                    'parent_id' => null,  
+                    'assigned_role' => null,
+                    'parent_id' => null,
                     'status' => 'verified',
                     'error_message' => null,
                     'timestamp' => now()->toDateTimeString(),
@@ -93,7 +91,7 @@ class VerifyEmailController extends Controller
         }
 
         return redirect()->intended(
-            config('app.frontend_url') . RouteServiceProvider::HOME . '?verified=1'
+            config('app.frontend_url').RouteServiceProvider::HOME.'?verified=1'
         );
     }
 }

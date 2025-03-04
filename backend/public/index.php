@@ -54,5 +54,4 @@ $response = $kernel->handle(
 )->send();
 ini_set('max_execution_time', 0); // 300 seconds (5 minutes)
 
-
 $kernel->terminate($request, $response);

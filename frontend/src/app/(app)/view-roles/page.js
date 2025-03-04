@@ -1,33 +1,33 @@
-"use client";
-import axios from '@/lib/axios';
-import React, { useEffect, useState } from 'react';
+"use client"
+import axios from '@/lib/axios'
+import React, { useEffect, useState } from 'react'
 
 export default function ViewRoles({ user }) {
-    const [rolesData, setRolesData] = useState(null);
-    const [loading, setLoading] = useState(true);
-    const [error, setError] = useState(null);
+    const [rolesData, setRolesData] = useState(null)
+    const [loading, setLoading] = useState(true)
+    const [error, setError] = useState(null)
 
     useEffect(() => {
         const fetchRoles = async () => {
             try {
-                const response = await axios.get('/api/role-view');
-                setRolesData(response.data);
+                const response = await axios.get('/api/role-view')
+                setRolesData(response.data)
                
             } catch (err) {
-                setError(err.message);
+                setError(err.message)
             } finally {
-                setLoading(false);
+                setLoading(false)
             }
-        };
+        }
 
-        fetchRoles();
-    }, []);
+        fetchRoles()
+    }, [])
 
-    if (loading) return <div className="text-center mt-5">Loading...</div>;
-    if (error) return <div className="alert alert-danger mt-5">Error: {error}</div>;
+    if (loading) return <div className="text-center mt-5">Loading...</div>
+    if (error) return <div className="alert alert-danger mt-5">Error: {error}</div>
 
     const renderRoles = () => {
-        if (!rolesData) return null;
+        if (!rolesData) return null
 
         switch (user.role_id) {
             case 1: // Admin
@@ -69,7 +69,7 @@ export default function ViewRoles({ user }) {
                             </div>
                         ))}
                     </div>
-                );
+                )
             case 2: // Manager
                 return (
                     <div className="container mt-5">
@@ -106,7 +106,7 @@ export default function ViewRoles({ user }) {
                             </div>
                         </div>
                     </div>
-                );
+                )
             case 3: // Operator
             case 4: // Viewer
                 return (
@@ -126,15 +126,15 @@ export default function ViewRoles({ user }) {
                             </div>
                         </div>
                     </div>
-                );
+                )
             default:
-                return <div className="alert alert-warning mt-5">Unauthorized access</div>;
+                return <div className="alert alert-warning mt-5">Unauthorized access</div>
         }
-    };
+    }
 
     return (
         <div>
             {renderRoles()}
         </div>
-    );
+    )
 }

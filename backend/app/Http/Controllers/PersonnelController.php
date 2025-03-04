@@ -2,20 +2,20 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\User;
 use App\Models\Personnel;
-use App\Services\ResourceServices;
+use App\Models\User;
 use App\Services\PersonnelService;
+use App\Services\ResourceServices;
 use Exception;
+use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Validation\ValidationException;
-use Spatie\Activitylog\Facades\Activity;
-use Illuminate\Http\JsonResponse;
 
 class PersonnelController extends Controller
 {
     protected PersonnelService $personnelService;
+
     protected ResourceServices $resourceServices;
 
     public function __construct(PersonnelService $personnelService, ResourceServices $resourceServices)
@@ -24,11 +24,11 @@ class PersonnelController extends Controller
         $this->resourceServices = $resourceServices;
     }
 
-
     /**
      * Function : addPersonnel
      * Description : Add a new personnel along with a linked resource.
-     * @param Request $request - The incoming request containing personnel data.
+     *
+     * @param  Request  $request  - The incoming request containing personnel data.
      * @return JsonResponse - The response containing the added personnel and resource or an error message.
      */
     public function addPersonnel(Request $request)
@@ -51,7 +51,7 @@ class PersonnelController extends Controller
 
             // Check user authorization
             $user = User::find(auth()->id());
-            if (!$user || $user->role_id !== 1) {
+            if (! $user || $user->role_id !== 1) {
                 return response()->json(['error' => 'Unauthorized'], 403);
             }
 
@@ -64,15 +64,15 @@ class PersonnelController extends Controller
             try {
                 // Insert personnel
                 $personnel = $this->personnelService->addPersonnel($data);
-                if (!$personnel) {
-                    throw new Exception("Failed to add personnel");
+                if (! $personnel) {
+                    throw new Exception('Failed to add personnel');
                 }
 
                 // Link resource to personnel
                 $resourceData['personnel_id'] = $personnel->id;
                 $resource = $this->resourceServices->addResource($resourceData);
-                if (!$resource) {
-                    throw new Exception("Failed to add resource");
+                if (! $resource) {
+                    throw new Exception('Failed to add resource');
                 }
 
                 // Commit transaction
@@ -88,7 +88,7 @@ class PersonnelController extends Controller
                         $activity->user_name = $user->name;
                         $activity->user_email = $user->email;
                         $activity->role_id = $user->role_id;
-                        $activity->description = 'Personnel added with name: ' . $personnel->personnel_name;
+                        $activity->description = 'Personnel added with name: '.$personnel->personnel_name;
                         $activity->subject_type = get_class($personnel);
                         $activity->subject_id = $personnel->id;
                         $activity->causer_type = get_class($user);
@@ -103,10 +103,7 @@ class PersonnelController extends Controller
                         'personnel_count' => $personnel->personnel_count,
                         'timestamp' => now()->toDateTimeString(),
                     ])
-                    ->log('Personnel added: ' . $personnel->personnel_name);
-
-
-
+                    ->log('Personnel added: '.$personnel->personnel_name);
 
                 return response()->json([
                     'message' => 'Personnel added successfully',
@@ -116,6 +113,7 @@ class PersonnelController extends Controller
             } catch (Exception $e) {
                 // Rollback transaction on failure
                 DB::rollback();
+
                 return response()->json(['error' => $e->getMessage()], 500);
             }
         } catch (ValidationException $e) {
@@ -123,16 +121,16 @@ class PersonnelController extends Controller
             return response()->json(['error' => $e->errors()], 422);
         } catch (Exception $e) {
             // Handle unexpected errors
-            return response()->json(['error' => 'An unexpected error occurred: ' . $e->getMessage()], 500);
+            return response()->json(['error' => 'An unexpected error occurred: '.$e->getMessage()], 500);
         }
     }
-
 
     /**
      * Function : updatePersonnel
      * Description : Update an existing personnel's data.
-     * @param Request $request - The incoming request containing updated personnel data.
-     * @param int $personnelId - The ID of the personnel to be updated.
+     *
+     * @param  Request  $request  - The incoming request containing updated personnel data.
+     * @param  int  $personnelId  - The ID of the personnel to be updated.
      * @return JsonResponse - The response containing the updated personnel data or an error message.
      */
     public function updatePersonnel(Request $request, $personnelId)
@@ -151,13 +149,13 @@ class PersonnelController extends Controller
 
             // Check user authorization
             $user = User::find(auth()->id());
-            if (!$user || $user->role_id > 2) {
+            if (! $user || $user->role_id > 2) {
                 return response()->json(['error' => 'Unauthorized'], 403);
             }
 
             // Update personnel
             $updatedPersonnel = $this->personnelService->updatePersonnel($data, $personnelId, auth()->id());
-            if (!$updatedPersonnel) {
+            if (! $updatedPersonnel) {
                 return response()->json(['error' => 'Failed to update personnel'], 500);
             }
 
@@ -165,13 +163,13 @@ class PersonnelController extends Controller
             activity()
                 ->causedBy($user)
                 ->performedOn($updatedPersonnel)
-                ->tap(function ($activity) use ($user, $updatedPersonnel, $data) {
+                ->tap(function ($activity) use ($user, $updatedPersonnel) {
                     $activity->log_name = 'personnel_update';
                     $activity->user_id = $user->id;
                     $activity->user_name = $user->name;
                     $activity->user_email = $user->email;
                     $activity->role_id = $user->role_id;
-                    $activity->description = 'Personnel updated with name: ' . $updatedPersonnel->personnel_name;
+                    $activity->description = 'Personnel updated with name: '.$updatedPersonnel->personnel_name;
                     $activity->subject_type = get_class($updatedPersonnel);
                     $activity->subject_id = $updatedPersonnel->id;
                     $activity->causer_type = get_class($user);
@@ -185,10 +183,7 @@ class PersonnelController extends Controller
                     'updated_fields' => $data,
                     'timestamp' => now()->toDateTimeString(),
                 ])
-                ->log('Personnel updated: ' . $updatedPersonnel->personnel_name);
-
-
-
+                ->log('Personnel updated: '.$updatedPersonnel->personnel_name);
 
             return response()->json(['personnel' => $updatedPersonnel]);
         } catch (ValidationException $e) {
@@ -196,15 +191,15 @@ class PersonnelController extends Controller
             return response()->json(['error' => $e->errors()], 422);
         } catch (Exception $e) {
             // Handle unexpected errors
-            return response()->json(['error' => 'An unexpected error occurred: ' . $e->getMessage()], 500);
+            return response()->json(['error' => 'An unexpected error occurred: '.$e->getMessage()], 500);
         }
     }
-
 
     /**
      * Function : deletePersonnel
      * Description : Delete a personnel from the database.
-     * @param int $personnelId - The ID of the personnel to be deleted.
+     *
+     * @param  int  $personnelId  - The ID of the personnel to be deleted.
      * @return JsonResponse - The response containing the deleted personnel or an error message.
      */
     public function deletePersonnel($personnelId)
@@ -212,20 +207,20 @@ class PersonnelController extends Controller
         try {
             // Check user authorization
             $user = User::find(auth()->id());
-            if (!$user || $user->role_id !== 1) {
+            if (! $user || $user->role_id !== 1) {
                 return response()->json(['error' => 'Unauthorized'], 403);
             }
 
             // Find the personnel to delete
             $personnel = $this->personnelService->findPersonnelById($personnelId);
 
-            if (!$personnel) {
+            if (! $personnel) {
                 return response()->json(['error' => 'Personnel not found'], 404);
             }
 
             // Delete personnel
             $deletedPersonnel = $this->personnelService->deletePersonnel($personnelId, auth()->id());
-            if (!$deletedPersonnel) {
+            if (! $deletedPersonnel) {
                 return response()->json(['error' => 'Failed to delete personnel'], 500);
             }
 
@@ -239,7 +234,7 @@ class PersonnelController extends Controller
                     $activity->user_name = $user->name;
                     $activity->user_email = $user->email;
                     $activity->role_id = $user->role_id;
-                    $activity->description = 'Personnel deleted with name: ' . $personnel->personnel_name;
+                    $activity->description = 'Personnel deleted with name: '.$personnel->personnel_name;
                     $activity->subject_type = get_class($personnel);
                     $activity->subject_id = $personnel->id;
                     $activity->causer_type = get_class($user);
@@ -253,21 +248,19 @@ class PersonnelController extends Controller
                     'deleted_personnel' => $personnel->personnel_name,
                     'timestamp' => now()->toDateTimeString(),
                 ])
-                ->log('Personnel deleted: ' . $personnel->personnel_name);
-
-
+                ->log('Personnel deleted: '.$personnel->personnel_name);
 
             return response()->json(['personnel' => $deletedPersonnel]);
         } catch (Exception $e) {
             // Handle unexpected errors
-            return response()->json(['error' => 'An unexpected error occurred: ' . $e->getMessage()], 500);
+            return response()->json(['error' => 'An unexpected error occurred: '.$e->getMessage()], 500);
         }
     }
-
 
     /**
      * Function : getAllPersonnel
      * Description : Retrieve all personnel from the database.
+     *
      * @return JsonResponse - The response containing a list of all personnel or an error message.
      */
     public function getAllPersonnel()
@@ -275,24 +268,25 @@ class PersonnelController extends Controller
         try {
             // Check user authorization
             $user = User::find(auth()->id());
-            if (!$user || $user->role_id > 2) {
+            if (! $user || $user->role_id > 2) {
                 return response()->json(['error' => 'Unauthorized'], 403);
             }
 
             // Fetch all personnel
             $personnel = $this->personnelService->getAllPersonnel(auth()->id());
+
             return response()->json($personnel);
         } catch (Exception $e) {
             // Handle unexpected errors
-            return response()->json(['error' => 'An unexpected error occurred: ' . $e->getMessage()], 500);
+            return response()->json(['error' => 'An unexpected error occurred: '.$e->getMessage()], 500);
         }
     }
-
 
     /**
      * Function : getPersonnelByName
      * Description : Retrieve personnel by their name.
-     * @param string $personnelName - The name of the personnel to search for.
+     *
+     * @param  string  $personnelName  - The name of the personnel to search for.
      * @return JsonResponse - The response containing the personnel data or an error message.
      */
     public function getPersonnelByName($personnelName)
@@ -300,20 +294,20 @@ class PersonnelController extends Controller
         try {
             // Check user authorization
             $user = User::find(auth()->id());
-            if (!$user || $user->role_id > 2) {
+            if (! $user || $user->role_id > 2) {
                 return response()->json(['error' => 'Unauthorized'], 403);
             }
 
             // Fetch personnel by name
             $personnel = $this->personnelService->getPersonnelByName($personnelName, auth()->id());
-            if (!$personnel) {
+            if (! $personnel) {
                 return response()->json(['error' => 'Personnel not found'], 404);
             }
 
             return response()->json($personnel);
         } catch (Exception $e) {
             // Handle unexpected errors
-            return response()->json(['error' => 'An unexpected error occurred: ' . $e->getMessage()], 500);
+            return response()->json(['error' => 'An unexpected error occurred: '.$e->getMessage()], 500);
         }
     }
 }

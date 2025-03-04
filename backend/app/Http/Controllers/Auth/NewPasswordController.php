@@ -11,7 +11,6 @@ use Illuminate\Support\Facades\Password;
 use Illuminate\Support\Str;
 use Illuminate\Validation\Rules;
 use Illuminate\Validation\ValidationException;
-use Spatie\Activitylog\Facades\Activity;
 
 class NewPasswordController extends Controller
 {
@@ -72,7 +71,7 @@ class NewPasswordController extends Controller
                         'error_message' => null,
                         'timestamp' => now()->toDateTimeString(),
                     ])
-                    ->log("User successfully reset their password.");
+                    ->log('User successfully reset their password.');
             }
         );
 
@@ -107,8 +106,6 @@ class NewPasswordController extends Controller
                     'timestamp' => now()->toDateTimeString(),
                 ])
                 ->log("User failed to reset their password: {$request->email}");
-
-
 
             throw ValidationException::withMessages([
                 'email' => [__($status)],

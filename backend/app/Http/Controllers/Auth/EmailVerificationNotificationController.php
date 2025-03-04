@@ -7,9 +7,6 @@ use App\Providers\RouteServiceProvider;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
-use Spatie\Activitylog\Facades\Activity;
-use Illuminate\Support\Str;
-
 
 class EmailVerificationNotificationController extends Controller
 {
@@ -93,7 +90,6 @@ class EmailVerificationNotificationController extends Controller
                 'timestamp' => now()->toDateTimeString(),
             ])
             ->log("Verification email sent: {$request->user()->email}");
-
 
         return response()->json(['status' => 'verification-link-sent']);
     }

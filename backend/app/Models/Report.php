@@ -18,7 +18,7 @@ class Report extends Model
         'report_summary',
         'report_details',
         'operation_status',
-        'report_name'
+        'report_name',
     ];
 
     /**

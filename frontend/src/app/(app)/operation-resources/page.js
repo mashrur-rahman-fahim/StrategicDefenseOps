@@ -1,48 +1,48 @@
 // OperationResources.jsx
-"use client";
-import axios from '@/lib/axios.js';
-import { useState, useEffect } from 'react';
-import { Table, Form, Button, Container, Row, Col, Alert } from 'react-bootstrap';
+"use client"
+import axios from '@/lib/axios.js'
+import { useState, useEffect } from 'react'
+import { Table, Form, Button, Container, Row, Col, Alert } from 'react-bootstrap'
 
 export default function OperationResources({ user }) {
-    const [operations, setOperations] = useState([]);
-    const [selectedOperation, setSelectedOperation] = useState(null);
+    const [operations, setOperations] = useState([])
+    const [selectedOperation, setSelectedOperation] = useState(null)
     const [formData, setFormData] = useState({
         category: [''],
         serial_number: [''],
         count: ['']
-    });
-    const [message, setMessage] = useState('');
-    const [error, setError] = useState('');
-    const [fetchedResources, setFetchedResources] = useState([]); // To store fetched resources
+    })
+    const [message, setMessage] = useState('')
+    const [error, setError] = useState('')
+    const [fetchedResources, setFetchedResources] = useState([]) // To store fetched resources
 
     useEffect(() => {
-        fetchOperations();
-    }, []);
+        fetchOperations()
+    }, [])
 
     const fetchOperations = async () => {
         try {
-            const response = await axios.get('/api/get-all-operations');
-            setOperations(response.data[1]);
+            const response = await axios.get('/api/get-all-operations')
+            setOperations(response.data[1])
         } catch (err) {
-            setError('Failed to fetch operations');
+            setError('Failed to fetch operations')
         }
-    };
+    }
 
     const handleInputChange = (e, index) => {
-        const { name, value } = e.target;
-        const list = { ...formData };
-        list[name][index] = value;
-        setFormData(list);
-    };
+        const { name, value } = e.target
+        const list = { ...formData }
+        list[name][index] = value
+        setFormData(list)
+    }
 
     const addFields = () => {
         setFormData({
             category: [...formData.category, ''],
             serial_number: [...formData.serial_number, ''],
             count: [...formData.count, '']
-        });
-    };
+        })
+    }
 
     const handleSubmit = async (type) => {
         try {
@@ -51,30 +51,30 @@ export default function OperationResources({ user }) {
                 category: formData.category.map(Number), // Convert to integers
                 serial_number: formData.serial_number,
                 count: formData.count.map(Number) // Convert to integers
-            };
+            }
 
-            let url = `/api/${type}-operation-resources/${selectedOperation}`;
-            let method = type === 'add' ? 'post' : 'put';
+            let url = `/api/${type}-operation-resources/${selectedOperation}`
+            let method = type === 'add' ? 'post' : 'put'
 
             const response = await axios({
                 method,
                 url,
                 data: processedData
-            });
+            })
 
-            setMessage(`${type.charAt(0).toUpperCase() + type.slice(1)} successful`);
-            setError('');
-            console.log(response.data);
+            setMessage(`${type.charAt(0).toUpperCase() + type.slice(1)} successful`)
+            setError('')
+            console.log(response.data)
         } catch (err) {
-            setError(err.response?.data?.error || 'An error occurred');
-            setMessage('');
+            setError(err.response?.data?.error || 'An error occurred')
+            setMessage('')
         }
-    };
+    }
 
     const handleView = async () => {
         try {
-            const response = await axios.get(`/api/get-operation-resources/${selectedOperation}`);
-            const resources = response.data;
+            const response = await axios.get(`/api/get-operation-resources/${selectedOperation}`)
+            const resources = response.data
 
             if (resources && resources.vehicle && resources.weapon && resources.personnel && resources.equipment) {
                 const allResources = [
@@ -82,17 +82,17 @@ export default function OperationResources({ user }) {
                     ...resources.weapon.map((w) => ({ ...w, type: 'Weapon' })),
                     ...resources.personnel.map((p) => ({ ...p, type: 'Personnel' })),
                     ...resources.equipment.map((e) => ({ ...e, type: 'Equipment' }))
-                ];
-                setFetchedResources(allResources); // Store fetched resources
+                ]
+                setFetchedResources(allResources) // Store fetched resources
             }
 
-            setMessage('Resources fetched successfully');
-            setError('');
+            setMessage('Resources fetched successfully')
+            setError('')
         } catch (err) {
-            setError(err.response?.data?.error || 'Failed to fetch resources');
-            setMessage('');
+            setError(err.response?.data?.error || 'Failed to fetch resources')
+            setMessage('')
         }
-    };
+    }
 
     return (
         <Container>
@@ -241,5 +241,5 @@ export default function OperationResources({ user }) {
                 </>
             )}
         </Container>
-    );
+    )
 }
