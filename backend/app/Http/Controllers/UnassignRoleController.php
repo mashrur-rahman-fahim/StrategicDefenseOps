@@ -50,7 +50,6 @@ class UnassignRoleController extends Controller
             return response()->json(['manager' => $manager]);
         } catch (\Exception $e) {
             DB::rollBack();
-            Log::error('Error unassigning manager role: ' . $e->getMessage());
             return response()->json(['message' => 'An error occurred while unassigning the manager role'], 500);
         }
     }
@@ -97,7 +96,6 @@ class UnassignRoleController extends Controller
             return response()->json(['operator' => $operator]);
         } catch (\Exception $e) {
             DB::rollBack();
-            Log::error('Error unassigning operator role: ' . $e->getMessage());
             return response()->json(['message' => 'An error occurred while unassigning the operator role'], 500);
         }
     }
@@ -144,7 +142,6 @@ class UnassignRoleController extends Controller
             return response()->json(['viewer' => $viewer]);
         } catch (\Exception $e) {
             DB::rollBack();
-            Log::error('Error unassigning viewer role: ' . $e->getMessage());
             return response()->json(['message' => 'An error occurred while unassigning the viewer role'], 500);
         }
     }

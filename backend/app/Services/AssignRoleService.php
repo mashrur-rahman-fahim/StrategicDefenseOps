@@ -11,13 +11,14 @@ class AssignRoleService
     public function managerAssign(string $managerEmail, int $parentId): bool
     {
         $parent = User::find($parentId);
+        
     
         $manager = User::where('email', $managerEmail)
             ->where('role_id', 2)
             ->whereNull('parent_id')
             ->first();
     
-        if ($manager && $parentId && $parent->role_id == 1) {
+        if ($manager && $parentId && $parent->role_id == 1 && $manager->parent_id==null) {
             $manager->parent_id = $parentId;
             $manager->save();
             return true; // Success
@@ -44,23 +45,26 @@ class AssignRoleService
                 ->where('role_id', 3)
                 ->whereNull('parent_id')
                 ->first();
-    
-            if ($manager && $operator) {
+                
+           
+            if ($manager && $operator && $operator->parent_id==null) {
                 $operator->parent_id = $manager->id;
                 $operator->save();
                 return true; // Success
             }
+            return false; // Failure
         } elseif ($parent->role_id == 2) {
             $operator = User::where('email', $operatorEmail)
                 ->where('role_id', 3)
                 ->whereNull('parent_id')
                 ->first();
     
-            if ($operator) {
+            if ($operator && $operator->parent_id==null) {
                 $operator->parent_id = $parentId;
                 $operator->save();
                 return true; // Success
             }
+            return false; // Failure
         }
     
         return false; // Failure
@@ -85,7 +89,7 @@ class AssignRoleService
                 ->whereNull('parent_id')
                 ->first();
     
-            if ($manager && $viewer) {
+            if ($manager && $viewer && $viewer->parent_id==null) {
                 $viewer->parent_id = $manager->id;
                 $viewer->save();
                 return true; // Success
@@ -96,7 +100,7 @@ class AssignRoleService
                 ->whereNull('parent_id')
                 ->first();
     
-            if ($viewer) {
+            if ($viewer && $viewer->parent_id==null) {
                 $viewer->parent_id = $parentId;
                 $viewer->save();
                 return true; // Success

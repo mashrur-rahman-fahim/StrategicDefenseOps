@@ -4,7 +4,7 @@ import { useAuth } from "@/hooks/auth"
 import Assign from "./page"
 
 
-export default function RootLayout({children}){
+export default function RootLayout(){
     const {user}=useAuth({middleware:"auth"})
     
     
@@ -12,7 +12,7 @@ export default function RootLayout({children}){
     return(
         <div>
          <Assign user={user}/>
-          <main>{children}</main>
+        
         </div>
     )
 }

@@ -8,7 +8,7 @@ export default function RootLayout({children}){
     return(
         <div>
             <UnAssign user={user}/>
-            <main>{children}</main>
+          
         </div>
     )
 }

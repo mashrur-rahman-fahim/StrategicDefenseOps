@@ -18,6 +18,7 @@
     "@heroicons/react": "^2.2.0",
     "axios": "^0.21.1",
     "bootstrap": "^5.3.3",
+    "bootstrap-icons": "^1.11.3",
     "framer-motion": "^12.4.7",
     "katex": "^0.16.21",
     "next": "^14.2.10",

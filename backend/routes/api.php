@@ -5,6 +5,7 @@ use App\Http\Controllers\OperationController;
 
 use App\Http\Controllers\OperationResourcesController;
 
+use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\ReportController;
 use App\Http\Controllers\ResourcesController;
 use App\Http\Controllers\RoleViewController;
@@ -138,3 +139,7 @@ Route::post('/ollama/generate', [OllamaController::class, 'generateResponse'])->
 
 
 Route::get('/role-view', [RoleViewController::class, 'roleView'])->middleware('auth:sanctum');
+
+Route::put('/update-profile',[ProfileController::class,'updateProfile'])->middleware('auth:sanctum');
+
+Route::delete('/delete-profile',[ProfileController::class, 'deleteProfile'])->middleware('auth:sanctum');

@@ -38,7 +38,10 @@ class AssignRoleController extends Controller
         $assignedUser = User::where('email', $request->managerEmail)->first();
         // $this->logActivity($parentId, $assignedUser, 'Manager', $status);
     
-        return response()->json(['success' => $result]);
+        if(!$result){
+            return response()->json(['message' => 'Failed to assign manager'], 422);
+        }
+        return response()->json(['message' => "Assign to manager"],200);
     }
     
     public function operatorAssign(Request $request): JsonResponse
@@ -56,7 +59,10 @@ class AssignRoleController extends Controller
         $assignedUser = User::where('email', $data['operatorEmail'])->first();
         // $this->logActivity($parentId, $assignedUser, 'Operator', $status);
     
-        return response()->json(['success' => $result]);
+        if(!$result){
+            return response()->json(['message' => 'Failed to assign operator'], 422);
+        }
+        return response()->json(['message' => "Assign to operator"],200);
     }
     
     public function viewerAssign(Request $request): JsonResponse
@@ -74,7 +80,10 @@ class AssignRoleController extends Controller
         $assignedUser = User::where('email', $data['viewerEmail'])->first();
         // $this->logActivity($parentId, $assignedUser, 'Viewer', $status);
     
-        return response()->json(['success' => $result]);
+        if(!$result){
+            return response()->json(['message' => 'Failed to assign viewer'], 422);
+        }
+        return response()->json(['message' => "Assign to viewer"],200);
     }
 
 
