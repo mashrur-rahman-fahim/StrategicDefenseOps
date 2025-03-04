@@ -227,15 +227,15 @@ export default function Resources() {
         )
     }
 
-    const getResourceImage = resource => {
-        return (
-            resource.weapon_image ||
-            resource.vehicle_image ||
-            resource.personnel_image ||
-            resource.equipment_image ||
-            'https://easydrawingguides.com/wp-content/uploads/2020/09/Tank-Step-10.png'
-        )
-    }
+    // const getResourceImage = resource => {
+    //     return (
+    //         resource.weapon_image ||
+    //         resource.vehicle_image ||
+    //         resource.personnel_image ||
+    //         resource.equipment_image ||
+    //         'https://easydrawingguides.com/wp-content/uploads/2020/09/Tank-Step-10.png'
+    //     )
+    // }
 
     const getResourceType = resource => {
         return (
