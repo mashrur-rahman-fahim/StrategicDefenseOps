@@ -34,6 +34,7 @@ class ReportController extends Controller
 
         $info = $this->reportService->getReport($operationId, auth()->id(),$data);
        
+       
         // return response( $report["operation"]->id);
         if(!$info){
             return response()->json(['error' => 'Failed to generate report'], 500);

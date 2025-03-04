@@ -13,7 +13,7 @@ export default function ReportGenerator() {
     const [messages, setMessages] = useState([]) // Use messages array for chat-like display
     const [loading, setLoading] = useState(false)
     const abortControllerRef = useRef(null)
-    const operationId = 8 // Replace with actual operation ID
+    const operationId = 2 // Replace with actual operation ID
 
     const generateReport = async () => {
         setMessages([]) // Clear previous messages

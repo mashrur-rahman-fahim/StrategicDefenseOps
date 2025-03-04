@@ -15,10 +15,13 @@ class ReportService{
        
         try{
             $operationResources=$this->operationResourcesService->getOperationResource($operationId,$userId);
+         
+
             if(!$operationResources){
                 throw new Exception("No operation resource");
             }
             $report=$operationResources;
+            
             if($report['operation']->status!="completed"){
                 throw new Exception("Operation is not completed");
             }
