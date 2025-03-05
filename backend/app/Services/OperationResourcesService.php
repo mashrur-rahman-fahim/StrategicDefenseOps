@@ -54,7 +54,7 @@ class OperationResourcesService
 
                 if ($datas['category'][$i] == 1) {
                     $resource = DB::select('
-                select r.id,v.vehicle_count as count,v.id as vehicle_id from Resources r join Vehicle v on v.id=r.vehicle_id
+                select r.id,v.vehicle_count as count,v.id as vehicle_id from resources r join vehicle v on v.id=r.vehicle_id
                 where v.vehicle_serial_number=?', [$datas['serial_number'][$i]]);
 
                     if ($resource[0] && $resource[0]->count >= $datas['count'][$i]) {
@@ -79,8 +79,9 @@ class OperationResourcesService
 
                 } elseif ($datas['category'][$i] == 2) {
                     $resource = DB::select('
-                select r.id,w.weapon_count as count,w.id as weapon_id from Resources r join Weapon w on w.id=r.weapon_id
+                select r.id,w.weapon_count as count,w.id as weapon_id from resources r join weapon w on w.id=r.weapon_id
                 where w.weapon_serial_number=?', [$datas['serial_number'][$i]]);
+               
 
                     if ($resource[0] && $resource[0]->count >= $datas['count'][$i]) {
 
@@ -104,7 +105,7 @@ class OperationResourcesService
 
                 } elseif ($datas['category'][$i] == 3) {
                     $resource = DB::select('
-                select r.id,p.personnel_count as count,p.id as personnel_id from Resources r join Personnel p on p.id=r.personnel_id
+                select r.id,p.personnel_count as count,p.id as personnel_id from resources r join personnel p on p.id=r.personnel_id
                 where p.personnel_serial_number=?', [$datas['serial_number'][$i]]);
                     if ($resource[0] && $resource[0]->count >= $datas['count'][$i]) {
 
@@ -128,7 +129,7 @@ class OperationResourcesService
 
                 } elseif ($datas['category'][$i] == 4) {
                     $resource = DB::select('
-                select r.id,e.equipment_count as count,e.id as equipment_id from Resources r join Equipment e on e.id=r.equipment_id
+                select r.id,e.equipment_count as count,e.id as equipment_id from resources r join equipment e on e.id=r.equipment_id
                 where e.equipment_serial_number=?', [$datas['serial_number'][$i]]);
                     if ($resource[0] && $resource[0]->count >= $datas['count'][$i]) {
 
@@ -274,7 +275,7 @@ class OperationResourcesService
 
                 if ($datas['category'][$i] == 1) {
                     $resource = DB::select('
-                select r.id,v.vehicle_count as count,v.id as vehicle_id from Resources r join Vehicle v on v.id=r.vehicle_id
+                select r.id,v.vehicle_count as count,v.id as vehicle_id from resources r join vehicle v on v.id=r.vehicle_id
                 where v.vehicle_serial_number=?', [$datas['serial_number'][$i]]);
                     $serialNumberExist = DB::selectOne('select * from operation_resources where resource_id=? and operation_id=?', [$resource[0]->id, $operationId]);
                     if (! $serialNumberExist) {
@@ -304,7 +305,7 @@ class OperationResourcesService
 
                 } elseif ($datas['category'][$i] == 2) {
                     $resource = DB::select('
-                select r.id,w.weapon_count as count,w.id as weapon_id from Resources r join Weapon w on w.id=r.weapon_id
+                select r.id,w.weapon_count as count,w.id as weapon_id from resources r join weapon w on w.id=r.weapon_id
                 where w.weapon_serial_number=?', [$datas['serial_number'][$i]]);
                     $serialNumberExist = DB::selectOne('select * from operation_resources where resource_id=? and operation_id=?', [$resource[0]->id, $operationId]);
                     if (! $serialNumberExist) {
@@ -333,7 +334,7 @@ class OperationResourcesService
 
                 } elseif ($datas['category'][$i] == 3) {
                     $resource = DB::select('
-                select r.id,p.personnel_count as count,p.id as personnel_id from Resources r join Personnel p on p.id=r.personnel_id
+                select r.id,p.personnel_count as count,p.id as personnel_id from resources r join personnel p on p.id=r.personnel_id
                 where p.personnel_serial_number=?', [$datas['serial_number'][$i]]);
                     $serialNumberExist = DB::selectOne('select * from operation_resources where resource_id=? and operation_id=?', [$resource[0]->id, $operationId]);
                     if (! $serialNumberExist) {
@@ -361,7 +362,7 @@ class OperationResourcesService
 
                 } elseif ($datas['category'][$i] == 4) {
                     $resource = DB::select('
-                select r.id,e.equipment_count as count,e.id as equipment_id from Resources r join Equipment e on e.id=r.equipment_id
+                select r.id,e.equipment_count as count,e.id as equipment_id from resources r join equipment e on e.id=r.equipment_id
                 where e.equipment_serial_number=?', [$datas['serial_number'][$i]]);
                     $serialNumberExist = DB::selectOne('select * from operation_resources where resource_id=? and operation_id=?', [$resource[0]->id, $operationId]);
                     if (! $serialNumberExist) {

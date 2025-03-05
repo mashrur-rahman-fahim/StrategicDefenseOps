@@ -307,7 +307,7 @@ export default function Resources() {
                     <>
                         <div className="d-flex justify-content-between align-items-center mt-4">
                             <h1 className="mb-4">Resource Overview</h1>
-                            {user.role_id === 1 && (
+                            {user?.role_id === 1 && (
                                 <Button
                                     variant="primary"
                                     className="mb-4"
@@ -541,7 +541,7 @@ export default function Resources() {
                                                                 </div>
                                                             </div>
                                                             <div className="d-flex gap-2 mt-3">
-                                                                {(user.role_id === 1 || user.role_id === 2) && (
+                                                                {(user?.role_id === 1 || user?.role_id === 2) && (
                                                                     <Button
                                                                         variant="outline-primary"
                                                                         size="sm"
@@ -553,7 +553,7 @@ export default function Resources() {
                                                                         <Icon icon="mdi:pencil" />
                                                                     </Button>
                                                                 )}
-                                                                {user.role_id === 1 && (
+                                                                {user?.role_id === 1 && (
                                                                     <Button
                                                                         variant="outline-danger"
                                                                         size="sm"
