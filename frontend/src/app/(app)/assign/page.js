@@ -1,8 +1,11 @@
-"use client"
+'use client'
 import { useState, useEffect } from 'react'
 import axios from '@/lib/axios'
+import { useAuth } from '@/hooks/auth'
+import Layout from '@/components/layout'
 
-export default function Assign({ user }) {
+export default function Assign() {
+    const { user } = useAuth({ middleware: 'auth' })
     const [role, setRole] = useState(null)
     const [managerEmail, setManagerEmail] = useState('')
     const [operatorEmail, setOperatorEmail] = useState('')
@@ -52,86 +55,100 @@ export default function Assign({ user }) {
     }
 
     return (
-        <div className="container mt-4">
-            <h1 className="mb-3">User ID: {user?.id} | Role: {user?.role_id}</h1>
+        <Layout>
+            <div className="container mt-4">
+                <h1 className="mb-3">
+                    User ID: {user?.id} | Role: {user?.role_id}
+                </h1>
 
-            {role === 1 && (
-                <div className="card p-3 mb-3">
-                    <h2 className="h5">Assign Manager</h2>
-                    <div className="input-group mb-2">
-                        <input
-                            type="email"
-                            className="form-control"
-                            value={managerEmail}
-                            onChange={e => setManagerEmail(e.target.value)}
-                            placeholder="Manager Email"
-                        />
-                        <button className="btn btn-primary" onClick={() => assignRole('manager')}>
+                {role === 1 && (
+                    <div className="card p-3 mb-3">
+                        <h2 className="h5">Assign Manager</h2>
+                        <div className="input-group mb-2">
+                            <input
+                                type="email"
+                                className="form-control"
+                                value={managerEmail}
+                                onChange={e => setManagerEmail(e.target.value)}
+                                placeholder="Manager Email"
+                            />
+                            <button
+                                className="btn btn-primary"
+                                onClick={() => assignRole('manager')}>
+                                Assign
+                            </button>
+                        </div>
+                    </div>
+                )}
+
+                {(role === 1 || role === 2) && (
+                    <div className="card p-3 mb-3">
+                        <h2 className="h5">Assign Operator</h2>
+                        <div className="input-group mb-2">
+                            <input
+                                type="email"
+                                className="form-control"
+                                value={operatorEmail}
+                                onChange={e => setOperatorEmail(e.target.value)}
+                                placeholder="Operator Email"
+                            />
+                        </div>
+                        <div className="input-group mb-2">
+                            <input
+                                type="email"
+                                className="form-control"
+                                value={operatorManagerEmail}
+                                onChange={e =>
+                                    setOperatorManagerEmail(e.target.value)
+                                }
+                                placeholder="Manager Email"
+                            />
+                        </div>
+                        <button
+                            className="btn btn-primary"
+                            onClick={() => assignRole('operator')}>
                             Assign
                         </button>
                     </div>
-                </div>
-            )}
+                )}
 
-            {(role === 1 || role === 2) && (
-                <div className="card p-3 mb-3">
-                    <h2 className="h5">Assign Operator</h2>
-                    <div className="input-group mb-2">
-                        <input
-                            type="email"
-                            className="form-control"
-                            value={operatorEmail}
-                            onChange={e => setOperatorEmail(e.target.value)}
-                            placeholder="Operator Email"
-                        />
-                    </div>
-                    <div className="input-group mb-2">
-                        <input
-                            type="email"
-                            className="form-control"
-                            value={operatorManagerEmail}
-                            onChange={e => setOperatorManagerEmail(e.target.value)}
-                            placeholder="Manager Email"
-                        />
-                    </div>
-                    <button className="btn btn-primary" onClick={() => assignRole('operator')}>
-                        Assign
-                    </button>
-                </div>
-            )}
-
-            {(role === 1 || role === 2) && (
-                <div className="card p-3">
-                    <h2 className="h5">Assign Viewer</h2>
-                    <div className="input-group mb-2">
-                        <input
-                            type="email"
-                            className="form-control"
-                            value={viewerEmail}
-                            onChange={e => {
-                                setViewerEmail(e.target.value)
-                                // Auto-fill Manager Email only if empty
-                                if (!viewerManagerEmail) {
+                {(role === 1 || role === 2) && (
+                    <div className="card p-3">
+                        <h2 className="h5">Assign Viewer</h2>
+                        <div className="input-group mb-2">
+                            <input
+                                type="email"
+                                className="form-control"
+                                value={viewerEmail}
+                                onChange={e => {
+                                    setViewerEmail(e.target.value)
+                                    // Auto-fill Manager Email only if empty
+                                    if (!viewerManagerEmail) {
+                                        setViewerManagerEmail(e.target.value)
+                                    }
+                                }}
+                                placeholder="Viewer Email"
+                            />
+                        </div>
+                        <div className="input-group mb-2">
+                            <input
+                                type="email"
+                                className="form-control"
+                                value={viewerManagerEmail}
+                                onChange={e =>
                                     setViewerManagerEmail(e.target.value)
                                 }
-                            }}
-                            placeholder="Viewer Email"
-                        />
+                                placeholder="Manager Email"
+                            />
+                        </div>
+                        <button
+                            className="btn btn-primary"
+                            onClick={() => assignRole('viewer')}>
+                            Assign
+                        </button>
                     </div>
-                    <div className="input-group mb-2">
-                        <input
-                            type="email"
-                            className="form-control"
-                            value={viewerManagerEmail}
-                            onChange={e => setViewerManagerEmail(e.target.value)}
-                            placeholder="Manager Email"
-                        />
-                    </div>
-                    <button className="btn btn-primary" onClick={() => assignRole('viewer')}>
-                        Assign
-                    </button>
-                </div>
-            )}
-        </div>
+                )}
+            </div>
+        </Layout>
     )
 }
