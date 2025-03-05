@@ -32,7 +32,7 @@ export default function ViewRoles() {
     const renderRoles = () => {
         if (!rolesData) return null
 
-        switch (user.role_id) {
+        switch (user?.role_id) {
             case 1: // Admin
                 return (
                     <div className="container mt-5">
@@ -139,7 +139,7 @@ export default function ViewRoles() {
                 return (
                     <div className="container mt-5">
                         <h2>
-                            {user.role_id === 3 ? 'Operator' : 'Viewer'} View
+                            {user?.role_id === 3 ? 'Operator' : 'Viewer'} View
                         </h2>
                         <div className="card">
                             <div className="card-header">
