@@ -14,6 +14,7 @@ export default function ViewRoles() {
         const fetchRoles = async () => {
             try {
                 const response = await axios.get('/api/role-view')
+                console.log('API Response:', response.data) // Log the response
                 setRolesData(response.data)
             } catch (err) {
                 setError(err.message)
@@ -26,142 +27,117 @@ export default function ViewRoles() {
     }, [])
 
     if (loading) return <div className="text-center mt-5">Loading...</div>
-    if (error)
-        return <div className="alert alert-danger mt-5">Error: {error}</div>
+    if (error) return <div className="alert alert-danger mt-5">Error: {error}</div>
 
     const renderRoles = () => {
-        if (!rolesData) return null
+        if (!rolesData) return null;
 
         switch (user?.role_id) {
             case 1: // Admin
                 return (
                     <div className="container mt-5">
                         <h2>Admin View</h2>
-                        {rolesData.managers.map((managerGroup, index) => (
-                            <div key={index} className="card mb-3">
-                                <div className="card-header">
-                                    Manager: {managerGroup.manager.name}
-                                </div>
-                                <div className="card-body">
-                                    <h5>Operators:</h5>
-                                    <ul className="list-group">
-                                        {managerGroup.operators[1].length >
-                                        0 ? (
-                                            managerGroup.operators[1].map(
-                                                (operator, idx) => (
-                                                    <li
-                                                        key={idx}
-                                                        className="list-group-item">
+                        {rolesData.managers && rolesData.managers.length > 0 ? (
+                            rolesData.managers.map((managerGroup, index) => (
+                                <div key={index} className="card mb-3">
+                                    <div className="card-header">
+                                        Manager: {managerGroup.manager?.name || 'Unknown'}
+                                    </div>
+                                    <div className="card-body">
+                                        <h5>Operators:</h5>
+                                        <ul className="list-group">
+                                            {managerGroup.operators && managerGroup.operators[1]?.length > 0 ? (
+                                                managerGroup.operators[1].map((operator, idx) => (
+                                                    <li key={idx} className="list-group-item">
                                                         {operator.name}
                                                     </li>
-                                                ),
-                                            )
-                                        ) : (
-                                            <li className="list-group-item">
-                                                No operators found
-                                            </li>
-                                        )}
-                                    </ul>
-                                    <h5 className="mt-3">Viewers:</h5>
-                                    <ul className="list-group">
-                                        {managerGroup.viewers[1].length > 0 ? (
-                                            managerGroup.viewers[1].map(
-                                                (viewer, idx) => (
-                                                    <li
-                                                        key={idx}
-                                                        className="list-group-item">
+                                                ))
+                                            ) : (
+                                                <li className="list-group-item">No operators found</li>
+                                            )}
+                                        </ul>
+                                        <h5 className="mt-3">Viewers:</h5>
+                                        <ul className="list-group">
+                                            {managerGroup.viewers && managerGroup.viewers[1]?.length > 0 ? (
+                                                managerGroup.viewers[1].map((viewer, idx) => (
+                                                    <li key={idx} className="list-group-item">
                                                         {viewer.name}
                                                     </li>
-                                                ),
-                                            )
-                                        ) : (
-                                            <li className="list-group-item">
-                                                No viewers found
-                                            </li>
-                                        )}
-                                    </ul>
+                                                ))
+                                            ) : (
+                                                <li className="list-group-item">No viewers found</li>
+                                            )}
+                                        </ul>
+                                    </div>
                                 </div>
-                            </div>
-                        ))}
+                            ))
+                        ) : (
+                            <div className="alert alert-warning">No managers found</div>
+                        )}
                     </div>
-                )
+                );
+
             case 2: // Manager
                 return (
                     <div className="container mt-5">
                         <h2>Manager View</h2>
                         <div className="card">
                             <div className="card-header">
-                                Admin: {rolesData.admin[1].name}
+                                Admin: {rolesData.admin && rolesData.admin[1]?.name || 'Unknown'}
                             </div>
                             <div className="card-body">
                                 <h5>Operators:</h5>
                                 <ul className="list-group">
-                                    {rolesData.operators[1].length > 0 ? (
-                                        rolesData.operators[1].map(
-                                            (operator, idx) => (
-                                                <li
-                                                    key={idx}
-                                                    className="list-group-item">
-                                                    {operator.name}
-                                                </li>
-                                            ),
-                                        )
+                                    {rolesData.operators && rolesData.operators[1]?.length > 0 ? (
+                                        rolesData.operators[1].map((operator, idx) => (
+                                            <li key={idx} className="list-group-item">
+                                                {operator.name}
+                                            </li>
+                                        ))
                                     ) : (
-                                        <li className="list-group-item">
-                                            No operators found
-                                        </li>
+                                        <li className="list-group-item">No operators found</li>
                                     )}
                                 </ul>
                                 <h5 className="mt-3">Viewers:</h5>
                                 <ul className="list-group">
-                                    {rolesData.viewers[1].length > 0 ? (
-                                        rolesData.viewers[1].map(
-                                            (viewer, idx) => (
-                                                <li
-                                                    key={idx}
-                                                    className="list-group-item">
-                                                    {viewer.name}
-                                                </li>
-                                            ),
-                                        )
+                                    {rolesData.viewers && rolesData.viewers[1]?.length > 0 ? (
+                                        rolesData.viewers[1].map((viewer, idx) => (
+                                            <li key={idx} className="list-group-item">
+                                                {viewer.name}
+                                            </li>
+                                        ))
                                     ) : (
-                                        <li className="list-group-item">
-                                            No viewers found
-                                        </li>
+                                        <li className="list-group-item">No viewers found</li>
                                     )}
                                 </ul>
                             </div>
                         </div>
                     </div>
-                )
+                );
+
             case 3: // Operator
             case 4: // Viewer
                 return (
                     <div className="container mt-5">
-                        <h2>
-                            {user?.role_id === 3 ? 'Operator' : 'Viewer'} View
-                        </h2>
+                        <h2>{user?.role_id === 3 ? 'Operator' : 'Viewer'} View</h2>
                         <div className="card">
                             <div className="card-header">
-                                Manager: {rolesData.manager[1].name}
+                                Manager: {rolesData.manager && rolesData.manager[1]?.name || 'Unknown'}
                             </div>
                             <div className="card-body">
                                 <h5>Admin:</h5>
                                 <ul className="list-group">
                                     <li className="list-group-item">
-                                        {rolesData.admin[1].name}
+                                        {rolesData.admin && rolesData.admin[1]?.name || 'Unknown'}
                                     </li>
                                 </ul>
                             </div>
                         </div>
                     </div>
-                )
+                );
+
             default:
-                return (
-                    <div className="alert alert-warning mt-5">
-                        Unauthorized access
-                    </div>
-                )
+                return <div className="alert alert-warning mt-5">Unauthorized access</div>;
         }
     }
 
