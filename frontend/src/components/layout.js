@@ -31,7 +31,7 @@ export default function Layout({ children }) {
     }
 
     const toggleSidebar = () => {
-        setIsSidebarOpen(!isSidebarOpen)
+        setIsSidebarOpen(!isSidebarOpen) // Toggle the sidebar state
     }
 
     const handleNavigation = item => {
@@ -46,7 +46,7 @@ export default function Layout({ children }) {
         const route = routes[item.toLowerCase()]
         if (route) {
             setSelectedItem(item.toLowerCase())
-            toggleSidebar()
+            toggleSidebar() // Close the sidebar after navigation
             router.push(route)
         } else {
             console.error(`Route not found for item: ${item}`)

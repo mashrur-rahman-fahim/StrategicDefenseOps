@@ -16,10 +16,12 @@ const Sidebar = ({ isOpen, toggleSidebar, selectedItem, handleNavigation }) => {
 
     useEffect(() => {
         const handleClickOutside = event => {
+            const menuButton = document.querySelector('.menu-button') // Get the "three dots" button
             if (
                 isOpen &&
                 sidebarRef.current &&
-                !sidebarRef.current.contains(event.target)
+                !sidebarRef.current.contains(event.target) &&
+                !menuButton.contains(event.target) // Exclude the "three dots" button
             ) {
                 toggleSidebar()
             }
@@ -34,9 +36,7 @@ const Sidebar = ({ isOpen, toggleSidebar, selectedItem, handleNavigation }) => {
     useEffect(() => {
         const fetchUserDetails = async () => {
             try {
-                const response = await axios.get(
-                    `/api/user`,
-                )
+                const response = await axios.get(`/api/user`)
                 setUserName(response?.data.name || 'Unknown')
                 setRoleName(roleMapping[response.data.role_id] || 'Unknown')
             } catch (error) {
@@ -49,24 +49,18 @@ const Sidebar = ({ isOpen, toggleSidebar, selectedItem, handleNavigation }) => {
 
     return (
         <div ref={sidebarRef} className={`sidebar ${isOpen ? 'open' : ''}`}>
+            {/* Arrow button to close sidebar */}
             <button className="back-button" onClick={toggleSidebar}>
                 ←
             </button>
 
-            {/* Profile  */}
+            {/* Profile section */}
             <div className="profile">
-                {/* Profile Picture */}
-                {/* <img
-          src="https://www.lexpress.fr/resizer/BtP_kaudrTSss-e5I9p9gCwh0gk=/arc-photo-lexpress/eu-central-1-prod/public/ENBOXHVYU5EOVLIYIJ6NNM5ET4.jpg"
-          alt="Profile"
-          className="profile-pic"
-        /> */}
-
-                {/* Profile Name */}
                 <h2>{userName}</h2>
                 <p className="rank">Role : {roleName}</p>
             </div>
 
+            {/* Menu items */}
             <nav className="menu">
                 {['Dashboard', 'Resources', 'Operation', 'Reports'].map(
                     item => (
@@ -75,7 +69,7 @@ const Sidebar = ({ isOpen, toggleSidebar, selectedItem, handleNavigation }) => {
                             className={`menu-item ${selectedItem === item.toLowerCase() ? 'active' : ''}`}
                             onClick={() => {
                                 handleNavigation(item.toLowerCase())
-                                toggleSidebar()
+                                toggleSidebar() // Close the sidebar after navigation
                             }}>
                             {item}
                         </div>
