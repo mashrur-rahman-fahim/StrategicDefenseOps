@@ -137,7 +137,7 @@ export default function ViewRoles() {
                 )
 
             default:
-                return <div className="alert alert-warning mt-5">Unauthorized access</div>;
+                return <div className="alert alert-warning mt-5">Unauthorized access</div>
         }
     }
 
