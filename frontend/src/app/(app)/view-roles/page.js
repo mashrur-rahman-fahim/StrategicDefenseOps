@@ -30,7 +30,7 @@ export default function ViewRoles() {
     if (error) return <div className="alert alert-danger mt-5">Error: {error}</div>
 
     const renderRoles = () => {
-        if (!rolesData) return null;
+        if (!rolesData) return null
 
         switch (user?.role_id) {
             case 1: // Admin
@@ -75,7 +75,7 @@ export default function ViewRoles() {
                             <div className="alert alert-warning">No managers found</div>
                         )}
                     </div>
-                );
+                )
 
             case 2: // Manager
                 return (
@@ -113,7 +113,7 @@ export default function ViewRoles() {
                             </div>
                         </div>
                     </div>
-                );
+                )
 
             case 3: // Operator
             case 4: // Viewer
@@ -134,7 +134,7 @@ export default function ViewRoles() {
                             </div>
                         </div>
                     </div>
-                );
+                )
 
             default:
                 return <div className="alert alert-warning mt-5">Unauthorized access</div>;
