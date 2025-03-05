@@ -10,6 +10,7 @@
 | the IoC container for the system binding all of the various parts.
 |
 */
+// ini_set('max_execution_time', 300); // 300 seconds (5 minutes)
 
 $app = new Illuminate\Foundation\Application(
     $_ENV['APP_BASE_PATH'] ?? dirname(__DIR__)

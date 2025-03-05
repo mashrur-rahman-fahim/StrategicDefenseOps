@@ -11,9 +11,11 @@ use Illuminate\Validation\ValidationException;
 
 class LoginRequest extends FormRequest
 {
-    
     /**
-     * Determine if the user is authorized to make this request.
+     * Function: authorize
+     * Description: Determine if the user is authorized to make this request.
+     *
+     * @param NA
      */
     public function authorize(): bool
     {
@@ -21,20 +23,25 @@ class LoginRequest extends FormRequest
     }
 
     /**
-     * Get the validation rules that apply to the request.
+     * Function: rules
+     * Description: Get the validation rules that apply to the request.
      *
+     * @param NA
      * @return array<string, \Illuminate\Contracts\Validation\Rule|array|string>
      */
     public function rules(): array
     {
         return [
-            'email' => ['required', 'string','email'],
+            'email' => ['required', 'string', 'email'],
             'password' => ['required', 'string'],
         ];
     }
 
     /**
-     * Attempt to authenticate the request's credentials.
+     * Function: authenticate
+     * Description: Attempt to authenticate the request's credentials.
+     *
+     * @param NA
      *
      * @throws \Illuminate\Validation\ValidationException
      */
@@ -54,7 +61,10 @@ class LoginRequest extends FormRequest
     }
 
     /**
-     * Ensure the login request is not rate limited.
+     * Function: ensureIsNotRateLimited
+     * Description: Ensure the login request is not rate limited.
+     *
+     * @param NA
      *
      * @throws \Illuminate\Validation\ValidationException
      */
@@ -77,7 +87,10 @@ class LoginRequest extends FormRequest
     }
 
     /**
-     * Get the rate limiting throttle key for the request.
+     * Function: throttleKey
+     * Description: Get the rate limiting throttle key for the request.
+     *
+     * @param NA
      */
     public function throttleKey(): string
     {

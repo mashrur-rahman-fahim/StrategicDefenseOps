@@ -4,6 +4,7 @@ use Illuminate\Contracts\Http\Kernel;
 use Illuminate\Http\Request;
 
 define('LARAVEL_START', microtime(true));
+set_time_limit(600);
 
 /*
 |--------------------------------------------------------------------------
@@ -51,5 +52,6 @@ $kernel = $app->make(Kernel::class);
 $response = $kernel->handle(
     $request = Request::capture()
 )->send();
+ini_set('max_execution_time', 0); // 300 seconds (5 minutes)
 
 $kernel->terminate($request, $response);
