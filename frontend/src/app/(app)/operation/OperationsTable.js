@@ -1,8 +1,14 @@
-import React from 'react';
-import { Table, Button } from 'react-bootstrap';
-import { Icon } from '@iconify/react';
+import React from 'react'
+import { Table, Button } from 'react-bootstrap'
+import { Icon } from '@iconify/react'
+import Link from 'next/link'
 
-export default function OperationsTable({ operations, onEdit, onDelete, formatDate }) {
+export default function OperationsTable({
+    operations,
+    onEdit,
+    onDelete,
+    formatDate,
+}) {
     return (
         <Table responsive striped hover className="bg-light">
             <thead>
@@ -27,6 +33,14 @@ export default function OperationsTable({ operations, onEdit, onDelete, formatDa
                         <td>{formatDate(operation.start_date)}</td>
                         <td>{formatDate(operation.end_date)}</td>
                         <td>
+                            <Link href={`/operation/${encodeURIComponent(operation.name)}`} passHref>
+                                <Button
+                                    variant="outline-success"
+                                    size="sm"
+                                    className="me-2">
+                                    <Icon icon="mdi:eye" />
+                                </Button>
+                            </Link>
                             <Button
                                 variant="outline-primary"
                                 size="sm"
@@ -46,5 +60,5 @@ export default function OperationsTable({ operations, onEdit, onDelete, formatDa
                 ))}
             </tbody>
         </Table>
-    );
+    )
 }

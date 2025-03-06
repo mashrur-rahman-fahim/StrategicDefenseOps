@@ -47,6 +47,7 @@ export default function OperationModal({
                             name="status"
                             value={formData.status}
                             onChange={onChange}>
+                            required
                             <option value="ongoing">Ongoing</option>
                             <option value="upcoming">Upcoming</option>
                             <option value="completed">Completed</option>
@@ -87,6 +88,7 @@ export default function OperationModal({
                             name="location"
                             value={formData.location}
                             onChange={onChange}
+                            required
                         />
                     </Form.Group>
 
