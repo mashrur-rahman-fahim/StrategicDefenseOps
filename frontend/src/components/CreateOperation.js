@@ -1,5 +1,7 @@
+'use client'
 import React, { useState, useEffect, useRef } from 'react'
 import axios from '../lib/axios'
+import CreateOperationResource from './CreateOperationResources'
 
 const CreateOperation = ({ onOperationCreated }) => {
     const [formData, setFormData] = useState({
@@ -12,6 +14,8 @@ const CreateOperation = ({ onOperationCreated }) => {
         budget: '',
     })
     const [userID, setUserID] = useState(null)
+    const [operationId, setOperationId] = useState(null) // Store created operation ID
+    const [isOperationCreated, setIsOperationCreated] = useState(false) // Controls the display
     const startDateRef = useRef(null)
     const endDateRef = useRef(null)
 
@@ -19,7 +23,7 @@ const CreateOperation = ({ onOperationCreated }) => {
         const fetchUserDetails = async () => {
             try {
                 const response = await axios.get(
-                    `${process.env.NEXT_PUBLIC_BACKEND_URL}/api/user`,
+                    `${process.env.NEXT_PUBLIC_BACKEND_URL}/api/user`
                 )
                 setUserID(response.data.id || null)
             } catch (error) {
@@ -58,10 +62,7 @@ const CreateOperation = ({ onOperationCreated }) => {
             return
         }
 
-        if (
-            !validateDate(formData.start_date) ||
-            !validateDate(formData.end_date)
-        ) {
+        if (!validateDate(formData.start_date) || !validateDate(formData.end_date)) {
             alert('Please enter valid dates in YYYY-MM-DD format.')
             return
         }
@@ -75,23 +76,15 @@ const CreateOperation = ({ onOperationCreated }) => {
         try {
             const response = await axios.post(
                 `${process.env.NEXT_PUBLIC_BACKEND_URL}/api/create-operation`,
-                operationData,
+                operationData
             )
             console.log('API Response:', response)
+            
+            const createdOperationId = response.data.id // Get the operation ID from response
+            setOperationId(createdOperationId)
+            setIsOperationCreated(true) // Switch to resource form
             onOperationCreated(response.data)
             alert('Operation created successfully')
-
-            // ✅ Clear the form after successful submission
-            setFormData({
-                name: '',
-                description: '',
-                status: 'ongoing',
-                start_date: '',
-                end_date: '',
-                location: '',
-                budget: '',
-            })
-            
         } catch (error) {
             console.error('Error creating operation:', error)
             alert('Failed to create operation')
@@ -100,125 +93,98 @@ const CreateOperation = ({ onOperationCreated }) => {
 
     return (
         <div className="max-w-2xl mx-auto bg-white p-6 rounded-lg shadow-lg">
-            <h2 className="text-2xl font-semibold mb-4 text-center">
-                Create Operation
-            </h2>
-            <form
-                onSubmit={handleSubmit}
-                className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                <div className="sm:col-span-2">
-                    <input
-                        type="text"
-                        name="name"
-                        placeholder="Operation Name"
-                        onChange={handleChange}
-                        required
-                        className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-400 outline-none"
-                    />
-                </div>
-                <div className="sm:col-span-2">
-                    <textarea
-                        name="description"
-                        placeholder="Description"
-                        onChange={handleChange}
-                        required
-                        className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-400 outline-none" />
-                </div>
-                <div>
-                    <select
-                        name="status"
-                        onChange={handleChange}
-                        required
-                        className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-400 outline-none">
-                        <option value="ongoing">Ongoing</option>
-                        <option value="upcoming">Upcoming</option>
-                        <option value="completed">Completed</option>
-                    </select>
-                </div>
-                <input
-                    type="text"
-                    name="location"
-                    placeholder="Location"
-                    onChange={handleChange}
-                    required
-                    className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-400 outline-none"
-                />
-                <div className="relative">
-                    <input
-                        type="text"
-                        name="start_date"
-                        placeholder="YYYY-MM-DD"
-                        value={formData.start_date}
-                        onChange={handleDateChange}
-                        onBlur={() => handleBlur('start_date')}
-                        required
-                        className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-400 outline-none"
-                    />
-                    <button
-                        type="button"
-                        onClick={() => startDateRef.current.showPicker()}
-                        className="absolute right-3 top-3 text-gray-500">
-                        📅
-                    </button>
-                    <input
-                        ref={startDateRef}
-                        type="date"
-                        className="hidden"
-                        onChange={e =>
-                            setFormData({
-                                ...formData,
-                                start_date: e.target.value,
-                            })
-                        }
-                    />
-                </div>
-                <div className="relative">
-                    <input
-                        type="text"
-                        name="end_date"
-                        placeholder="YYYY-MM-DD"
-                        value={formData.end_date}
-                        onChange={handleDateChange}
-                        onBlur={() => handleBlur('end_date')}
-                        required
-                        className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-400 outline-none"
-                    />
-                    <button
-                        type="button"
-                        onClick={() => endDateRef.current.showPicker()}
-                        className="absolute right-3 top-3 text-gray-500">
-                        📅
-                    </button>
-                    <input
-                        ref={endDateRef}
-                        type="date"
-                        className="hidden"
-                        onChange={e =>
-                            setFormData({
-                                ...formData,
-                                end_date: e.target.value,
-                            })
-                        }
-                    />
-                </div>
-                <div className="sm:col-span-2">
-                    <input
-                        type="number"
-                        name="budget"
-                        placeholder="Budget"
-                        onChange={handleChange}
-                        required
-                        className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-400 outline-none"
-                    />
-                </div>
-                <div className="sm:col-span-2">
-                    <button
-                        type="submit"
-                        className="w-full py-3 bg-blue-600 text-white font-semibold rounded-lg hover:bg-blue-700 transition duration-200">
+            {!isOperationCreated ? (
+                <>
+                    <h2 className="text-2xl font-semibold mb-4 text-center">
                         Create Operation
-                    </button>
-                </div>
-            </form>
+                    </h2>
+                    <form
+                        onSubmit={handleSubmit}
+                        className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                        <div className="sm:col-span-2">
+                            <input
+                                type="text"
+                                name="name"
+                                placeholder="Operation Name"
+                                onChange={handleChange}
+                                required
+                                className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-400 outline-none"
+                            />
+                        </div>
+                        <div className="sm:col-span-2">
+                            <textarea
+                                name="description"
+                                placeholder="Description"
+                                onChange={handleChange}
+                                required
+                                className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-400 outline-none" />
+                        </div>
+                        <div>
+                            <select
+                                name="status"
+                                onChange={handleChange}
+                                required
+                                className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-400 outline-none">
+                                <option value="ongoing">Ongoing</option>
+                                <option value="upcoming">Upcoming</option>
+                                <option value="completed">Completed</option>
+                            </select>
+                        </div>
+                        <input
+                            type="text"
+                            name="location"
+                            placeholder="Location"
+                            onChange={handleChange}
+                            required
+                            className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-400 outline-none"
+                        />
+                        <div className="relative">
+                            <input
+                                type="text"
+                                name="start_date"
+                                placeholder="YYYY-MM-DD"
+                                value={formData.start_date}
+                                onChange={handleDateChange}
+                                onBlur={() => handleBlur('start_date')}
+                                required
+                                className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-400 outline-none"
+                            />
+                        </div>
+                        <div className="relative">
+                            <input
+                                type="text"
+                                name="end_date"
+                                placeholder="YYYY-MM-DD"
+                                value={formData.end_date}
+                                onChange={handleDateChange}
+                                onBlur={() => handleBlur('end_date')}
+                                required
+                                className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-400 outline-none"
+                            />
+                        </div>
+                        <div className="sm:col-span-2">
+                            <input
+                                type="number"
+                                name="budget"
+                                placeholder="Budget"
+                                onChange={handleChange}
+                                required
+                                className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-400 outline-none"
+                            />
+                        </div>
+                        <div className="sm:col-span-2">
+                            <button
+                                type="submit"
+                                className="w-full py-3 bg-blue-600 text-white font-semibold rounded-lg hover:bg-blue-700 transition duration-200">
+                                Create Operation
+                            </button>
+                        </div>
+                    </form>
+                </>
+            ) : (
+                // Show CreateOperationResource only after operation is created
+                <CreateOperationResource operationId={operationId} />
+            )}
         </div>
     )
 }

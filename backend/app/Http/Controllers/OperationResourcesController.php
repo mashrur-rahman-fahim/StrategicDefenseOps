@@ -11,42 +11,54 @@ class OperationResourcesController extends Controller
 {
     //
     protected OperationResourcesService $operationResourcesService;
-    public function __construct(OperationResourcesService $operationResourcesService){
+    public function __construct(OperationResourcesService $operationResourcesService)
+    {
         $this->operationResourcesService = $operationResourcesService;
     }
-    public function createOperationResource(Request $request,$operationId){
-        $data=$request->validate([
+    public function createOperationResource(Request $request, $operationId)
+    {
+        // Log the incoming request data to ensure it's received correctly
+        \Log::info('Received operation resource data:', $request->all());
+
+        // Validate the incoming request
+        $data = $request->validate([
             "category" => "required|array",
-            "serial_number"=>"required|array",
-            "count"=>"required|array"
+            "serial_number" => "required|array",
+            "count" => "required|array"
         ]);
-        $user=User::find(auth()->id());
-        if(!$user || $user->role_id>3){
-            return response()->json(['error'=>'Unauthorized'],403);
+
+        $user = User::find(auth()->id());
+        if (!$user || $user->role_id > 3) {
+            return response()->json(['error' => 'Unauthorized'], 403);
         }
-        $operationResource=$this->operationResourcesService->addOperationResources($data,$operationId,$user->id);
-        return response()->json($operationResource,201);
+
+        // Call the service to add resources
+        $operationResource = $this->operationResourcesService->addOperationResources($data, $operationId, $user->id);
+
+        return response()->json($operationResource, 201);
     }
-    public function getAllOperationResources($operationId){
-        $user=User::find(auth()->id());
-        if(!$user || $user->role_id>3){
-            return response()->json(['error'=>'Unauthorized'],403);
+    public function getAllOperationResources($operationId)
+    {
+        $user = User::find(auth()->id());
+        if (!$user || $user->role_id > 3) {
+            return response()->json(['error' => 'Unauthorized'], 403);
         }
-        $operationResources=$this->operationResourcesService->getOperationResource($operationId,$user->id);
-        
+        $operationResources = $this->operationResourcesService->getOperationResource($operationId, $user->id);
+
         return response()->json($operationResources);
     }
-    public function updateOperationResource(Request $request,$operationId){
-        $data=$request->validate([
+    public function updateOperationResource(Request $request, $operationId)
+    {
+        $data = $request->validate([
             "category" => "required|array",
-            "serial_number"=>"required|array",
-            "count"=>"required|array"
+            "serial_number" => "required|array",
+            "count" => "required|array"
         ]);
-        $user=User::find(auth()->id());
-        if(!$user || $user->role_id>3){
-            return response()->json(['error'=>'Unauthorized'],403);
+        $user = User::find(auth()->id());
+        if (!$user || $user->role_id > 3) {
+            return response()->json(['error' => 'Unauthorized'], 403);
         }
-        $operationResource=$this->operationResourcesService->updateOperationResource($operationId,$user->id,$data);
-        return response()->json($operationResource,200);
+        $operationResource = $this->operationResourcesService->updateOperationResource($operationId, $user->id, $data);
+        return response()->json($operationResource, 200);
     }
 }

@@ -26,11 +26,12 @@ class OperationResourcesService
         $this->equipmentService = $equipmentService;
         $this->personnelService = $personnelService;
     }
-    public function addOperationResources($datas, $operationId, $userId)
+     public function addOperationResources($datas, $operationId, $userId)
     {
-
         DB::beginTransaction();
         try {
+            error_log("Adding operation resources. Operation ID: " . $operationId . ", User ID: " . $userId);
+
             $user = User::find($userId);
 
             if ($user->role_id == 1) {
@@ -39,131 +40,140 @@ class OperationResourcesService
                 $userId = $user->parent_id;
             } else {
                 $user = User::find($user->parent_id);
-
                 $userId = $user->parent_id;
             }
             if (!$user || !$userId) {
                 throw new Exception("User not found");
             }
+
+            error_log("User found. User ID: " . $userId);
+
             $operation = DB::selectOne("select * from operations where created_by=? and id=?", [$userId, $operationId]);
             $operation = Operation::find($operation->id);
             if (!$operation) {
                 throw new Exception("Operation not found");
             }
+
+            error_log("Operation found. Operation ID: " . $operation->id);
+
             for ($i = 0; $i < count($datas["serial_number"]); $i++) {
+                error_log("Processing resource " . $i . " of " . count($datas["serial_number"]));
 
                 if ($datas["category"][$i] == 1) {
-                    $resource = DB::select("
-                select r.id,v.vehicle_count as count,v.id as vehicle_id from Resources r join Vehicle v on v.id=r.vehicle_id
-                where v.vehicle_serial_number=?", [$datas["serial_number"][$i]]);
+                    error_log("Category 1 (Vehicle) selected.");
 
+                    $resource = DB::select("
+                        select r.id,v.vehicle_count as count,v.id as vehicle_id from Resources r join Vehicle v on v.id=r.vehicle_id
+                        where v.vehicle_serial_number=?", [$datas["serial_number"][$i]]);
 
                     if ($resource[0] && $resource[0]->count >= $datas["count"][$i]) {
-
                         $data["vehicle_count"] = $resource[0]->count - $datas["count"][$i];
                         $updatedVehicle = $this->vehicleService->updateVehicle($data, $resource[0]->vehicle_id, $userId);
                         if (!$updatedVehicle) {
                             throw new Exception("Unable to update vehicle");
                         }
 
-                        $operationResource = DB::insert("insert into operation_resources(operation_id,resource_id,resource_count)
-                    values(?,?,?)",
-                            [$operationId, $resource[0]->id, $datas["count"][$i]]
+                        error_log("Vehicle updated successfully. Vehicle ID: " . $resource[0]->vehicle_id);
 
-                        );
+                        $operationResource = DB::insert("insert into operation_resources(operation_id,resource_id,resource_count)
+                            values(?,?,?)", [$operationId, $resource[0]->id, $datas["count"][$i]]);
+
                         if (!$operationResource) {
                             throw new Exception("Unable to add operation resource");
                         }
+
+                        error_log("Operation resource added for vehicle. Resource ID: " . $resource[0]->id);
                     } else {
-                        throw new Exception("Inventory insufficient");
+                        throw new Exception("Inventory insufficient for vehicle");
                     }
-
-
                 } elseif ($datas["category"][$i] == 2) {
+                    error_log("Category 2 (Weapon) selected.");
+
                     $resource = DB::select("
-                select r.id,w.weapon_count as count,w.id as weapon_id from Resources r join Weapon w on w.id=r.weapon_id
-                where w.weapon_serial_number=?", [$datas["serial_number"][$i]]);
+                        select r.id,w.weapon_count as count,w.id as weapon_id from Resources r join Weapon w on w.id=r.weapon_id
+                        where w.weapon_serial_number=?", [$datas["serial_number"][$i]]);
 
                     if ($resource[0] && $resource[0]->count >= $datas["count"][$i]) {
-
                         $data["weapon_count"] = $resource[0]->count - $datas["count"][$i];
                         $updatedWeapon = $this->weaponService->updateWeapon($data, $resource[0]->weapon_id, $userId);
                         if (!$updatedWeapon) {
                             throw new Exception("Unable to update weapon");
                         }
 
-                        $operationResource = DB::insert("insert into operation_resources(operation_id,resource_id,resource_count)
-                values(?,?,?)",
-                            [$operationId, $resource[0]->id, $datas["count"][$i]]
+                        error_log("Weapon updated successfully. Weapon ID: " . $resource[0]->weapon_id);
 
-                        );
+                        $operationResource = DB::insert("insert into operation_resources(operation_id,resource_id,resource_count)
+                            values(?,?,?)", [$operationId, $resource[0]->id, $datas["count"][$i]]);
+
                         if (!$operationResource) {
                             throw new Exception("Unable to add operation resource");
                         }
+
+                        error_log("Operation resource added for weapon. Resource ID: " . $resource[0]->id);
                     } else {
-                        throw new Exception("Inventory insufficient");
+                        throw new Exception("Inventory insufficient for weapon");
                     }
-
-
                 } elseif ($datas["category"][$i] == 3) {
-                    $resource = DB::select("
-                select r.id,p.personnel_count as count,p.id as personnel_id from Resources r join Personnel p on p.id=r.personnel_id
-                where p.personnel_serial_number=?", [$datas["serial_number"][$i]]);
-                    if ($resource[0] && $resource[0]->count >= $datas["count"][$i]) {
+                    error_log("Category 3 (Personnel) selected.");
 
+                    $resource = DB::select("
+                        select r.id,p.personnel_count as count,p.id as personnel_id from Resources r join Personnel p on p.id=r.personnel_id
+                        where p.personnel_serial_number=?", [$datas["serial_number"][$i]]);
+
+                    if ($resource[0] && $resource[0]->count >= $datas["count"][$i]) {
                         $data["personnel_count"] = $resource[0]->count - $datas["count"][$i];
                         $updatedPersonnel = $this->personnelService->updatePersonnel($data, $resource[0]->personnel_id, $userId);
                         if (!$updatedPersonnel) {
                             throw new Exception("Unable to update personnel");
                         }
 
-                        $operationResource = DB::insert("insert into operation_resources(operation_id,resource_id,resource_count)
-                values(?,?,?)",
-                            [$operationId, $resource[0]->id, $datas["count"][$i]]
+                        error_log("Personnel updated successfully. Personnel ID: " . $resource[0]->personnel_id);
 
-                        );
+                        $operationResource = DB::insert("insert into operation_resources(operation_id,resource_id,resource_count)
+                            values(?,?,?)", [$operationId, $resource[0]->id, $datas["count"][$i]]);
+
                         if (!$operationResource) {
                             throw new Exception("Unable to add operation resource");
                         }
+
+                        error_log("Operation resource added for personnel. Resource ID: " . $resource[0]->id);
                     } else {
-                        throw new Exception("Inventory insufficient");
+                        throw new Exception("Inventory insufficient for personnel");
                     }
-
-
                 } elseif ($datas["category"][$i] == 4) {
-                    $resource = DB::select("
-                select r.id,e.equipment_count as count,e.id as equipment_id from Resources r join Equipment e on e.id=r.equipment_id
-                where e.equipment_serial_number=?", [$datas["serial_number"][$i]]);
-                    if ($resource[0] && $resource[0]->count >= $datas["count"][$i]) {
+                    error_log("Category 4 (Equipment) selected.");
 
+                    $resource = DB::select("
+                        select r.id,e.equipment_count as count,e.id as equipment_id from Resources r join Equipment e on e.id=r.equipment_id
+                        where e.equipment_serial_number=?", [$datas["serial_number"][$i]]);
+
+                    if ($resource[0] && $resource[0]->count >= $datas["count"][$i]) {
                         $data["equipment_count"] = $resource[0]->count - $datas["count"][$i];
-                        $updatedPersonnel = $this->equipmentService->updateEquipment($data, $resource[0]->equipment_id, $userId);
-                        if (!$updatedPersonnel) {
+                        $updatedEquipment = $this->equipmentService->updateEquipment($data, $resource[0]->equipment_id, $userId);
+                        if (!$updatedEquipment) {
                             throw new Exception("Unable to update equipment");
                         }
 
-                        $operationResource = DB::insert("insert into operation_resources(operation_id,resource_id,resource_count)
-                values(?,?,?)",
-                            [$operationId, $resource[0]->id, $datas["count"][$i]]
+                        error_log("Equipment updated successfully. Equipment ID: " . $resource[0]->equipment_id);
 
-                        );
+                        $operationResource = DB::insert("insert into operation_resources(operation_id,resource_id,resource_count)
+                            values(?,?,?)", [$operationId, $resource[0]->id, $datas["count"][$i]]);
+
                         if (!$operationResource) {
                             throw new Exception("Unable to add operation resource");
                         }
-                    } else {
-                        throw new Exception("Inventory insufficient");
-                    }
 
+                        error_log("Operation resource added for equipment. Resource ID: " . $resource[0]->id);
+                    } else {
+                        throw new Exception("Inventory insufficient for equipment");
+                    }
                 } else {
                     throw new Exception("Invalid resource category");
-
                 }
-
-
-
-
             }
+
             DB::commit();
+            error_log("Operation resources added successfully.");
             return true;
 
         } catch (\Exception $e) {
