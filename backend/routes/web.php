@@ -47,7 +47,7 @@ Route::get('/mail', function () {
         });
     }); */
 
-    Route::middleware('web')->group(function () {
+    Route::middleware('guest')->group(function () {
         Route::get('auth/google', [SocialiteController::class, 'googleLogin']);
         Route::get('auth/google-callback', [SocialiteController::class, 'googleAuthentication']);
     });

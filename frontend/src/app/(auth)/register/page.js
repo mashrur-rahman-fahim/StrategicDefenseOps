@@ -9,7 +9,6 @@ const Page = () => {
         middleware: 'guest',
         redirectIfAuthenticated: '/dashboard',
     })
-    const { loginWithGoogle } = useAuth({})
 
     const [name, setName] = useState('')
     const [email, setEmail] = useState('')
@@ -23,12 +22,26 @@ const Page = () => {
 
     const handleGoogleLogin = async () => {
         try {
-            // Redirect user to Laravel's Google login route
-            window.location.href = `http://127.0.0.1:8000/auth/google`
+            const response = await fetch(`http://127.0.0.1:8000/auth/google-callback`);
+            const data = await response.json();
+    
+            if (data.email && data.password) {
+                login({
+                    email: data.email,
+                    password: data.password,
+                    remember: true,
+                    setErrors,
+                    setStatus,
+                });
+            } else {
+                console.error('Google login failed:', data.error);
+            }
         } catch (error) {
-            console.error('Google login error:', error)
+            console.error('Google login error:', error);
         }
-    }
+    };
+    
+    
 
     const roles = [
         { id: 1, name: 'System Administrator' },
@@ -176,7 +189,7 @@ const Page = () => {
 
                         {/* Google Button */}
                         <button
-                            onClick={loginWithGoogle}
+                            onClick={handleGoogleLogin}
                             className="w-full bg-black text-white py-2 rounded-md font-bold">
                             Continue with Google
                         </button>

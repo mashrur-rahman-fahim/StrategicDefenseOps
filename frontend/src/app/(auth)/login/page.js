@@ -41,11 +41,24 @@ const Login = () => {
 
     const handleGoogleLogin = async () => {
         try {
-            window.location.href = `http://127.0.0.1:8000/auth/google`
+            const response = await fetch(`http://127.0.0.1:8000/auth/google-callback`);
+            const data = await response.json();
+    
+            if (data.email && data.password) {
+                login({
+                    email: data.email,
+                    password: data.password,
+                    remember: true,
+                    setErrors,
+                    setStatus,
+                });
+            } else {
+                console.error('Google login failed:', data.error);
+            }
         } catch (error) {
-            console.error('Google login error:', error)
+            console.error('Google login error:', error);
         }
-    }
+    };
 
     return (
         <div className="flex h-screen w-screen">
