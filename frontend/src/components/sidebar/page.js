@@ -2,11 +2,20 @@
 import React, { useEffect, useRef, useState } from 'react'
 import axios from '@/lib/axios'
 import './sidebar.css'
+import { Icon } from '@iconify/react'
+import { Modal, Form, Button } from 'react-bootstrap'
+import { toast } from 'sonner'
 
 const Sidebar = ({ isOpen, toggleSidebar, selectedItem, handleNavigation }) => {
     const sidebarRef = useRef()
     const [userName, setUserName] = useState('Error')
+    const [userEmail, setUserEmail] = useState('')
     const [roleName, setRoleName] = useState('')
+    const [showModal, setShowModal] = useState(false)
+    const [tempName, setTempName] = useState('') 
+
+    const [loading, setLoading] = useState(false)
+
     const roleMapping = {
         1: 'Admin',
         2: 'Manager',
@@ -38,6 +47,7 @@ const Sidebar = ({ isOpen, toggleSidebar, selectedItem, handleNavigation }) => {
             try {
                 const response = await axios.get(`/api/user`)
                 setUserName(response?.data.name || 'Unknown')
+                setUserEmail(response?.data.email || '')
                 setRoleName(roleMapping[response.data.role_id] || 'Unknown')
             } catch (error) {
                 console.error('Error fetching user details:', error)
@@ -47,17 +57,48 @@ const Sidebar = ({ isOpen, toggleSidebar, selectedItem, handleNavigation }) => {
         fetchUserDetails()
     }, [])
 
+    // Open modal and set temporary values
+    const handleEditProfile = () => {
+        setTempName(userName)
+        setShowModal(true)
+    }
+
+    // Handle form submission
+    const handleSaveChanges = async () => {
+        try {
+            setLoading(true)
+            const response = await axios.put(`/api/update-profile`, {
+                name: tempName,
+            })
+            console.log('User details updated:', response.data)
+
+            setUserName(tempName)
+            setShowModal(false)
+            toast.success('Profile updated successfully!')
+        } catch (error) {
+            console.error('Error updating user details:', error)
+        } finally{
+            setLoading(false);
+        }
+    }
+
     return (
         <div ref={sidebarRef} className={`sidebar ${isOpen ? 'open' : ''}`}>
             {/* Arrow button to close sidebar */}
-            <button className="back-button" onClick={toggleSidebar}>
-                ←
-            </button>
+            <div className='icon-container d-flex justify-content-between align-items-center'>
+                <button className="back-button" onClick={toggleSidebar}>
+                    ←
+                </button>
+                <button className="back-button" onClick={handleEditProfile}>
+                    <Icon icon="bi:pencil-square" width="16" height="16" />
+                </button>
+            </div>
 
             {/* Profile section */}
             <div className="profile">
                 <h2>{userName}</h2>
-                <p className="rank">Role : {roleName}</p>
+                <div className="rank">{roleName}</div>
+                <p className="rank">{userEmail}</p>
             </div>
 
             {/* Menu items */}
@@ -77,6 +118,33 @@ const Sidebar = ({ isOpen, toggleSidebar, selectedItem, handleNavigation }) => {
                     )
                 )}
             </nav>
+
+            {/* Modal for Editing Profile */}
+            <Modal show={showModal} onHide={() => setShowModal(false)}>
+                <Modal.Header closeButton>
+                    <Modal.Title>Edit Profile</Modal.Title>
+                </Modal.Header>
+                <Modal.Body>
+                    <Form>
+                        <Form.Group className="mb-3" controlId="formName">
+                            <Form.Label>Name</Form.Label>
+                            <Form.Control
+                                type="text"
+                                value={tempName}
+                                onChange={(e) => setTempName(e.target.value)}
+                            />
+                        </Form.Group>
+                    </Form>
+                </Modal.Body>
+                <Modal.Footer>
+                    <Button variant="secondary" onClick={() => setShowModal(false)}>
+                        Close
+                    </Button>
+                    <Button variant="primary" onClick={handleSaveChanges}>
+                        {loading ? 'Saving...' : 'Save Changes'}
+                    </Button>
+                </Modal.Footer>
+            </Modal>
         </div>
     )
 }
