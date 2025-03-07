@@ -19,7 +19,7 @@ export default function Assign() {
         }
     }, [user])
 
-    const assignRole = async roleType => {
+    const assignRole = async (roleType) => {
         try {
             let payload = {}
             let endpoint = ''
@@ -69,12 +69,15 @@ export default function Assign() {
                                 type="email"
                                 className="form-control"
                                 value={managerEmail}
-                                onChange={e => setManagerEmail(e.target.value)}
+                                onChange={(e) =>
+                                    setManagerEmail(e.target.value)
+                                }
                                 placeholder="Manager Email"
                             />
                             <button
                                 className="btn btn-primary"
-                                onClick={() => assignRole('manager')}>
+                                onClick={() => assignRole('manager')}
+                            >
                                 Assign
                             </button>
                         </div>
@@ -89,7 +92,9 @@ export default function Assign() {
                                 type="email"
                                 className="form-control"
                                 value={operatorEmail}
-                                onChange={e => setOperatorEmail(e.target.value)}
+                                onChange={(e) =>
+                                    setOperatorEmail(e.target.value)
+                                }
                                 placeholder="Operator Email"
                             />
                         </div>
@@ -98,7 +103,7 @@ export default function Assign() {
                                 type="email"
                                 className="form-control"
                                 value={operatorManagerEmail}
-                                onChange={e =>
+                                onChange={(e) =>
                                     setOperatorManagerEmail(e.target.value)
                                 }
                                 placeholder="Manager Email"
@@ -106,7 +111,8 @@ export default function Assign() {
                         </div>
                         <button
                             className="btn btn-primary"
-                            onClick={() => assignRole('operator')}>
+                            onClick={() => assignRole('operator')}
+                        >
                             Assign
                         </button>
                     </div>
@@ -120,7 +126,7 @@ export default function Assign() {
                                 type="email"
                                 className="form-control"
                                 value={viewerEmail}
-                                onChange={e => {
+                                onChange={(e) => {
                                     setViewerEmail(e.target.value)
                                     // Auto-fill Manager Email only if empty
                                     if (!viewerManagerEmail) {
@@ -135,7 +141,7 @@ export default function Assign() {
                                 type="email"
                                 className="form-control"
                                 value={viewerManagerEmail}
-                                onChange={e =>
+                                onChange={(e) =>
                                     setViewerManagerEmail(e.target.value)
                                 }
                                 placeholder="Manager Email"
@@ -143,7 +149,8 @@ export default function Assign() {
                         </div>
                         <button
                             className="btn btn-primary"
-                            onClick={() => assignRole('viewer')}>
+                            onClick={() => assignRole('viewer')}
+                        >
                             Assign
                         </button>
                     </div>

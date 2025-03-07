@@ -12,7 +12,7 @@ import {
     Col,
     Alert,
     Modal,
-    Badge,
+    Badge
 } from 'react-bootstrap'
 
 export default function OperationResources() {
@@ -24,8 +24,8 @@ export default function OperationResources() {
         {
             category: '',
             serialNumber: '',
-            count: '',
-        },
+            count: ''
+        }
     ])
     const [message, setMessage] = useState('')
     const [error, setError] = useState('')
@@ -46,8 +46,8 @@ export default function OperationResources() {
                 {
                     category: '',
                     serialNumber: '',
-                    count: '',
-                },
+                    count: ''
+                }
             ])
             setFetchedResources([])
             setMessage('')
@@ -60,7 +60,7 @@ export default function OperationResources() {
             const response = await axios.get('/api/get-all-operations')
             // Filter to only show completed operations
             const completedOps = response.data[1].filter(
-                op => op.status === 'completed',
+                (op) => op.status === 'completed'
             )
             setOperations(completedOps)
         } catch (err) {
@@ -94,8 +94,8 @@ export default function OperationResources() {
             {
                 category: '',
                 serialNumber: '',
-                count: '',
-            },
+                count: ''
+            }
         ])
     }
 
@@ -162,10 +162,10 @@ export default function OperationResources() {
         }
     }
 
-    const filteredResources = category => {
+    const filteredResources = (category) => {
         if (!allResources || !Array.isArray(allResources)) return []
 
-        return allResources.filter(resource => {
+        return allResources.filter((resource) => {
             if (category === '1') return resource.vehicle_name
             if (category === '2') return resource.weapon_name
             if (category === '3') return resource.personnel_name
@@ -174,7 +174,7 @@ export default function OperationResources() {
         })
     }
 
-    const getCategoryName = categoryId => {
+    const getCategoryName = (categoryId) => {
         switch (categoryId) {
             case '1':
                 return 'Vehicle'
@@ -189,7 +189,7 @@ export default function OperationResources() {
         }
     }
 
-    const getStatusBadgeVariant = status => {
+    const getStatusBadgeVariant = (status) => {
         switch (status) {
             case 'ongoing':
                 return 'success'
@@ -202,7 +202,7 @@ export default function OperationResources() {
         }
     }
 
-    const handleSubmit = async actionType => {
+    const handleSubmit = async (actionType) => {
         if (!selectedOperation) {
             setError('Please select an operation first')
             return
@@ -211,7 +211,8 @@ export default function OperationResources() {
         try {
             // Validate entries
             const invalidEntries = formEntries.some(
-                entry => !entry.category || !entry.serialNumber || !entry.count,
+                (entry) =>
+                    !entry.category || !entry.serialNumber || !entry.count
             )
 
             if (invalidEntries) {
@@ -220,7 +221,6 @@ export default function OperationResources() {
             }
 
             // Use the original payload structure for backend compatibility
-           
 
             setMessage(`Resources ${actionType}ed successfully`)
             setError('')
@@ -243,14 +243,14 @@ export default function OperationResources() {
 
         try {
             const response = await axios.get(
-                `/api/get-operation-resources/${selectedOperation}`,
+                `/api/get-operation-resources/${selectedOperation}`
             )
             const transformed = []
 
             // Transform backend response to match frontend structure
             Object.entries(response.data).forEach(([key, value]) => {
                 if (Array.isArray(value)) {
-                    value.forEach(item => {
+                    value.forEach((item) => {
                         transformed.push({
                             type: key.charAt(0).toUpperCase() + key.slice(1),
                             id: item.id,
@@ -258,7 +258,7 @@ export default function OperationResources() {
                             description:
                                 item[`${key}_description`] || 'No description', // Add description field
                             serialNumber: item[`${key}_serial_number`],
-                            count: item[`${key}_count`],
+                            count: item[`${key}_count`]
                         })
                     })
                 }
@@ -272,7 +272,7 @@ export default function OperationResources() {
         }
     }
 
-    const handleOperationSelect = operationId => {
+    const handleOperationSelect = (operationId) => {
         setSelectedOperation(operationId)
     }
 
@@ -292,7 +292,7 @@ export default function OperationResources() {
                     )}
 
                     <Row>
-                        {operations.map(op => (
+                        {operations.map((op) => (
                             <Col key={op.id} md={4} className="mb-3">
                                 <Button
                                     variant={
@@ -301,7 +301,8 @@ export default function OperationResources() {
                                             : 'outline-primary'
                                     }
                                     onClick={() => handleOperationSelect(op.id)}
-                                    className="w-100 text-start py-2">
+                                    className="w-100 text-start py-2"
+                                >
                                     <div className="d-flex justify-content-between align-items-center">
                                         <div>
                                             <strong>{op.name}</strong>
@@ -309,7 +310,7 @@ export default function OperationResources() {
                                                 <p className="mb-0 text-muted small">
                                                     {op.description.substring(
                                                         0,
-                                                        50,
+                                                        50
                                                     )}
                                                     ...
                                                 </p>
@@ -319,8 +320,9 @@ export default function OperationResources() {
                                             {op.status && (
                                                 <Badge
                                                     bg={getStatusBadgeVariant(
-                                                        op.status,
-                                                    )}>
+                                                        op.status
+                                                    )}
+                                                >
                                                     {op.status}
                                                 </Badge>
                                             )}
@@ -341,19 +343,21 @@ export default function OperationResources() {
                             {formEntries.map((entry, index) => (
                                 <div
                                     key={index}
-                                    className="resource-entry mb-3 p-3 border rounded">
+                                    className="resource-entry mb-3 p-3 border rounded"
+                                >
                                     <Row className="align-items-center">
                                         <Col md={3}>
                                             <Form.Select
                                                 value={entry.category}
-                                                onChange={e =>
+                                                onChange={(e) =>
                                                     handleFormChange(
                                                         index,
                                                         'category',
-                                                        e.target.value,
+                                                        e.target.value
                                                     )
                                                 }
-                                                required>
+                                                required
+                                            >
                                                 <option value="">
                                                     Select Category
                                                 </option>
@@ -380,17 +384,18 @@ export default function OperationResources() {
                                                     try {
                                                         await fetchAllResources()
                                                         setCurrentEntryIndex(
-                                                            index,
+                                                            index
                                                         )
                                                         setShowResourceModal(
-                                                            true,
+                                                            true
                                                         )
                                                     } catch (err) {
                                                         setError(
-                                                            'Failed to refresh resources',
+                                                            'Failed to refresh resources'
                                                         )
                                                     }
-                                                }}>
+                                                }}
+                                            >
                                                 {entry.resourceName ||
                                                     'Select Resource'}
                                             </Button>
@@ -398,7 +403,7 @@ export default function OperationResources() {
                                                 <div className="small text-muted mt-1">
                                                     {entry.resourceDescription.substring(
                                                         0,
-                                                        50,
+                                                        50
                                                     )}
                                                 </div>
                                             )}
@@ -409,11 +414,11 @@ export default function OperationResources() {
                                                 type="number"
                                                 placeholder="Count"
                                                 value={entry.count}
-                                                onChange={e =>
+                                                onChange={(e) =>
                                                     handleFormChange(
                                                         index,
                                                         'count',
-                                                        e.target.value,
+                                                        e.target.value
                                                     )
                                                 }
                                                 min="1"
@@ -427,7 +432,8 @@ export default function OperationResources() {
                             <div className="mb-3">
                                 <Button
                                     variant="success"
-                                    onClick={addFormEntry}>
+                                    onClick={addFormEntry}
+                                >
                                     + Add Another Resource
                                 </Button>
                             </div>
@@ -436,18 +442,21 @@ export default function OperationResources() {
                                 <Button
                                     variant="primary"
                                     onClick={() => handleSubmit('add')}
-                                    className="me-2">
+                                    className="me-2"
+                                >
                                     Add Resources
                                 </Button>
                                 <Button
                                     variant="warning"
                                     onClick={() => handleSubmit('update')}
-                                    className="me-2">
+                                    className="me-2"
+                                >
                                     Update Resources
                                 </Button>
                                 <Button
                                     variant="info"
-                                    onClick={handleViewResources}>
+                                    onClick={handleViewResources}
+                                >
                                     View Current Resources
                                 </Button>
                             </div>
@@ -457,14 +466,15 @@ export default function OperationResources() {
                         <Modal
                             show={showResourceModal}
                             onHide={() => setShowResourceModal(false)}
-                            size="lg">
+                            size="lg"
+                        >
                             <Modal.Header closeButton>
                                 <Modal.Title>
                                     Select{' '}
                                     {formEntries[currentEntryIndex]?.category
                                         ? getCategoryName(
                                               formEntries[currentEntryIndex]
-                                                  .category,
+                                                  .category
                                           )
                                         : 'Resource'}
                                 </Modal.Title>
@@ -482,19 +492,19 @@ export default function OperationResources() {
                                     <tbody>
                                         {filteredResources(
                                             formEntries[currentEntryIndex]
-                                                ?.category,
-                                        ).map(resource => {
+                                                ?.category
+                                        ).map((resource) => {
                                             const category =
                                                 formEntries[currentEntryIndex]
                                                     ?.category
                                             const name = getResourceName(
                                                 resource,
-                                                category,
+                                                category
                                             )
                                             const description =
                                                 getResourceDescription(
                                                     resource,
-                                                    category,
+                                                    category
                                                 )
                                             const count =
                                                 category === '1'
@@ -521,9 +531,10 @@ export default function OperationResources() {
                                                                     resource,
                                                                     formEntries[
                                                                         currentEntryIndex
-                                                                    ].category,
+                                                                    ].category
                                                                 )
-                                                            }>
+                                                            }
+                                                        >
                                                             Select
                                                         </Button>
                                                     </td>
@@ -571,7 +582,7 @@ export default function OperationResources() {
                                                     </td>
                                                     <td>{resource.count}</td>
                                                 </tr>
-                                            ),
+                                            )
                                         )}
                                     </tbody>
                                 </Table>

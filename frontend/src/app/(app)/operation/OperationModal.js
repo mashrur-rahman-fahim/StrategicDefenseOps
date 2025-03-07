@@ -46,7 +46,8 @@ export default function OperationModal({
                         <Form.Select
                             name="status"
                             value={formData.status}
-                            onChange={onChange}>
+                            onChange={onChange}
+                        >
                             required
                             <option value="ongoing">Ongoing</option>
                             <option value="upcoming">Upcoming</option>

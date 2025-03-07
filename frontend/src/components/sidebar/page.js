@@ -20,11 +20,11 @@ const Sidebar = ({ isOpen, toggleSidebar, selectedItem, handleNavigation }) => {
         1: 'Admin',
         2: 'Manager',
         3: 'Operator',
-        4: 'Viewer',
+        4: 'Viewer'
     }
 
     useEffect(() => {
-        const handleClickOutside = event => {
+        const handleClickOutside = (event) => {
             const menuButton = document.querySelector('.menu-button') // Get the "three dots" button
             if (
                 isOpen &&
@@ -104,17 +104,18 @@ const Sidebar = ({ isOpen, toggleSidebar, selectedItem, handleNavigation }) => {
             {/* Menu items */}
             <nav className="menu">
                 {['Dashboard', 'Resources', 'Operation', 'Reports'].map(
-                    item => (
+                    (item) => (
                         <div
                             key={item}
                             className={`menu-item ${selectedItem === item.toLowerCase() ? 'active' : ''}`}
                             onClick={() => {
                                 handleNavigation(item.toLowerCase())
                                 toggleSidebar() // Close the sidebar after navigation
-                            }}>
+                            }}
+                        >
                             {item}
                         </div>
-                    ),
+                    )
                 )}
             </nav>
 

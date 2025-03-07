@@ -7,7 +7,7 @@ import { useState } from 'react'
 const Page = () => {
     const { logout, resendEmailVerification } = useAuth({
         middleware: 'auth',
-        redirectIfAuthenticated: '/dashboard',
+        redirectIfAuthenticated: '/dashboard'
     })
 
     const [status, setStatus] = useState(null)
@@ -18,11 +18,13 @@ const Page = () => {
             style={{
                 backgroundImage: `url('/verify3.jpg')`,
                 backgroundSize: 'cover',
-                backgroundPosition: 'center',
-            }}>
+                backgroundPosition: 'center'
+            }}
+        >
             <div
                 className="max-w-2xl w-full bg-gray-800 p-10 rounded-lg shadow-md text-center flex flex-col justify-center items-center"
-                style={{ backgroundColor: 'rgba(52, 52, 52, 0.95)' }}>
+                style={{ backgroundColor: 'rgba(52, 52, 52, 0.95)' }}
+            >
                 <h2 className="text-2xl font-semibold text-white mb-4">
                     Verify Your Email
                 </h2>
@@ -42,14 +44,16 @@ const Page = () => {
                 <div className="flex flex-col gap-4 w-full">
                     <Button
                         onClick={() => resendEmailVerification({ setStatus })}
-                        className="w-full bg-blue-600 hover:bg-blue-700 text-white font-medium py-2 px-4 rounded-lg transition text-center">
+                        className="w-full bg-blue-600 hover:bg-blue-700 text-white font-medium py-2 px-4 rounded-lg transition text-center"
+                    >
                         Resend Verification Email
                     </Button>
 
                     <button
                         type="button"
                         className="w-full bg-gray-700 hover:bg-gray-800 text-white font-medium py-2 px-4 rounded-lg transition mt-4"
-                        onClick={logout}>
+                        onClick={logout}
+                    >
                         Logout
                     </button>
                 </div>

@@ -8,26 +8,26 @@ const ResourceOverview = ({ stats }) => {
             title: 'Weapons',
             icon: 'tabler:bomb-filled',
             count: stats.weapons,
-            color: 'primary',
+            color: 'primary'
         },
         {
             title: 'Vehicles',
             icon: 'mdi:tank',
             count: stats.vehicles,
-            color: 'success',
+            color: 'success'
         },
         {
             title: 'Personnel',
             icon: 'fa6-solid:person-military-rifle',
             count: stats.personnel,
-            color: 'info',
+            color: 'info'
         },
         {
             title: 'Equipment',
             icon: 'mdi:medical-bag',
             count: stats.equipment,
-            color: 'warning',
-        },
+            color: 'warning'
+        }
     ]
 
     return (
@@ -40,10 +40,16 @@ const ResourceOverview = ({ stats }) => {
                             <Card.Body>
                                 <div className="d-flex align-items-start justify-content-between">
                                     <div>
-                                        <div className="text-muted mb-1">{resource.title}</div>
-                                        <h3 className="mb-0">{resource.count}</h3>
+                                        <div className="text-muted mb-1">
+                                            {resource.title}
+                                        </div>
+                                        <h3 className="mb-0">
+                                            {resource.count}
+                                        </h3>
                                     </div>
-                                    <div className={`bg-${resource.color} bg-opacity-10 p-2 rounded-circle`}>
+                                    <div
+                                        className={`bg-${resource.color} bg-opacity-10 p-2 rounded-circle`}
+                                    >
                                         <Icon
                                             icon={resource.icon}
                                             width="24"
@@ -54,7 +60,13 @@ const ResourceOverview = ({ stats }) => {
                                 </div>
                                 <div className="mt-3">
                                     <ProgressBar
-                                        now={stats.total ? (resource.count / stats.total) * 100 : 0}
+                                        now={
+                                            stats.total
+                                                ? (resource.count /
+                                                      stats.total) *
+                                                  100
+                                                : 0
+                                        }
                                         variant={resource.color}
                                         className="mt-2"
                                     />

@@ -9,7 +9,7 @@ const DeleteOperation = ({ operationId, onOperationDeleted }) => {
                 `${process.env.NEXT_PUBLIC_BACKEND_URL}/api/delete-operation/${operationId}`,
                 { data: { operationId } } // Adding body data if needed
             )
-            
+
             onOperationDeleted(operationId)
             alert('Operation deleted successfully')
         } catch (error) {

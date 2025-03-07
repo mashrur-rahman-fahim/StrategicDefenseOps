@@ -4,7 +4,7 @@ import { Icon } from '@iconify/react'
 import Link from 'next/link'
 
 const TopResources = ({ resources }) => {
-    const getResourceName = resource => {
+    const getResourceName = (resource) => {
         return (
             resource.weapon_name ||
             resource.vehicle_name ||
@@ -14,7 +14,7 @@ const TopResources = ({ resources }) => {
         )
     }
 
-    const getResourceCount = resource => {
+    const getResourceCount = (resource) => {
         return (
             resource.weapon_count ||
             resource.vehicle_count ||
@@ -24,7 +24,7 @@ const TopResources = ({ resources }) => {
         )
     }
 
-    const getResourceType = resource => {
+    const getResourceType = (resource) => {
         if (resource.weapon_name) return 'Weapon'
         if (resource.vehicle_name) return 'Vehicle'
         if (resource.personnel_name) return 'Personnel'
@@ -37,7 +37,12 @@ const TopResources = ({ resources }) => {
             <Card.Header className="bg-white border-bottom-0 pt-4">
                 <div className="d-flex justify-content-between align-items-center">
                     <h5 className="mb-0">Top Resources</h5>
-                    <Button as={Link} href="/resources" variant="link" className="p-0">
+                    <Button
+                        as={Link}
+                        href="/resources"
+                        variant="link"
+                        className="p-0"
+                    >
                         View All
                     </Button>
                 </div>
@@ -45,7 +50,12 @@ const TopResources = ({ resources }) => {
             <Card.Body className="pt-0">
                 {resources.length === 0 ? (
                     <div className="text-center py-4 text-muted">
-                        <Icon icon="mdi:package-variant-closed" width="48" height="48" className="mb-2" />
+                        <Icon
+                            icon="mdi:package-variant-closed"
+                            width="48"
+                            height="48"
+                            className="mb-2"
+                        />
                         <p>No resources found</p>
                     </div>
                 ) : (
@@ -63,7 +73,9 @@ const TopResources = ({ resources }) => {
                                     <td>{getResourceName(resource)}</td>
                                     <td>{getResourceType(resource)}</td>
                                     <td>
-                                        <span className="fw-bold">{getResourceCount(resource)}</span>
+                                        <span className="fw-bold">
+                                            {getResourceCount(resource)}
+                                        </span>
                                     </td>
                                 </tr>
                             ))}

@@ -1,96 +1,149 @@
 'use client'
-import { useState, useRef } from 'react'
+import { useState, useRef, useEffect } from 'react'
+import { flushSync } from 'react-dom'
 import ReactMarkdown from 'react-markdown'
 import remarkMath from 'remark-math'
 import rehypeKatex from 'rehype-katex'
 import 'katex/dist/katex.min.css'
-import './report.css'
+import { FaRegStopCircle } from 'react-icons/fa'
 import Layout from '@/components/layout'
+import axios from '@/lib/axios.js'
+
+// Add Bootstrap CSS in your Layout or here
+// In _app.js or Layout component: import 'bootstrap/dist/css/bootstrap.min.css'
 
 export default function ReportGenerator() {
+    const [operations, setOperations] = useState([])
+    const [selectedOperationId, setSelectedOperationId] = useState('')
     const [reportType, setReportType] = useState('')
     const [operationStatus, setOperationStatus] = useState('')
-    const [messages, setMessages] = useState([]) // Use messages array for chat-like display
+    const [messages, setMessages] = useState([])
     const [loading, setLoading] = useState(false)
     const abortControllerRef = useRef(null)
-    const operationId = 2 // Replace with actual operation ID
+    const chatHistoryRef = useRef(null)
+    const [stopped, setStopped] = useState(false)
+
+    // Auto-scroll handling
+    useEffect(() => {
+        if (chatHistoryRef.current) {
+            chatHistoryRef.current.scrollTop =
+                chatHistoryRef.current.scrollHeight
+        }
+    }, [messages])
+
+    // Fetch completed operations
+    useEffect(() => {
+        const fetchCompletedOperations = async () => {
+            try {
+                const response = await axios.get('/api/get-all-operations')
+                const completedOps = response.data[1].filter(
+                    (op) => op.status === 'completed'
+                )
+                setOperations(completedOps)
+            } catch (err) {
+                console.error('Error fetching operations:', err)
+            }
+        }
+        fetchCompletedOperations()
+    }, [])
 
     const generateReport = async () => {
-        setMessages([]) // Clear previous messages
-        setLoading(true)
+        if (!selectedOperationId || !operationStatus) {
+            alert('Please select an operation and set its status')
+            return
+        }
 
+        setMessages([])
+        setLoading(true)
+        setStopped(false)
         abortControllerRef.current = new AbortController()
-        const { signal } = abortControllerRef.current
 
         try {
-            const token = localStorage.getItem('api_token') // Assuming you use a token for auth
+            const token = localStorage.getItem('api_token')
             const headers = {
                 'Content-Type': 'application/json',
                 Authorization: token ? `Bearer ${token}` : '',
-                'X-Requested-With': 'XMLHttpRequest',
+                'X-Requested-With': 'XMLHttpRequest'
             }
-
             const response = await fetch(
-                `${process.env.NEXT_PUBLIC_BACKEND_URL}/api/generate-report/${operationId}`,
+                `${process.env.NEXT_PUBLIC_BACKEND_URL}/api/generate-report/${selectedOperationId}`,
                 {
                     method: 'POST',
                     headers,
                     credentials: 'include',
                     body: JSON.stringify({
                         report_type: reportType,
-                        operation_status: operationStatus,
+                        operation_status: operationStatus
                     }),
-                    signal, // Pass the AbortController signal
-                },
+                    signal: abortControllerRef.current.signal
+                }
             )
 
             if (!response.body) throw new Error('No response body')
 
             const reader = response.body.getReader()
             const decoder = new TextDecoder()
-            let botResponse = ''
 
-            // Add a "bot" message to the messages array
-            setMessages(prev => [...prev, { sender: 'bot', text: '' }])
+            let currentText = ''
+            let buffer = ''
 
-            let done = false // Track whether we're done reading
+            // Initial bot message
+            flushSync(() => {
+                setMessages((prev) => [...prev, { sender: 'bot', text: '' }])
+            })
+            let loopController = true
+            while (loopController) {
+                if (stopped) break // ✅ Stop immediately when stop is triggered
 
-            while (!done) {
-                const { done: isDone, value } = await reader.read()
-                done = isDone // Update the flag
+                const { done, value } = await reader.read()
+                if (done) {
+                    break
+                }
 
-                if (done) break // Exit when done
+                buffer += decoder.decode(value, { stream: true })
 
-                const chunk = decoder.decode(value, { stream: true })
-                botResponse += chunk
+                while (buffer.length > 0) {
+                    if (stopped) break // ✅ Break the inner loop too
 
-                setMessages(prev => {
-                    const lastMessage = prev[prev.length - 1]
-                    if (lastMessage.sender === 'bot') {
-                        return [
-                            ...prev.slice(0, -1),
-                            { sender: 'bot', text: botResponse },
-                        ]
-                    }
-                    return [...prev, { sender: 'bot', text: botResponse }]
-                })
+                    const char = buffer.charAt(0)
+                    buffer = buffer.substring(1)
 
-                await new Promise(resolve => setTimeout(resolve, 50)) // Throttle updates
+                    currentText += char
+
+                    flushSync(() => {
+                        setMessages((prev) => {
+                            const newMessages = [...prev]
+                            const lastMessage =
+                                newMessages[newMessages.length - 1]
+
+                            if (lastMessage?.sender === 'bot') {
+                                lastMessage.text = currentText
+                                return [...newMessages]
+                            }
+                            return [
+                                ...newMessages,
+                                { sender: 'bot', text: currentText }
+                            ]
+                        })
+                    })
+
+                    await new Promise((resolve) => setTimeout(resolve, 20))
+                }
             }
         } catch (error) {
-            if (error.name === 'AbortError') {
-                setMessages(prev => [
+            if (error.name === 'AbortError' || stopped) {
+                setMessages((prev) => [
                     ...prev,
-                    { sender: 'bot', text: 'Report generation stopped.' },
+                    { sender: 'bot', text: '\n\n**Report generation stopped**' }
                 ])
             } else {
-                console.error('Error generating report:', error)
-                setMessages(prev => [
+                console.error('Generation error:', error)
+                setMessages((prev) => [
                     ...prev,
                     {
                         sender: 'bot',
-                        text: 'An error occurred. Please try again.',
-                    },
+                        text: '## ❌ Error\nFailed to generate report. Please try again.'
+                    }
                 ])
             }
         } finally {
@@ -99,72 +152,201 @@ export default function ReportGenerator() {
     }
 
     const stopReportGeneration = () => {
+        setStopped(true) // ✅ Set the stopped flag immediately
         if (abortControllerRef.current) {
             abortControllerRef.current.abort()
-            abortControllerRef.current = null
-            setLoading(false)
         }
+        setLoading(false)
     }
 
     return (
         <Layout>
-            <div className="p-4 max-w-lg mx-auto border rounded shadow-lg">
-                <h1 className="text-xl font-bold mb-4">Generate Report</h1>
-                <div className="mb-2">
-                    <label className="block font-semibold">Report Type:</label>
-                    <input
-                        type="text"
-                        value={reportType}
-                        onChange={e => setReportType(e.target.value)}
-                        className="w-full border p-2 rounded"
-                        placeholder="Enter report type"
-                    />
+            <div className="container mt-5">
+                <div className="row">
+                    <div className="col-12 mb-4">
+                        <h1 className="display-5">
+                            Operation Report Generator
+                        </h1>
+                        <hr />
+                    </div>
                 </div>
-                <div className="mb-2">
-                    <label className="block font-semibold">
-                        Operation Status:
-                    </label>
-                    <input
-                        type="text"
-                        value={operationStatus}
-                        onChange={e => setOperationStatus(e.target.value)}
-                        className="w-full border p-2 rounded"
-                        placeholder="Enter operation status"
-                    />
-                </div>
-                <button
-                    onClick={generateReport}
-                    disabled={loading}
-                    className="bg-blue-600 text-white px-4 py-2 rounded mt-2 w-full disabled:opacity-50">
-                    {loading ? 'Generating...' : 'Generate Report'}
-                </button>
-                {loading && (
-                    <button
-                        onClick={stopReportGeneration}
-                        className="bg-red-600 text-white px-4 py-2 rounded mt-2 w-full">
-                        Stop Generation
-                    </button>
-                )}
-                <div className="mt-4 p-2 border rounded bg-gray-100">
-                    <h2 className="font-semibold">Generated Report:</h2>
-                    <div className="chat-history">
-                        {messages.map((message, index) => (
-                            <div
-                                key={index}
-                                className={`message ${message.sender}`}>
-                                <strong>
-                                    {message.sender === 'bot'
-                                        ? 'Report'
-                                        : 'You'}
-                                    :
-                                </strong>
-                                <ReactMarkdown
-                                    remarkPlugins={[remarkMath]}
-                                    rehypePlugins={[rehypeKatex]}>
-                                    {message.text}
-                                </ReactMarkdown>
+
+                <div className="row">
+                    {/* Left Panel - Operation Selection */}
+                    <div className="col-md-4 mb-4">
+                        <div className="card shadow">
+                            <div className="card-header bg-primary text-white">
+                                <h5 className="mb-0">Completed Operations</h5>
                             </div>
-                        ))}
+                            <div className="card-body">
+                                <div className="row g-3">
+                                    {operations.map((op) => (
+                                        <div key={op.id} className="col-12">
+                                            <div
+                                                className={`card ${selectedOperationId === op.id ? 'border-primary shadow-sm' : ''}`}
+                                                onClick={() => {
+                                                    setSelectedOperationId(
+                                                        op.id
+                                                    )
+                                                    setReportType(
+                                                        'post_operation'
+                                                    )
+                                                }}
+                                                style={{ cursor: 'pointer' }}
+                                            >
+                                                <div className="card-body">
+                                                    <h6 className="card-title">
+                                                        {op.name}
+                                                    </h6>
+                                                    <p className="card-text text-muted small">
+                                                        Created:{' '}
+                                                        {new Date(
+                                                            op.created_at
+                                                        ).toLocaleDateString()}
+                                                    </p>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    ))}
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    {/* Right Panel - Report Generation */}
+                    <div className="col-md-8">
+                        <div className="card shadow mb-4">
+                            <div className="card-header bg-secondary text-white">
+                                <h5 className="mb-0">Report Parameters</h5>
+                            </div>
+                            <div className="card-body">
+                                <div className="row g-3">
+                                    <div className="col-md-6">
+                                        <label className="form-label">
+                                            Report Type
+                                        </label>
+                                        <input
+                                            type="text"
+                                            value={reportType}
+                                            readOnly
+                                            className="form-control-plaintext border rounded p-2"
+                                        />
+                                    </div>
+                                    <div className="col-md-6">
+                                        <label className="form-label">
+                                            Operation Outcome
+                                        </label>
+                                        <select
+                                            value={operationStatus}
+                                            onChange={(e) =>
+                                                setOperationStatus(
+                                                    e.target.value
+                                                )
+                                            }
+                                            disabled={loading}
+                                            className="form-select"
+                                        >
+                                            <option value="">
+                                                Select outcome
+                                            </option>
+                                            <option value="success">
+                                                Successful
+                                            </option>
+                                            <option value="failed">
+                                                Failed
+                                            </option>
+                                        </select>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div className="card shadow mb-4">
+                            <div className="card-header bg-dark text-white">
+                                <h5 className="mb-0">Generated Report</h5>
+                            </div>
+                            <div
+                                className="card-body chat-history p-0"
+                                style={{
+                                    maxHeight: '400px',
+                                    overflowY: 'auto'
+                                }}
+                                ref={chatHistoryRef}
+                            >
+                                {messages.map((message, index) => (
+                                    <div
+                                        key={index}
+                                        className={`p-3 ${message.sender === 'bot' ? 'bg-light' : 'bg-secondary text-white'}`}
+                                    >
+                                        <ReactMarkdown
+                                            remarkPlugins={[remarkMath]}
+                                            rehypePlugins={[rehypeKatex]}
+                                            components={{
+                                                h2: ({ ...props }) => (
+                                                    <h2
+                                                        className="h4"
+                                                        {...props}
+                                                    />
+                                                ),
+                                                p: ({ ...props }) => (
+                                                    <p
+                                                        className="mb-0"
+                                                        {...props}
+                                                    />
+                                                )
+                                            }}
+                                        >
+                                            {message.text}
+                                        </ReactMarkdown>
+                                    </div>
+                                ))}
+
+                                {loading && (
+                                    <div className="p-3 bg-light">
+                                        <div className="d-flex align-items-center">
+                                            <div
+                                                className="spinner-border me-2"
+                                                role="status"
+                                            />
+                                            <span>Generating report...</span>
+                                        </div>
+                                    </div>
+                                )}
+                            </div>
+                        </div>
+
+                        <div className="d-flex gap-2">
+                            <button
+                                onClick={generateReport}
+                                disabled={
+                                    loading ||
+                                    !selectedOperationId ||
+                                    !operationStatus
+                                }
+                                className="btn btn-primary flex-grow-1"
+                            >
+                                {loading ? (
+                                    <>
+                                        <span
+                                            className="spinner-border spinner-border-sm me-2"
+                                            role="status"
+                                        />
+                                        Generating...
+                                    </>
+                                ) : (
+                                    'Generate Report'
+                                )}
+                            </button>
+
+                            {loading && (
+                                <button
+                                    onClick={stopReportGeneration}
+                                    className="btn btn-danger"
+                                >
+                                    <FaRegStopCircle /> Stop
+                                </button>
+                            )}
+                        </div>
                     </div>
                 </div>
             </div>

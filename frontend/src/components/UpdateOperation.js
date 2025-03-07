@@ -11,7 +11,7 @@ const UpdateOperation = ({ operation, onOperationUpdated }) => {
         const fetchUserDetails = async () => {
             try {
                 const response = await axios.get(
-                    `${process.env.NEXT_PUBLIC_BACKEND_URL}/api/user`,
+                    `${process.env.NEXT_PUBLIC_BACKEND_URL}/api/user`
                 )
                 setRoleId(response.data.role_id || null)
             } catch (error) {
@@ -22,16 +22,16 @@ const UpdateOperation = ({ operation, onOperationUpdated }) => {
         fetchUserDetails()
     }, [])
 
-    const handleChange = e => {
+    const handleChange = (e) => {
         setFormData({ ...formData, [e.target.name]: e.target.value })
     }
 
-    const handleSubmit = async e => {
+    const handleSubmit = async (e) => {
         e.preventDefault()
         try {
             const response = await axios.put(
                 `${process.env.NEXT_PUBLIC_BACKEND_URL}/api/update-operation/${operation.id}`,
-                formData,
+                formData
             )
             onOperationUpdated(response.data)
             setIsEditing(false)
@@ -43,7 +43,7 @@ const UpdateOperation = ({ operation, onOperationUpdated }) => {
     }
 
     // Handle operation deletion
-    const handleOperationDeleted = operationId => {
+    const handleOperationDeleted = (operationId) => {
         alert(`Operation with ID ${operationId} deleted successfully`)
     }
 
@@ -65,13 +65,15 @@ const UpdateOperation = ({ operation, onOperationUpdated }) => {
                         name="description"
                         value={formData.description}
                         onChange={handleChange}
-                        className="w-full p-2 border rounded" />
+                        className="w-full p-2 border rounded"
+                    />
                     <select
                         name="status"
                         value={formData.status}
                         onChange={handleChange}
                         required
-                        className="w-full p-2 border rounded">
+                        className="w-full p-2 border rounded"
+                    >
                         <option value="ongoing">Ongoing</option>
                         <option value="upcoming">Upcoming</option>
                         <option value="completed">Completed</option>
@@ -107,13 +109,15 @@ const UpdateOperation = ({ operation, onOperationUpdated }) => {
                     <div className="flex gap-3">
                         <button
                             type="submit"
-                            className="px-4 py-2 bg-blue-500 text-white rounded">
+                            className="px-4 py-2 bg-blue-500 text-white rounded"
+                        >
                             Submit Update
                         </button>
                         <button
                             type="button"
                             onClick={() => setIsEditing(false)}
-                            className="px-4 py-2 bg-gray-400 text-white rounded">
+                            className="px-4 py-2 bg-gray-400 text-white rounded"
+                        >
                             Cancel
                         </button>
                     </div>
@@ -148,7 +152,8 @@ const UpdateOperation = ({ operation, onOperationUpdated }) => {
                         <div className="flex gap-3">
                             <button
                                 onClick={() => setIsEditing(true)}
-                                className="px-4 py-0.5 bg-green-500 text-white rounded">
+                                className="px-4 py-0.5 bg-green-500 text-white rounded"
+                            >
                                 Update
                             </button>
                             {roleId == 1 && (

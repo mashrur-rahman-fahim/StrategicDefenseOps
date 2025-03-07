@@ -11,7 +11,7 @@ const ListOperations = () => {
         const fetchUserDetails = async () => {
             try {
                 const response = await axios.get(
-                    `${process.env.NEXT_PUBLIC_BACKEND_URL}/api/user`,
+                    `${process.env.NEXT_PUBLIC_BACKEND_URL}/api/user`
                 )
                 setRoleId(response.data.role_id || 'Unknown')
             } catch (error) {
@@ -26,7 +26,7 @@ const ListOperations = () => {
         const fetchOperations = async () => {
             try {
                 const response = await axios.get(
-                    `${process.env.NEXT_PUBLIC_BACKEND_URL}/api/get-all-operations`,
+                    `${process.env.NEXT_PUBLIC_BACKEND_URL}/api/get-all-operations`
                 )
                 const operationsData = response.data[1] || []
                 setOperations(operationsData)
@@ -40,11 +40,11 @@ const ListOperations = () => {
         fetchOperations()
     }, [])
 
-    const handleOperationUpdated = updatedOperation => {
+    const handleOperationUpdated = (updatedOperation) => {
         setOperations(
-            operations.map(op =>
-                op.id === updatedOperation.id ? updatedOperation : op,
-            ),
+            operations.map((op) =>
+                op.id === updatedOperation.id ? updatedOperation : op
+            )
         )
     }
 
@@ -55,7 +55,7 @@ const ListOperations = () => {
             ) : operations.length === 0 ? (
                 <p>No operations found.</p>
             ) : (
-                operations.map(operation => (
+                operations.map((operation) => (
                     <div key={operation.id}>
                         <h2>{operation.name || 'No Name'}</h2>
                         <p>{operation.description || 'No Description'}</p>
