@@ -66,7 +66,7 @@ class OperationResourcesService
                             throw new Exception('Unable to update vehicle');
                         }
 
-                        $searchResourceId=DB::selectOne('select * from operation_resources where resource_id=?',[$resource[0]->id]);
+                        $searchResourceId=DB::selectOne('select * from operation_resources where resource_id=? and operation_id=?',[$resource[0]->id,$operationId]);
                         if(!$searchResourceId) {
                         $operationResource = DB::insert('insert into operation_resources(operation_id,resource_id,resource_count)
                     values(?,?,?)',
@@ -99,7 +99,7 @@ class OperationResourcesService
                             throw new Exception('Unable to update weapon');
                         }
 
-                        $searchResourceId=DB::selectOne('select * from operation_resources where resource_id=?',[$resource[0]->id]);
+                        $searchResourceId=DB::selectOne('select * from operation_resources where resource_id=? and operation_id=?',[$resource[0]->id,$operationId]);
                         if(!$searchResourceId) {
                         $operationResource = DB::insert('insert into operation_resources(operation_id,resource_id,resource_count)
                     values(?,?,?)',
@@ -129,7 +129,7 @@ class OperationResourcesService
                             throw new Exception('Unable to update personnel');
                         }
 
-                        $searchResourceId=DB::selectOne('select * from operation_resources where resource_id=?',[$resource[0]->id]);
+                        $searchResourceId=DB::selectOne('select * from operation_resources where resource_id=? and operation_id=?',[$resource[0]->id,$operationId]);
                         if(!$searchResourceId) {
                         $operationResource = DB::insert('insert into operation_resources(operation_id,resource_id,resource_count)
                     values(?,?,?)',
@@ -159,7 +159,7 @@ class OperationResourcesService
                             throw new Exception('Unable to update equipment');
                         }
 
-                        $searchResourceId=DB::selectOne('select * from operation_resources where resource_id=?',[$resource[0]->id]);
+                        $searchResourceId=DB::selectOne('select * from operation_resources where resource_id=? and operation_id=?',[$resource[0]->id,$operationId]);
                         if(!$searchResourceId) {
                         $operationResource = DB::insert('insert into operation_resources(operation_id,resource_id,resource_count)
                     values(?,?,?)',
@@ -302,14 +302,15 @@ class OperationResourcesService
                 select r.id,v.vehicle_count as count,v.id as vehicle_id from resources r join vehicle v on v.id=r.vehicle_id
                 where v.vehicle_serial_number=?', [$datas['serial_number'][$i]]);
                     $serialNumberExist = DB::selectOne('select * from operation_resources where resource_id=? and operation_id=?', [$resource[0]->id, $operationId]);
+                   
                     if (!$serialNumberExist) {
-
+                      
                         throw new Exception('Serial number not found for vehicle');
                     }
 
                     $operationResourceCount = DB::selectOne('select resource_count from operation_resources where resource_id=? and operation_id=?', [$resource[0]->id, $operationId]);
                     $resource[0]->count = $operationResourceCount->resource_count + $resource[0]->count;
-
+                   
                     if ($resource[0] && $resource[0]->count >= $datas['count'][$i]) {
 
                         $data['vehicle_count'] = $resource[0]->count - $datas['count'][$i];
@@ -317,13 +318,16 @@ class OperationResourcesService
                         if (!$updatedVehicle) {
                             throw new Exception('Unable to update vehicle');
                         }
-
+                       
                         $operationResource = DB::update('update operation_resources set resource_count=? where resource_id=? and operation_id=?', [$datas['count'][$i], $resource[0]->id, $operationId]);
-
+                       
                         if (!$operationResource) {
+                          
                             throw new Exception('Unable to add operation resource');
                         }
+                       
                     } else {
+                       
                         throw new Exception('Inventory insufficient');
                     }
 
@@ -418,7 +422,7 @@ class OperationResourcesService
 
             }
             DB::commit();
-
+          
             return true;
 
         } catch (\Exception $e) {
