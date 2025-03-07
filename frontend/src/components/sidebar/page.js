@@ -2,6 +2,7 @@
 import React, { useEffect, useRef, useState } from 'react'
 import axios from '@/lib/axios'
 import './sidebar.css'
+import { Icon } from '@iconify/react'
 
 const Sidebar = ({ isOpen, toggleSidebar, selectedItem, handleNavigation }) => {
     const sidebarRef = useRef()
@@ -50,14 +51,19 @@ const Sidebar = ({ isOpen, toggleSidebar, selectedItem, handleNavigation }) => {
     return (
         <div ref={sidebarRef} className={`sidebar ${isOpen ? 'open' : ''}`}>
             {/* Arrow button to close sidebar */}
-            <button className="back-button" onClick={toggleSidebar}>
-                ←
-            </button>
+            <div className="icon-container d-flex justify-content-between align-items-center">
+                <button className="back-button" onClick={toggleSidebar}>
+                    ←
+                </button>
+                <button className="back-button" onClick={toggleSidebar}>
+                    <Icon icon="bi:pencil-square" width="16" height="16" />
+                </button>
+            </div>
 
             {/* Profile section */}
             <div className="profile">
                 <h2>{userName}</h2>
-                <p className="rank">Role : {roleName}</p>
+                <p className="rank">{roleName}</p>
             </div>
 
             {/* Menu items */}

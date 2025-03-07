@@ -17,15 +17,21 @@
   left: 0;
 }
 
+/* Icon Container */
+.icon-container {
+  width: 100%;
+  padding: 0 10px; /* Add some padding to ensure the icons are not too close to the edges */
+}
+
 /* Back Button */
 .back-button {
   background: none;
   border: none;
   font-size: 24px;
   cursor: pointer;
-  align-self: flex-start;
-  margin-bottom: 10px;
   color: #333; /* Ensure the arrow is visible */
+  margin: 0; /* Reset margin if needed */
+  padding: 0; /* Reset padding if needed */
 }
 
 .back-button:hover {
