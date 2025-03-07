@@ -12,7 +12,7 @@ const Sidebar = ({ isOpen, toggleSidebar, selectedItem, handleNavigation }) => {
     const [userEmail, setUserEmail] = useState('')
     const [roleName, setRoleName] = useState('')
     const [showModal, setShowModal] = useState(false)
-    const [tempName, setTempName] = useState('') 
+    const [tempName, setTempName] = useState('')
 
     const [loading, setLoading] = useState(false)
 
@@ -68,7 +68,7 @@ const Sidebar = ({ isOpen, toggleSidebar, selectedItem, handleNavigation }) => {
         try {
             setLoading(true)
             const response = await axios.put(`/api/update-profile`, {
-                name: tempName,
+                name: tempName
             })
             console.log('User details updated:', response.data)
 
@@ -77,15 +77,15 @@ const Sidebar = ({ isOpen, toggleSidebar, selectedItem, handleNavigation }) => {
             toast.success('Profile updated successfully!')
         } catch (error) {
             console.error('Error updating user details:', error)
-        } finally{
-            setLoading(false);
+        } finally {
+            setLoading(false)
         }
     }
 
     return (
         <div ref={sidebarRef} className={`sidebar ${isOpen ? 'open' : ''}`}>
             {/* Arrow button to close sidebar */}
-            <div className='icon-container d-flex justify-content-between align-items-center'>
+            <div className="icon-container d-flex justify-content-between align-items-center">
                 <button className="back-button" onClick={toggleSidebar}>
                     ←
                 </button>
@@ -137,7 +137,10 @@ const Sidebar = ({ isOpen, toggleSidebar, selectedItem, handleNavigation }) => {
                     </Form>
                 </Modal.Body>
                 <Modal.Footer>
-                    <Button variant="secondary" onClick={() => setShowModal(false)}>
+                    <Button
+                        variant="secondary"
+                        onClick={() => setShowModal(false)}
+                    >
                         Close
                     </Button>
                     <Button variant="primary" onClick={handleSaveChanges}>

@@ -1,10 +1,10 @@
-"use client"
-import React, { useState, useEffect, useRef } from "react"
-import "./navbar.css"
-import Link from "next/link"
+'use client'
+import React, { useState, useEffect, useRef } from 'react'
+import './navbar.css'
+import Link from 'next/link'
 
 const Navbar = ({ toggleSidebar, logout }) => {
-    const [isDropdownOpen, setDropdownOpen] = useState(false)
+    const [, setDropdownOpen] = useState(false)
     const [showLogoutPrompt, setShowLogoutPrompt] = useState(false)
     const [isLoggingOut, setIsLoggingOut] = useState(false)
     const menuButtonRef = useRef(null) // Ref for the "three dots" button
@@ -34,7 +34,9 @@ const Navbar = ({ toggleSidebar, logout }) => {
                     >
                         ☰
                     </button>
-                    <Link href="/dashboard" className="text-decoration-none"><h1 className="navbar-title">StrategicDefenseOps</h1></Link>
+                    <Link href="/dashboard" className="text-decoration-none">
+                        <h1 className="navbar-title">StrategicDefenseOps</h1>
+                    </Link>
                 </div>
 
                 <div className="right-side">
