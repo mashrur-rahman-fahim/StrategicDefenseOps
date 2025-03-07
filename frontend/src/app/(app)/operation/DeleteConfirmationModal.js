@@ -1,13 +1,13 @@
-import React from 'react'
-import { Modal, Button } from 'react-bootstrap'
-import Loading from '@/components/Loading'
+import React from 'react';
+import { Modal, Button } from 'react-bootstrap';
+import Loading from '@/components/Loading';
 
 export default function DeleteConfirmationModal({
     show,
     onHide,
     operationName,
     onDelete,
-    loading
+    loading,
 }) {
     return (
         <Modal show={show} onHide={onHide} size="sm">
@@ -27,5 +27,5 @@ export default function DeleteConfirmationModal({
                 </Button>
             </Modal.Footer>
         </Modal>
-    )
+    );
 }

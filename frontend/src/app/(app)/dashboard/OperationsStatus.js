@@ -1,6 +1,6 @@
-import React from 'react'
-import { Card, Row, Col } from 'react-bootstrap'
-import { Icon } from '@iconify/react'
+import React from 'react';
+import { Card, Row, Col } from 'react-bootstrap';
+import { Icon } from '@iconify/react';
 
 const OperationsStatus = ({ stats }) => {
     const operations = [
@@ -8,27 +8,27 @@ const OperationsStatus = ({ stats }) => {
             title: 'Ongoing Operations',
             icon: 'mdi:chart-timeline-variant',
             count: stats.ongoing,
-            color: 'primary'
+            color: 'primary',
         },
         {
             title: 'Upcoming Operations',
             icon: 'mdi:calendar-clock',
             count: stats.upcoming,
-            color: 'warning'
+            color: 'warning',
         },
         {
             title: 'Completed Operations',
             icon: 'mdi:check-circle-outline',
             count: stats.completed,
-            color: 'success'
+            color: 'success',
         },
         {
             title: 'Total Operations',
             icon: 'mdi:clipboard-list-outline',
             count: stats.total,
-            color: 'info'
-        }
-    ]
+            color: 'info',
+        },
+    ];
 
     return (
         <>
@@ -66,7 +66,7 @@ const OperationsStatus = ({ stats }) => {
                 ))}
             </Row>
         </>
-    )
+    );
 }
 
-export default OperationsStatus
+export default OperationsStatus;

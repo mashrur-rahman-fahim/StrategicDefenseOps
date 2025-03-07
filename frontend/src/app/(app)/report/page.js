@@ -1,70 +1,70 @@
-'use client'
-import { useState, useRef, useEffect } from 'react'
-import { flushSync } from 'react-dom'
-import ReactMarkdown from 'react-markdown'
-import remarkMath from 'remark-math'
-import rehypeKatex from 'rehype-katex'
-import 'katex/dist/katex.min.css'
-import { FaRegStopCircle } from 'react-icons/fa'
-import Layout from '@/components/layout'
-import axios from '@/lib/axios.js'
+'use client';
+import { useState, useRef, useEffect } from 'react';
+import { flushSync } from 'react-dom';
+import ReactMarkdown from 'react-markdown';
+import remarkMath from 'remark-math';
+import rehypeKatex from 'rehype-katex';
+import 'katex/dist/katex.min.css';
+import { FaRegStopCircle } from 'react-icons/fa';
+import Layout from '@/components/layout';
+import axios from '@/lib/axios.js';
 
 // Add Bootstrap CSS in your Layout or here
 // In _app.js or Layout component: import 'bootstrap/dist/css/bootstrap.min.css'
 
 export default function ReportGenerator() {
-    const [operations, setOperations] = useState([])
-    const [selectedOperationId, setSelectedOperationId] = useState('')
-    const [reportType, setReportType] = useState('')
-    const [operationStatus, setOperationStatus] = useState('')
-    const [messages, setMessages] = useState([])
-    const [loading, setLoading] = useState(false)
-    const abortControllerRef = useRef(null)
-    const chatHistoryRef = useRef(null)
-    const [stopped, setStopped] = useState(false)
+    const [operations, setOperations] = useState([]);
+    const [selectedOperationId, setSelectedOperationId] = useState('');
+    const [reportType, setReportType] = useState('');
+    const [operationStatus, setOperationStatus] = useState('');
+    const [messages, setMessages] = useState([]);
+    const [loading, setLoading] = useState(false);
+    const abortControllerRef = useRef(null);
+    const chatHistoryRef = useRef(null);
+    const [stopped, setStopped] = useState(false);
 
     // Auto-scroll handling
     useEffect(() => {
         if (chatHistoryRef.current) {
             chatHistoryRef.current.scrollTop =
-                chatHistoryRef.current.scrollHeight
+                chatHistoryRef.current.scrollHeight;
         }
-    }, [messages])
+    }, [messages]);
 
     // Fetch completed operations
     useEffect(() => {
         const fetchCompletedOperations = async () => {
             try {
-                const response = await axios.get('/api/get-all-operations')
+                const response = await axios.get('/api/get-all-operations');
                 const completedOps = response.data[1].filter(
                     (op) => op.status === 'completed'
-                )
-                setOperations(completedOps)
+                );
+                setOperations(completedOps);
             } catch (err) {
-                console.error('Error fetching operations:', err)
+                console.error('Error fetching operations:', err);
             }
-        }
-        fetchCompletedOperations()
-    }, [])
+        };
+        fetchCompletedOperations();
+    }, []);
 
     const generateReport = async () => {
         if (!selectedOperationId || !operationStatus) {
-            alert('Please select an operation and set its status')
+            alert('Please select an operation and set its status');
             return
         }
 
-        setMessages([])
-        setLoading(true)
-        setStopped(false)
-        abortControllerRef.current = new AbortController()
+        setMessages([]);
+        setLoading(true);
+        setStopped(false);
+        abortControllerRef.current = new AbortController();
 
         try {
-            const token = localStorage.getItem('api_token')
+            const token = localStorage.getItem('api_token');
             const headers = {
                 'Content-Type': 'application/json',
                 Authorization: token ? `Bearer ${token}` : '',
-                'X-Requested-With': 'XMLHttpRequest'
-            }
+                'X-Requested-With': 'XMLHttpRequest',
+            };
             const response = await fetch(
                 `${process.env.NEXT_PUBLIC_BACKEND_URL}/api/generate-report/${selectedOperationId}`,
                 {
@@ -73,90 +73,93 @@ export default function ReportGenerator() {
                     credentials: 'include',
                     body: JSON.stringify({
                         report_type: reportType,
-                        operation_status: operationStatus
+                        operation_status: operationStatus,
                     }),
-                    signal: abortControllerRef.current.signal
+                    signal: abortControllerRef.current.signal,
                 }
-            )
+            );
 
-            if (!response.body) throw new Error('No response body')
+            if (!response.body) throw new Error('No response body');
 
-            const reader = response.body.getReader()
-            const decoder = new TextDecoder()
+            const reader = response.body.getReader();
+            const decoder = new TextDecoder();
 
-            let currentText = ''
-            let buffer = ''
+            let currentText = '';
+            let buffer = '';
 
             // Initial bot message
             flushSync(() => {
-                setMessages((prev) => [...prev, { sender: 'bot', text: '' }])
+                setMessages((prev) => [...prev, { sender: 'bot', text: '' }]);
             })
-            let loopController = true
+            let loopController = true;
             while (loopController) {
-                if (stopped) break // ✅ Stop immediately when stop is triggered
+                if (stopped) break; // ✅ Stop immediately when stop is triggered
 
-                const { done, value } = await reader.read()
+                const { done, value } = await reader.read();
                 if (done) {
-                    break
+                    break;
                 }
 
-                buffer += decoder.decode(value, { stream: true })
+                buffer += decoder.decode(value, { stream: true });
 
                 while (buffer.length > 0) {
-                    if (stopped) break // ✅ Break the inner loop too
+                    if (stopped) break; // ✅ Break the inner loop too
 
-                    const char = buffer.charAt(0)
-                    buffer = buffer.substring(1)
+                    const char = buffer.charAt(0);
+                    buffer = buffer.substring(1);
 
-                    currentText += char
+                    currentText += char;
 
                     flushSync(() => {
                         setMessages((prev) => {
-                            const newMessages = [...prev]
+                            const newMessages = [...prev];
                             const lastMessage =
-                                newMessages[newMessages.length - 1]
+                                newMessages[newMessages.length - 1];
 
                             if (lastMessage?.sender === 'bot') {
-                                lastMessage.text = currentText
-                                return [...newMessages]
+                                lastMessage.text = currentText;
+                                return [...newMessages];
                             }
                             return [
                                 ...newMessages,
-                                { sender: 'bot', text: currentText }
-                            ]
+                                { sender: 'bot', text: currentText },
+                            ];
                         })
-                    })
+                    });
 
-                    await new Promise((resolve) => setTimeout(resolve, 20))
+                    await new Promise((resolve) => setTimeout(resolve, 20));
                 }
             }
         } catch (error) {
             if (error.name === 'AbortError' || stopped) {
                 setMessages((prev) => [
                     ...prev,
-                    { sender: 'bot', text: '\n\n**Report generation stopped**' }
-                ])
+                    {
+                        sender: 'bot',
+                        text: '\n\n**Report generation stopped**',
+                    },
+                ]);
             } else {
-                console.error('Generation error:', error)
+                console.error('Generation error:', error);
                 setMessages((prev) => [
                     ...prev,
                     {
                         sender: 'bot',
-                        text: '## ❌ Error\nFailed to generate report. Please try again.'
-                    }
-                ])
+                        text: '## ❌ Error\nFailed to generate report. Please try again.',
+                    },
+                ]);
             }
         } finally {
-            setLoading(false)
+            setLoading(false);
         }
-    }
+    };
 
     const stopReportGeneration = () => {
-        setStopped(true) // ✅ Set the stopped flag immediately
+        setStopped(true); // ✅ Set the stopped flag immediately
         if (abortControllerRef.current) {
-            abortControllerRef.current.abort()
+            abortControllerRef.current.abort();
         }
-        setLoading(false)
+        setLoading(false);
     }
 
     return (
@@ -187,10 +190,10 @@ export default function ReportGenerator() {
                                                 onClick={() => {
                                                     setSelectedOperationId(
                                                         op.id
-                                                    )
+                                                    );
                                                     setReportType(
                                                         'post_operation'
-                                                    )
+                                                    );
                                                 }}
                                                 style={{ cursor: 'pointer' }}
                                             >
@@ -269,7 +272,7 @@ export default function ReportGenerator() {
                                 className="card-body chat-history p-0"
                                 style={{
                                     maxHeight: '400px',
-                                    overflowY: 'auto'
+                                    overflowY: 'auto',
                                 }}
                                 ref={chatHistoryRef}
                             >
@@ -293,7 +296,7 @@ export default function ReportGenerator() {
                                                         className="mb-0"
                                                         {...props}
                                                     />
-                                                )
+                                                ),
                                             }}
                                         >
                                             {message.text}
@@ -351,5 +354,5 @@ export default function ReportGenerator() {
                 </div>
             </div>
         </Layout>
-    )
+    );
 }

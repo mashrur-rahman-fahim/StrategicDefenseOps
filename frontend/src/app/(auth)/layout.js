@@ -1,6 +1,6 @@
 export const metadata = {
-    title: 'Strategic Defense Operations'
-}
+    title: 'Strategic Defense Operations',
+};
 
 const Layout = ({ children }) => {
     return (
@@ -11,7 +11,7 @@ const Layout = ({ children }) => {
                 </div>
             </div>
         </div>
-    )
+    );
 }
 
-export default Layout
+export default Layout;

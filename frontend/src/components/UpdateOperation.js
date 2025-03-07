@@ -1,50 +1,50 @@
-import React, { useEffect, useState } from 'react'
-import axios from '../lib/axios'
-import DeleteOperation from './DeleteOperation'
+import React, { useEffect, useState } from "react";
+import axios from "../lib/axios";
+import DeleteOperation from "./DeleteOperation";
 
 const UpdateOperation = ({ operation, onOperationUpdated }) => {
-    const [roleId, setRoleId] = useState(null)
-    const [isEditing, setIsEditing] = useState(false)
-    const [formData, setFormData] = useState(operation)
+    const [roleId, setRoleId] = useState(null);
+    const [isEditing, setIsEditing] = useState(false);
+    const [formData, setFormData] = useState(operation);
 
     useEffect(() => {
         const fetchUserDetails = async () => {
             try {
                 const response = await axios.get(
-                    `${process.env.NEXT_PUBLIC_BACKEND_URL}/api/user`
-                )
-                setRoleId(response.data.role_id || null)
+                    `${process.env.NEXT_PUBLIC_BACKEND_URL}/api/user`,
+                );
+                setRoleId(response.data.role_id || null);
             } catch (error) {
-                console.error('Error fetching user details:', error)
+                console.error("Error fetching user details:", error);
             }
-        }
+        };
 
-        fetchUserDetails()
-    }, [])
+        fetchUserDetails();
+    }, []);
 
     const handleChange = (e) => {
-        setFormData({ ...formData, [e.target.name]: e.target.value })
+        setFormData({ ...formData, [e.target.name]: e.target.value });
     }
 
     const handleSubmit = async (e) => {
-        e.preventDefault()
+        e.preventDefault();
         try {
             const response = await axios.put(
                 `${process.env.NEXT_PUBLIC_BACKEND_URL}/api/update-operation/${operation.id}`,
-                formData
-            )
-            onOperationUpdated(response.data)
-            setIsEditing(false)
-            alert('Operation updated successfully')
+                formData,
+            );
+            onOperationUpdated(response.data);
+            setIsEditing(false);
+            alert("Operation updated successfully");
         } catch (error) {
-            console.error('Error updating operation:', error)
-            alert('Failed to update operation')
+            console.error("Error updating operation:", error);
+            alert("Failed to update operation");
         }
-    }
+    };
 
     // Handle operation deletion
     const handleOperationDeleted = (operationId) => {
-        alert(`Operation with ID ${operationId} deleted successfully`)
+        alert(`Operation with ID ${operationId} deleted successfully`);
     }
 
     return roleId === null ? (
@@ -129,7 +129,7 @@ const UpdateOperation = ({ operation, onOperationUpdated }) => {
                             <strong>Name:</strong> {operation.name}
                         </li>
                         <li>
-                            <strong>Description:</strong>{' '}
+                            <strong>Description:</strong>{" "}
                             {operation.description}
                         </li>
                         <li>
@@ -167,7 +167,7 @@ const UpdateOperation = ({ operation, onOperationUpdated }) => {
                 </div>
             )}
         </div>
-    )
+    );
 }
 
-export default UpdateOperation
+export default UpdateOperation;

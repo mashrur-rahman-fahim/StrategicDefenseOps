@@ -54,7 +54,7 @@ This Next.js application contains a custom `useAuth` React hook, designed to abs
 
 ```js
 const ExamplePage = () => {
-    const { logout, user } = useAuth({ middleware: 'auth' })
+    const { logout, user } = useAuth({ middleware: "auth" });
 
     return (
         <>
@@ -62,10 +62,10 @@ const ExamplePage = () => {
 
             <button onClick={logout}>Sign out</button>
         </>
-    )
-}
+    );
+};
 
-export default ExamplePage
+export default ExamplePage;
 ```
 
 > Note: You will need to use [optional chaining](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Operators/Optional_chaining) (`user?.name` instead of `user.name`) when accessing properties on the user object to account for Next.js's initial server-side render.

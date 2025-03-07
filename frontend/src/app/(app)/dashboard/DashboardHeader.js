@@ -1,12 +1,12 @@
-import React from 'react'
+import React from 'react';
 
 const DashboardHeader = ({ user }) => {
     const role = {
         1: 'Admin',
         2: 'Manager',
         3: 'Operator',
-        4: 'Viewer'
-    }
+        4: 'Viewer',
+    };
 
     return (
         <div>
@@ -16,7 +16,7 @@ const DashboardHeader = ({ user }) => {
                 {`${user?.name} (${role[user.role_id]})` || 'User'}
             </p>
         </div>
-    )
+    );
 }
 
-export default DashboardHeader
+export default DashboardHeader;

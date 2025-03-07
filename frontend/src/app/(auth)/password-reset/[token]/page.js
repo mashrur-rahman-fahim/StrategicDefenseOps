@@ -1,40 +1,40 @@
-'use client'
+'use client';
 
-import Button from '@/components/Button'
-import Input from '@/components/Input'
-import InputError from '@/components/InputError'
-import Label from '@/components/Label'
-import { useAuth } from '@/hooks/auth'
-import { useEffect, useState } from 'react'
-import { useSearchParams } from 'next/navigation'
-import AuthSessionStatus from '@/app/(auth)/AuthSessionStatus'
+import Button from '@/components/Button';
+import Input from '@/components/Input';
+import InputError from '@/components/InputError';
+import Label from '@/components/Label';
+import { useAuth } from '@/hooks/auth';
+import { useEffect, useState } from 'react';
+import { useSearchParams } from 'next/navigation';
+import AuthSessionStatus from '@/app/(auth)/AuthSessionStatus';
 
 const PasswordReset = () => {
-    const searchParams = useSearchParams()
+    const searchParams = useSearchParams();
 
-    const { resetPassword } = useAuth({ middleware: 'guest' })
+    const { resetPassword } = useAuth({ middleware: 'guest' });
 
-    const [email, setEmail] = useState('')
-    const [password, setPassword] = useState('')
-    const [passwordConfirmation, setPasswordConfirmation] = useState('')
-    const [errors, setErrors] = useState([])
-    const [status, setStatus] = useState(null)
+    const [email, setEmail] = useState('');
+    const [password, setPassword] = useState('');
+    const [passwordConfirmation, setPasswordConfirmation] = useState('');
+    const [errors, setErrors] = useState([]);
+    const [status, setStatus] = useState(null);
 
     const submitForm = (event) => {
-        event.preventDefault()
+        event.preventDefault();
 
         resetPassword({
             email,
             password,
             password_confirmation: passwordConfirmation,
             setErrors,
-            setStatus
-        })
+            setStatus,
+        });
     }
 
     useEffect(() => {
-        setEmail(searchParams.get('email'))
-    }, [searchParams.get('email')])
+        setEmail(searchParams.get('email'));
+    }, [searchParams.get('email')]);
 
     return (
         <>
@@ -102,7 +102,7 @@ const PasswordReset = () => {
                 </div>
             </form>
         </>
-    )
+    );
 }
 
-export default PasswordReset
+export default PasswordReset;

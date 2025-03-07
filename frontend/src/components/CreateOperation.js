@@ -1,60 +1,60 @@
-import React, { useState, useEffect, useRef } from 'react'
-import axios from '../lib/axios'
+import React, { useState, useEffect, useRef } from "react";
+import axios from "../lib/axios";
 
 const CreateOperation = ({ onOperationCreated }) => {
     const [formData, setFormData] = useState({
-        name: '',
-        description: '',
-        status: 'ongoing',
-        start_date: '',
-        end_date: '',
-        location: '',
-        budget: ''
-    })
-    const [userID, setUserID] = useState(null)
-    const startDateRef = useRef(null)
-    const endDateRef = useRef(null)
+        name: "",
+        description: "",
+        status: "ongoing",
+        start_date: "",
+        end_date: "",
+        location: "",
+        budget: "",
+    });
+    const [userID, setUserID] = useState(null);
+    const startDateRef = useRef(null);
+    const endDateRef = useRef(null);
 
     useEffect(() => {
         const fetchUserDetails = async () => {
             try {
                 const response = await axios.get(
-                    `${process.env.NEXT_PUBLIC_BACKEND_URL}/api/user`
-                )
-                setUserID(response.data.id || null)
+                    `${process.env.NEXT_PUBLIC_BACKEND_URL}/api/user`,
+                );
+                setUserID(response.data.id || null);
             } catch (error) {
-                console.error('Error fetching user details:', error)
+                console.error("Error fetching user details:", error);
             }
-        }
+        };
 
-        fetchUserDetails()
-    }, [])
+        fetchUserDetails();
+    }, []);
 
     const validateDate = (dateString) => {
-        return /^\d{4}-\d{2}-\d{2}$/.test(dateString)
+        return /^\d{4}-\d{2}-\d{2}$/.test(dateString);
     }
 
     const handleChange = (e) => {
-        setFormData({ ...formData, [e.target.name]: e.target.value })
+        setFormData({ ...formData, [e.target.name]: e.target.value });
     }
 
     const handleDateChange = (e) => {
-        const { name, value } = e.target
-        const formattedValue = value.replace(/[^0-9-]/g, '') // Prevent invalid characters
-        setFormData({ ...formData, [name]: formattedValue })
+        const { name, value } = e.target;
+        const formattedValue = value.replace(/[^0-9-]/g, ""); // Prevent invalid characters
+        setFormData({ ...formData, [name]: formattedValue });
     }
 
     const handleBlur = (name) => {
         if (!validateDate(formData[name])) {
-            alert('Please enter a valid date in YYYY-MM-DD format.')
-            setFormData({ ...formData, [name]: '' })
+            alert("Please enter a valid date in YYYY-MM-DD format.");
+            setFormData({ ...formData, [name]: "" });
         }
-    }
+    };
 
     const handleSubmit = async (e) => {
-        e.preventDefault()
+        e.preventDefault();
         if (!userID) {
-            alert('User not identified. Please try again.')
+            alert("User not identified. Please try again.");
             return
         }
 
@@ -62,40 +62,40 @@ const CreateOperation = ({ onOperationCreated }) => {
             !validateDate(formData.start_date) ||
             !validateDate(formData.end_date)
         ) {
-            alert('Please enter valid dates in YYYY-MM-DD format.')
+            alert("Please enter valid dates in YYYY-MM-DD format.");
             return
         }
 
         const operationData = {
             ...formData,
             created_by: userID,
-            updated_by: null
-        }
+            updated_by: null,
+        };
 
         try {
             const response = await axios.post(
                 `${process.env.NEXT_PUBLIC_BACKEND_URL}/api/create-operation`,
-                operationData
-            )
-            console.log('API Response:', response)
-            onOperationCreated(response.data)
-            alert('Operation created successfully')
+                operationData,
+            );
+            console.log("API Response:", response);
+            onOperationCreated(response.data);
+            alert("Operation created successfully");
 
             // ✅ Clear the form after successful submission
             setFormData({
-                name: '',
-                description: '',
-                status: 'ongoing',
-                start_date: '',
-                end_date: '',
-                location: '',
-                budget: ''
-            })
+                name: "",
+                description: "",
+                status: "ongoing",
+                start_date: "",
+                end_date: "",
+                location: "",
+                budget: "",
+            });
         } catch (error) {
-            console.error('Error creating operation:', error)
-            alert('Failed to create operation')
+            console.error("Error creating operation:", error);
+            alert("Failed to create operation");
         }
-    }
+    };
 
     return (
         <div className="max-w-2xl mx-auto bg-white p-6 rounded-lg shadow-lg">
@@ -152,7 +152,7 @@ const CreateOperation = ({ onOperationCreated }) => {
                         placeholder="YYYY-MM-DD"
                         value={formData.start_date}
                         onChange={handleDateChange}
-                        onBlur={() => handleBlur('start_date')}
+                        onBlur={() => handleBlur("start_date")}
                         required
                         className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-400 outline-none"
                     />
@@ -170,7 +170,7 @@ const CreateOperation = ({ onOperationCreated }) => {
                         onChange={(e) =>
                             setFormData({
                                 ...formData,
-                                start_date: e.target.value
+                                start_date: e.target.value,
                             })
                         }
                     />
@@ -182,7 +182,7 @@ const CreateOperation = ({ onOperationCreated }) => {
                         placeholder="YYYY-MM-DD"
                         value={formData.end_date}
                         onChange={handleDateChange}
-                        onBlur={() => handleBlur('end_date')}
+                        onBlur={() => handleBlur("end_date")}
                         required
                         className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-400 outline-none"
                     />
@@ -200,7 +200,7 @@ const CreateOperation = ({ onOperationCreated }) => {
                         onChange={(e) =>
                             setFormData({
                                 ...formData,
-                                end_date: e.target.value
+                                end_date: e.target.value,
                             })
                         }
                     />
@@ -225,7 +225,7 @@ const CreateOperation = ({ onOperationCreated }) => {
                 </div>
             </form>
         </div>
-    )
+    );
 }
 
-export default CreateOperation
+export default CreateOperation;

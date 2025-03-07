@@ -1,13 +1,13 @@
-import React from 'react'
-import { Card, Row, Col, ProgressBar } from 'react-bootstrap'
+import React from 'react';
+import { Card, Row, Col, ProgressBar } from 'react-bootstrap';
 
 const ResourceAllocation = ({ resourceStats }) => {
     const resourceTypes = [
         { name: 'Weapons', value: resourceStats.weapons, color: 'primary' },
         { name: 'Vehicles', value: resourceStats.vehicles, color: 'success' },
         { name: 'Personnel', value: resourceStats.personnel, color: 'info' },
-        { name: 'Equipment', value: resourceStats.equipment, color: 'warning' }
-    ]
+        { name: 'Equipment', value: resourceStats.equipment, color: 'warning' },
+    ];
 
     return (
         <Row className="mt-4">
@@ -55,7 +55,7 @@ const ResourceAllocation = ({ resourceStats }) => {
                 </Card>
             </Col>
         </Row>
-    )
+    );
 }
 
-export default ResourceAllocation
+export default ResourceAllocation;

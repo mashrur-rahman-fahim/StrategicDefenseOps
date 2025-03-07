@@ -9,6 +9,6 @@ const AuthSessionStatus = ({ status, className, ...props }) => (
             </div>
         )}
     </>
-)
+);
 
-export default AuthSessionStatus
+export default AuthSessionStatus;

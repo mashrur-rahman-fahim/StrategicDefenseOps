@@ -1,31 +1,31 @@
-import React from 'react'
-import { Menu, Transition } from '@headlessui/react'
+import React from "react";
+import { Menu, Transition } from "@headlessui/react";
 
 const Dropdown = ({
-    align = 'right',
+    align = "right",
     width = 48,
-    contentClasses = 'py-1 bg-white',
+    contentClasses = "py-1 bg-white",
     trigger,
-    children
+    children,
 }) => {
-    let alignmentClasses
+    let alignmentClasses;
 
     switch (width) {
-        case '48':
-            width = 'w-48'
+        case "48":
+            width = "w-48";
             break
     }
 
     switch (align) {
-        case 'left':
-            alignmentClasses = 'origin-top-left left-0'
+        case "left":
+            alignmentClasses = "origin-top-left left-0";
             break
-        case 'top':
-            alignmentClasses = 'origin-top'
+        case "top":
+            alignmentClasses = "origin-top";
             break
-        case 'right':
+        case "right":
         default:
-            alignmentClasses = 'origin-top-right right-0'
+            alignmentClasses = "origin-top-right right-0";
             break
     }
 
@@ -58,7 +58,7 @@ const Dropdown = ({
                 </>
             )}
         </Menu>
-    )
+    );
 }
 
-export default Dropdown
+export default Dropdown;

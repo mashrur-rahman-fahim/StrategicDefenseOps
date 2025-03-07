@@ -1,4 +1,4 @@
-const InputError = ({ messages = [], className = '' }) => (
+const InputError = ({ messages = [], className = "" }) => (
     <>
         {messages.length > 0 && (
             <>
@@ -13,6 +13,6 @@ const InputError = ({ messages = [], className = '' }) => (
             </>
         )}
     </>
-)
+);
 
-export default InputError
+export default InputError;

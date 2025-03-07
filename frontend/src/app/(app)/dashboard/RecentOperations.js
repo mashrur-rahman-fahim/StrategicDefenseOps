@@ -1,30 +1,30 @@
-import React from 'react'
-import { Card, Button, Table, Badge } from 'react-bootstrap'
-import { Icon } from '@iconify/react'
-import Link from 'next/link'
+import React from 'react';
+import { Card, Button, Table, Badge } from 'react-bootstrap';
+import { Icon } from '@iconify/react';
+import Link from 'next/link';
 
 const RecentOperations = ({ operations }) => {
     const getStatusBadge = (status) => {
         switch (status) {
             case 'ongoing':
-                return <Badge bg="primary">Ongoing</Badge>
+                return <Badge bg="primary">Ongoing</Badge>;
             case 'upcoming':
-                return <Badge bg="warning">Upcoming</Badge>
+                return <Badge bg="warning">Upcoming</Badge>;
             case 'completed':
-                return <Badge bg="success">Completed</Badge>
+                return <Badge bg="success">Completed</Badge>;
             default:
-                return <Badge bg="secondary">Unknown</Badge>
+                return <Badge bg="secondary">Unknown</Badge>;
         }
-    }
+    };
 
     const formatDate = (dateString) => {
-        if (!dateString) return 'N/A'
-        const date = new Date(dateString)
+        if (!dateString) return 'N/A';
+        const date = new Date(dateString);
         return date.toLocaleDateString('en-US', {
             year: 'numeric',
             month: 'short',
-            day: 'numeric'
-        })
+            day: 'numeric',
+        });
     }
 
     return (
@@ -82,7 +82,7 @@ const RecentOperations = ({ operations }) => {
                 )}
             </Card.Body>
         </Card>
-    )
+    );
 }
 
-export default RecentOperations
+export default RecentOperations;

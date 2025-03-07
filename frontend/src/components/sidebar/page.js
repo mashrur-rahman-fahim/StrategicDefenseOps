@@ -1,89 +1,89 @@
-'use client'
-import React, { useEffect, useRef, useState } from 'react'
-import axios from '@/lib/axios'
-import './sidebar.css'
-import { Icon } from '@iconify/react'
-import { Modal, Form, Button } from 'react-bootstrap'
-import { toast } from 'sonner'
+"use client";
+import React, { useEffect, useRef, useState } from "react";
+import axios from "@/lib/axios";
+import "./sidebar.css";
+import { Icon } from "@iconify/react";
+import { Modal, Form, Button } from "react-bootstrap";
+import { toast } from "sonner";
 
 const Sidebar = ({ isOpen, toggleSidebar, selectedItem, handleNavigation }) => {
-    const sidebarRef = useRef()
-    const [userName, setUserName] = useState('Error')
-    const [userEmail, setUserEmail] = useState('')
-    const [roleName, setRoleName] = useState('')
-    const [showModal, setShowModal] = useState(false)
-    const [tempName, setTempName] = useState('')
+    const sidebarRef = useRef();
+    const [userName, setUserName] = useState("Error");
+    const [userEmail, setUserEmail] = useState("");
+    const [roleName, setRoleName] = useState("");
+    const [showModal, setShowModal] = useState(false);
+    const [tempName, setTempName] = useState("");
 
-    const [loading, setLoading] = useState(false)
+    const [loading, setLoading] = useState(false);
 
     const roleMapping = {
-        1: 'Admin',
-        2: 'Manager',
-        3: 'Operator',
-        4: 'Viewer'
-    }
+        1: "Admin",
+        2: "Manager",
+        3: "Operator",
+        4: "Viewer",
+    };
 
     useEffect(() => {
         const handleClickOutside = (event) => {
-            const menuButton = document.querySelector('.menu-button') // Get the "three dots" button
+            const menuButton = document.querySelector(".menu-button"); // Get the "three dots" button
             if (
                 isOpen &&
                 sidebarRef.current &&
                 !sidebarRef.current.contains(event.target) &&
                 !menuButton.contains(event.target) // Exclude the "three dots" button
             ) {
-                toggleSidebar()
+                toggleSidebar();
             }
-        }
+        };
 
-        document.addEventListener('mousedown', handleClickOutside)
+        document.addEventListener("mousedown", handleClickOutside);
         return () => {
-            document.removeEventListener('mousedown', handleClickOutside)
+            document.removeEventListener("mousedown", handleClickOutside);
         }
-    }, [isOpen, toggleSidebar])
+    }, [isOpen, toggleSidebar]);
 
     useEffect(() => {
         const fetchUserDetails = async () => {
             try {
-                const response = await axios.get(`/api/user`)
-                setUserName(response?.data.name || 'Unknown')
-                setUserEmail(response?.data.email || '')
-                setRoleName(roleMapping[response.data.role_id] || 'Unknown')
+                const response = await axios.get(`/api/user`);
+                setUserName(response?.data.name || "Unknown");
+                setUserEmail(response?.data.email || "");
+                setRoleName(roleMapping[response.data.role_id] || "Unknown");
             } catch (error) {
-                console.error('Error fetching user details:', error)
+                console.error("Error fetching user details:", error);
             }
-        }
+        };
 
-        fetchUserDetails()
-    }, [])
+        fetchUserDetails();
+    }, []);
 
     // Open modal and set temporary values
     const handleEditProfile = () => {
-        setTempName(userName)
-        setShowModal(true)
+        setTempName(userName);
+        setShowModal(true);
     }
 
     // Handle form submission
     const handleSaveChanges = async () => {
         try {
-            setLoading(true)
+            setLoading(true);
             const response = await axios.put(`/api/update-profile`, {
-                name: tempName
-            })
-            console.log('User details updated:', response.data)
+                name: tempName,
+            });
+            console.log("User details updated:", response.data);
 
-            setUserName(tempName)
-            setShowModal(false)
-            toast.success('Profile updated successfully!')
+            setUserName(tempName);
+            setShowModal(false);
+            toast.success("Profile updated successfully!");
         } catch (error) {
-            console.error('Error updating user details:', error)
+            console.error("Error updating user details:", error);
         } finally {
-            setLoading(false)
+            setLoading(false);
         }
-    }
+    };
 
     return (
-        <div ref={sidebarRef} className={`sidebar ${isOpen ? 'open' : ''}`}>
+        <div ref={sidebarRef} className={`sidebar ${isOpen ? "open" : ""}`}>
             {/* Arrow button to close sidebar */}
             <div className="icon-container d-flex justify-content-between align-items-center">
                 <button className="back-button" onClick={toggleSidebar}>
@@ -103,19 +103,19 @@ const Sidebar = ({ isOpen, toggleSidebar, selectedItem, handleNavigation }) => {
 
             {/* Menu items */}
             <nav className="menu">
-                {['Dashboard', 'Resources', 'Operation', 'Reports'].map(
+                {["Dashboard", "Resources", "Operation", "Reports"].map(
                     (item) => (
                         <div
                             key={item}
-                            className={`menu-item ${selectedItem === item.toLowerCase() ? 'active' : ''}`}
+                            className={`menu-item ${selectedItem === item.toLowerCase() ? "active" : ""}`}
                             onClick={() => {
-                                handleNavigation(item.toLowerCase())
-                                toggleSidebar() // Close the sidebar after navigation
+                                handleNavigation(item.toLowerCase());
+                                toggleSidebar(); // Close the sidebar after navigation
                             }}
                         >
                             {item}
                         </div>
-                    )
+                    ),
                 )}
             </nav>
 
@@ -144,12 +144,12 @@ const Sidebar = ({ isOpen, toggleSidebar, selectedItem, handleNavigation }) => {
                         Close
                     </Button>
                     <Button variant="primary" onClick={handleSaveChanges}>
-                        {loading ? 'Saving...' : 'Save Changes'}
+                        {loading ? "Saving..." : "Save Changes"}
                     </Button>
                 </Modal.Footer>
             </Modal>
         </div>
-    )
+    );
 }
 
-export default Sidebar
+export default Sidebar;

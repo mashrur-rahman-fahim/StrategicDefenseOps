@@ -1,7 +1,7 @@
-import React from 'react'
-import { Card, Button, Table } from 'react-bootstrap'
-import { Icon } from '@iconify/react'
-import Link from 'next/link'
+import React from 'react';
+import { Card, Button, Table } from 'react-bootstrap';
+import { Icon } from '@iconify/react';
+import Link from 'next/link';
 
 const TopResources = ({ resources }) => {
     const getResourceName = (resource) => {
@@ -11,7 +11,7 @@ const TopResources = ({ resources }) => {
             resource.personnel_name ||
             resource.equipment_name ||
             'Unknown Resource'
-        )
+        );
     }
 
     const getResourceCount = (resource) => {
@@ -21,15 +21,15 @@ const TopResources = ({ resources }) => {
             resource.personnel_count ||
             resource.equipment_count ||
             0
-        )
+        );
     }
 
     const getResourceType = (resource) => {
-        if (resource.weapon_name) return 'Weapon'
-        if (resource.vehicle_name) return 'Vehicle'
-        if (resource.personnel_name) return 'Personnel'
-        if (resource.equipment_name) return 'Equipment'
-        return 'Unknown'
+        if (resource.weapon_name) return 'Weapon';
+        if (resource.vehicle_name) return 'Vehicle';
+        if (resource.personnel_name) return 'Personnel';
+        if (resource.equipment_name) return 'Equipment';
+        return 'Unknown';
     }
 
     return (
@@ -84,7 +84,7 @@ const TopResources = ({ resources }) => {
                 )}
             </Card.Body>
         </Card>
-    )
+    );
 }
 
-export default TopResources
+export default TopResources;

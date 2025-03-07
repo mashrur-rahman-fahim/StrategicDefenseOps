@@ -1,8 +1,8 @@
-import LoginLinks from '@/app/LoginLinks'
+import LoginLinks from '@/app/LoginLinks';
 
 export const metadata = {
-    title: 'Strategic Defense Operations'
-}
+    title: 'Strategic Defense Operations',
+};
 
 const Home = () => {
     return (
@@ -11,7 +11,7 @@ const Home = () => {
                 <LoginLinks />
             </div>
         </>
-    )
+    );
 }
 
-export default Home
+export default Home;

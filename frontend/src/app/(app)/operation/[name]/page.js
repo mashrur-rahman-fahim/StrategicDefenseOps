@@ -1,6 +1,6 @@
-'use client'
-import React, { useState, useEffect } from 'react'
-import { useParams, useRouter } from 'next/navigation'
+'use client';
+import React, { useState, useEffect } from 'react';
+import { useParams, useRouter } from 'next/navigation';
 import {
     Container,
     Row,
@@ -9,111 +9,111 @@ import {
     Button,
     Badge,
     Spinner,
-    Table
-} from 'react-bootstrap'
-import { Icon } from '@iconify/react'
-import { toast } from 'sonner'
-import axios from '@/lib/axios'
-import Layout from '@/components/layout'
-import Link from 'next/link'
+    Table,
+} from 'react-bootstrap';
+import { Icon } from '@iconify/react';
+import { toast } from 'sonner';
+import axios from '@/lib/axios';
+import Layout from '@/components/layout';
+import Link from 'next/link';
 
 export default function OperationDetail() {
-    const params = useParams()
-    const router = useRouter()
-    const [operation, setOperation] = useState(null)
-    const [loading, setLoading] = useState(true)
-    const [error, setError] = useState(null)
-    const [resources, setResources] = useState([])
+    const params = useParams();
+    const router = useRouter();
+    const [operation, setOperation] = useState(null);
+    const [loading, setLoading] = useState(true);
+    const [error, setError] = useState(null);
+    const [resources, setResources] = useState([]);
 
-    const operationName = params?.name ? decodeURIComponent(params.name) : null
+    const operationName = params?.name ? decodeURIComponent(params.name) : null;
 
     const formatDate = (dateString) => {
-        if (!dateString) return ''
-        const date = new Date(dateString)
+        if (!dateString) return '';
+        const date = new Date(dateString);
 
-        const day = date.getDate().toString().padStart(2, '0')
-        const month = (date.getMonth() + 1).toString().padStart(2, '0')
-        const year = date.getFullYear()
+        const day = date.getDate().toString().padStart(2, '0');
+        const month = (date.getMonth() + 1).toString().padStart(2, '0');
+        const year = date.getFullYear();
 
-        const hours = date.getHours().toString().padStart(2, '0')
-        const minutes = date.getMinutes().toString().padStart(2, '0')
+        const hours = date.getHours().toString().padStart(2, '0');
+        const minutes = date.getMinutes().toString().padStart(2, '0');
 
         // Combine date and time
-        return `${day}/${month}/${year} at ${hours}:${minutes}`
+        return `${day}/${month}/${year} at ${hours}:${minutes}`;
     }
 
     const fetchOperationDetails = async () => {
         try {
-            setLoading(true)
+            setLoading(true);
             const response = await axios.get(
                 `/api/search-operations/${operationName}`
-            )
-            console.log('Operation details:', response.data[1][0])
-            setOperation(response.data[1][0])
+            );
+            console.log('Operation details:', response.data[1][0]);
+            setOperation(response.data[1][0]);
         } catch (error) {
-            console.error('Error fetching operation details:', error)
-            setError('Failed to load operation details')
-            toast.error('Failed to load operation details')
+            console.error('Error fetching operation details:', error);
+            setError('Failed to load operation details');
+            toast.error('Failed to load operation details');
         } finally {
-            setLoading(false)
+            setLoading(false);
         }
-    }
+    };
 
     const fetchOperationResources = async () => {
         try {
-            setLoading(true)
+            setLoading(true);
             const response = await axios.get(
                 `/api/get-operation-resources/${operation.id}`
-            )
-            console.log('Operation resources:', response.data)
+            );
+            console.log('Operation resources:', response.data);
             const {
                 vehicle = [],
                 weapon = [],
                 personnel = [],
-                equipment = []
-            } = response.data || {}
+                equipment = [],
+            } = response.data || {};
             const allResources = [
                 ...vehicle.map((v) => ({ ...v, type: 'Vehicle' })),
                 ...weapon.map((w) => ({ ...w, type: 'Weapon' })),
                 ...personnel.map((p) => ({ ...p, type: 'Personnel' })),
-                ...equipment.map((e) => ({ ...e, type: 'Equipment' }))
-            ]
-            setResources(allResources)
-            console.log('All resources:', allResources)
+                ...equipment.map((e) => ({ ...e, type: 'Equipment' })),
+            ];
+            setResources(allResources);
+            console.log('All resources:', allResources);
         } catch (error) {
-            console.error('Error fetching operation resources:', error)
-            setError('Failed to fetch operation resources')
+            console.error('Error fetching operation resources:', error);
+            setError('Failed to fetch operation resources');
         } finally {
-            setLoading(false)
+            setLoading(false);
         }
-    }
+    };
 
     useEffect(() => {
         if (operationName) {
-            fetchOperationDetails()
+            fetchOperationDetails();
         } else {
-            setError('Operation not found')
+            setError('Operation not found');
         }
-    }, [operationName])
+    }, [operationName]);
 
     useEffect(() => {
         if (operation?.id) {
-            fetchOperationResources()
+            fetchOperationResources();
         }
-    }, [operation])
+    }, [operation]);
 
     const getStatusColor = (status) => {
         switch (status) {
             case 'ongoing':
-                return 'success'
+                return 'success';
             case 'upcoming':
-                return 'warning'
+                return 'warning';
             case 'completed':
-                return 'primary'
+                return 'primary';
             default:
-                return 'secondary'
+                return 'secondary';
         }
-    }
+    };
 
     if (loading) {
         return (
@@ -127,7 +127,7 @@ export default function OperationDetail() {
                     </div>
                 </Container>
             </Layout>
-        )
+        );
     }
 
     if (error || !operation) {
@@ -146,7 +146,7 @@ export default function OperationDetail() {
                     </div>
                 </Container>
             </Layout>
-        )
+        );
     }
 
     return (
@@ -283,8 +283,8 @@ export default function OperationDetail() {
                                             <tbody>
                                                 {resources.map((res, index) => {
                                                     // Dynamically determine the keys
-                                                    const nameKey = `${res.type.toLowerCase()}_name`
-                                                    const countKey = `${res.type.toLowerCase()}_count`
+                                                    const nameKey = `${res.type.toLowerCase()}_name`;
+                                                    const countKey = `${res.type.toLowerCase()}_count`;
 
                                                     return (
                                                         <tr key={index}>
@@ -299,7 +299,7 @@ export default function OperationDetail() {
                                                                 ] || 'N/A'}
                                                             </td>
                                                         </tr>
-                                                    )
+                                                    );
                                                 })}
                                             </tbody>
                                         </Table>
@@ -397,7 +397,7 @@ export default function OperationDetail() {
                                         className="bg-light rounded"
                                         style={{
                                             height: '150px',
-                                            position: 'relative'
+                                            position: 'relative',
                                         }}
                                     >
                                         <div className="text-center position-absolute top-50 start-50 translate-middle">
@@ -425,5 +425,5 @@ export default function OperationDetail() {
                 </Row>
             </Container>
         </Layout>
-    )
+    );
 }

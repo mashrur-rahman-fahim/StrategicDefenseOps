@@ -1,6 +1,6 @@
-import React from 'react'
-import { Card, Row, Col, ProgressBar } from 'react-bootstrap'
-import { Icon } from '@iconify/react'
+import React from 'react';
+import { Card, Row, Col, ProgressBar } from 'react-bootstrap';
+import { Icon } from '@iconify/react';
 
 const ResourceOverview = ({ stats }) => {
     const resources = [
@@ -8,27 +8,27 @@ const ResourceOverview = ({ stats }) => {
             title: 'Weapons',
             icon: 'tabler:bomb-filled',
             count: stats.weapons,
-            color: 'primary'
+            color: 'primary',
         },
         {
             title: 'Vehicles',
             icon: 'mdi:tank',
             count: stats.vehicles,
-            color: 'success'
+            color: 'success',
         },
         {
             title: 'Personnel',
             icon: 'fa6-solid:person-military-rifle',
             count: stats.personnel,
-            color: 'info'
+            color: 'info',
         },
         {
             title: 'Equipment',
             icon: 'mdi:medical-bag',
             count: stats.equipment,
-            color: 'warning'
-        }
-    ]
+            color: 'warning',
+        },
+    ];
 
     return (
         <>
@@ -77,7 +77,7 @@ const ResourceOverview = ({ stats }) => {
                 ))}
             </Row>
         </>
-    )
+    );
 }
 
-export default ResourceOverview
+export default ResourceOverview;

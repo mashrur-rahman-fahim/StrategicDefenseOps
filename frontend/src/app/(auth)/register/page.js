@@ -1,43 +1,43 @@
-'use client'
+'use client';
 
-import { useState } from 'react'
-import Link from 'next/link'
-import { useAuth } from '@/hooks/auth' // Adjust import path if needed
+import { useState } from 'react';
+import Link from 'next/link';
+import { useAuth } from '@/hooks/auth'; // Adjust import path if needed
 
 const Page = () => {
     const { register } = useAuth({
         middleware: 'guest',
-        redirectIfAuthenticated: '/dashboard'
-    })
+        redirectIfAuthenticated: '/dashboard',
+    });
 
-    const [name, setName] = useState('')
-    const [email, setEmail] = useState('')
-    const [password, setPassword] = useState('')
-    const [passwordConfirmation, setPasswordConfirmation] = useState('')
-    const [role_id, setRoleId] = useState(1)
-    const [parent_id, setParentId] = useState(null)
-    const [errors, setErrors] = useState([])
-    const [showPassword, setShowPassword] = useState(false)
-    const [showConfirmPassword, setShowConfirmPassword] = useState(false)
+    const [name, setName] = useState('');
+    const [email, setEmail] = useState('');
+    const [password, setPassword] = useState('');
+    const [passwordConfirmation, setPasswordConfirmation] = useState('');
+    const [role_id, setRoleId] = useState(1);
+    const [parent_id, setParentId] = useState(null);
+    const [errors, setErrors] = useState([]);
+    const [showPassword, setShowPassword] = useState(false);
+    const [showConfirmPassword, setShowConfirmPassword] = useState(false);
 
     const handleGoogleLogin = async () => {
         try {
             // Redirect user to Laravel's Google login route
-            window.location.href = `http://127.0.0.1:8000/auth/google`
+            window.location.href = `http://127.0.0.1:8000/auth/google`;
         } catch (error) {
-            console.error('Google login error:', error)
+            console.error('Google login error:', error);
         }
-    }
+    };
 
     const roles = [
         { id: 1, name: 'System Administrator' },
         { id: 2, name: 'Operations Coordinator' },
         { id: 3, name: 'Field Specialist' },
-        { id: 4, name: 'Mission Observer' }
-    ]
+        { id: 4, name: 'Mission Observer' },
+    ];
 
     const submitForm = (event) => {
-        event.preventDefault()
+        event.preventDefault();
 
         register({
             name,
@@ -46,8 +46,8 @@ const Page = () => {
             password_confirmation: passwordConfirmation,
             role_id,
             parent_id,
-            setErrors
-        })
+            setErrors,
+        });
     }
 
     return (
@@ -208,12 +208,12 @@ const Page = () => {
                     style={{
                         backgroundImage: `url('/registration1.jpg')`,
                         backgroundSize: 'cover',
-                        backgroundPosition: 'center'
+                        backgroundPosition: 'center',
                     }}
                 />
             </div>
         </div>
-    )
+    );
 }
 
-export default Page
+export default Page;

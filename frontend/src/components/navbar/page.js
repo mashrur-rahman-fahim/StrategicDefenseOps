@@ -1,24 +1,24 @@
-'use client'
-import React, { useState, useEffect, useRef } from 'react'
-import './navbar.css'
-import Link from 'next/link'
+"use client";
+import React, { useState, useEffect, useRef } from "react";
+import "./navbar.css";
+import Link from "next/link";
 
 const Navbar = ({ toggleSidebar, logout }) => {
-    const [, setDropdownOpen] = useState(false)
-    const [showLogoutPrompt, setShowLogoutPrompt] = useState(false)
-    const [isLoggingOut, setIsLoggingOut] = useState(false)
-    const menuButtonRef = useRef(null) // Ref for the "three dots" button
+    const [, setDropdownOpen] = useState(false);
+    const [showLogoutPrompt, setShowLogoutPrompt] = useState(false);
+    const [isLoggingOut, setIsLoggingOut] = useState(false);
+    const menuButtonRef = useRef(null); // Ref for the "three dots" button
 
     useEffect(() => {
-        setDropdownOpen(false)
-    }, [])
+        setDropdownOpen(false);
+    }, []);
 
-    const handleLogoutClick = () => setShowLogoutPrompt(true)
-    const handleCancelLogout = () => setShowLogoutPrompt(false)
+    const handleLogoutClick = () => setShowLogoutPrompt(true);
+    const handleCancelLogout = () => setShowLogoutPrompt(false);
 
     const handleConfirmLogout = () => {
-        setIsLoggingOut(true)
-        logout()
+        setIsLoggingOut(true);
+        logout();
     }
 
     return (
@@ -30,7 +30,7 @@ const Navbar = ({ toggleSidebar, logout }) => {
                         ref={menuButtonRef} // Attach the ref
                         className="menu-button"
                         onClick={toggleSidebar}
-                        style={{ display: 'block' }}
+                        style={{ display: "block" }}
                     >
                         ☰
                     </button>
@@ -55,7 +55,7 @@ const Navbar = ({ toggleSidebar, logout }) => {
                         onClick={handleConfirmLogout}
                         disabled={isLoggingOut}
                     >
-                        {isLoggingOut ? 'Logging out...' : 'Yes'}
+                        {isLoggingOut ? "Logging out..." : "Yes"}
                     </button>
                     <button
                         onClick={handleCancelLogout}
@@ -66,7 +66,7 @@ const Navbar = ({ toggleSidebar, logout }) => {
                 </div>
             )}
         </header>
-    )
+    );
 }
 
-export default Navbar
+export default Navbar;

@@ -1,81 +1,81 @@
-'use client'
-import React, { useState } from 'react'
-import { Modal, Button, Form } from 'react-bootstrap'
-import axios from '@/lib/axios'
-import { toast } from 'sonner'
-import { useEffect } from 'react'
+'use client';
+import React, { useState } from 'react';
+import { Modal, Button, Form } from 'react-bootstrap';
+import axios from '@/lib/axios';
+import { toast } from 'sonner';
+import { useEffect } from 'react';
 
 const ResourceFormModal = ({
     show,
     handleClose,
     refreshResources,
-    resource
+    resource,
 }) => {
-    const [resourceType, setResourceType] = useState('')
-    const [formData, setFormData] = useState({})
-    const [loading, setLoading] = useState(false)
+    const [resourceType, setResourceType] = useState('');
+    const [formData, setFormData] = useState({});
+    const [loading, setLoading] = useState(false);
     //const [image, setImage] = useState(null)
     //const [imagePreview, setImagePreview] = useState(null)
-    const isEditMode = !!resource
+    const isEditMode = !!resource;
 
     useEffect(() => {
         if (isEditMode) {
-            setResourceType(resource.resourceType)
-            console.log('Resource:', resource)
+            setResourceType(resource.resourceType);
+            console.log('Resource:', resource);
             if (resource?.resourceType === 'weapon') {
                 setFormData({
                     weapon_name: resource.weapon_name,
                     weapon_count: resource.weapon_count,
                     weapon_type: resource.weapon_type,
-                    weapon_serial_number: resource.weapon_serial_number
-                })
+                    weapon_serial_number: resource.weapon_serial_number,
+                });
             } else if (resource?.resourceType === 'vehicle') {
                 setFormData({
                     vehicle_name: resource.vehicle_name,
                     vehicle_count: resource.vehicle_count,
                     vehicle_type: resource.vehicle_type,
-                    vehicle_serial_number: resource.vehicle_serial_number
-                })
+                    vehicle_serial_number: resource.vehicle_serial_number,
+                });
             } else if (resource?.resourceType === 'personnel') {
                 setFormData({
                     personnel_name: resource.personnel_name,
                     personnel_count: resource.personnel_count,
                     personnel_category: resource.personnel_category,
                     personnel_rank: resource.personnel_rank,
-                    personnel_serial_number: resource.personnel_serial_number
-                })
+                    personnel_serial_number: resource.personnel_serial_number,
+                });
             } else if (resource?.resourceType === 'equipment') {
                 setFormData({
                     equipment_name: resource.equipment_name,
                     equipment_count: resource.equipment_count,
                     equipment_type: resource.equipment_type,
-                    equipment_serial_number: resource.equipment_serial_number
-                })
+                    equipment_serial_number: resource.equipment_serial_number,
+                });
             }
             // Set image preview if existing image exists
             // if (resource?.image) {
             //   setImagePreview(resource?.image)
             // }
         } else {
-            resetForm()
+            resetForm();
         }
-    }, [resource, isEditMode])
+    }, [resource, isEditMode]);
 
     // Reset form when modal closes or type changes
     const resetForm = () => {
-        setFormData({})
+        setFormData({});
         // setImage(null)
         // setImagePreview(null)
     }
 
     const handleTypeChange = (e) => {
-        setResourceType(e.target.value)
-        resetForm()
+        setResourceType(e.target.value);
+        resetForm();
     }
 
     const handleInputChange = (e) => {
-        const { name, value } = e.target
-        setFormData({ ...formData, [name]: value })
+        const { name, value } = e.target;
+        setFormData({ ...formData, [name]: value });
     }
 
     // const handleImageChange = (e) => {
@@ -89,47 +89,47 @@ const ResourceFormModal = ({
     // }
 
     const handleSubmit = async (e) => {
-        e.preventDefault()
-        setLoading(true)
+        e.preventDefault();
+        setLoading(true);
 
         try {
-            let endpoint = ''
-            let method = 'post'
+            let endpoint = '';
+            let method = 'post';
 
             if (isEditMode) {
-                method = 'put'
+                method = 'put';
                 switch (resourceType) {
                     case 'weapon':
-                        endpoint = `/api/update-weapon/${resource.id}`
+                        endpoint = `/api/update-weapon/${resource.id}`;
                         break
                     case 'vehicle':
-                        endpoint = `/api/update-vehicle/${resource.id}`
+                        endpoint = `/api/update-vehicle/${resource.id}`;
                         break
                     case 'personnel':
-                        endpoint = `/api/update-personnel/${resource.id}`
+                        endpoint = `/api/update-personnel/${resource.id}`;
                         break
                     case 'equipment':
-                        endpoint = `/api/update-equipment/${resource.id}`
+                        endpoint = `/api/update-equipment/${resource.id}`;
                         break
                     default:
-                        throw new Error('Invalid resource type')
+                        throw new Error('Invalid resource type');
                 }
             } else {
                 switch (resourceType) {
                     case 'weapon':
-                        endpoint = '/api/add-weapon'
+                        endpoint = '/api/add-weapon';
                         break
                     case 'vehicle':
-                        endpoint = '/api/add-vehicle'
+                        endpoint = '/api/add-vehicle';
                         break
                     case 'personnel':
-                        endpoint = '/api/add-personnel'
+                        endpoint = '/api/add-personnel';
                         break
                     case 'equipment':
-                        endpoint = '/api/add-equipment'
+                        endpoint = '/api/add-equipment';
                         break
                     default:
-                        throw new Error('Invalid resource type')
+                        throw new Error('Invalid resource type');
                 }
             }
             // Create form data object for file upload
@@ -150,32 +150,34 @@ const ResourceFormModal = ({
             // }
 
             //console.log([...formDataObj.entries()])
-            console.log('Form data:', formData)
+            console.log('Form data:', formData);
             const response = await axios({
                 method,
                 url: endpoint,
-                data: formData
+                data: formData,
                 // headers: { 'Content-Type': 'multipart/form-data'}
-            })
-            console.log('response:', response.data)
+            });
+            console.log('response:', response.data);
 
             //console.log('Resource added:', response.data);
 
             toast.success(
                 response?.data?.message ||
                     `Resource ${isEditMode ? 'updated' : 'added'} successfully`
-            )
+            );
 
-            handleClose()
-            resetForm()
-            refreshResources()
+            handleClose();
+            resetForm();
+            refreshResources();
         } catch (err) {
-            console.error('Error adding resource:', err)
-            toast.error(err.response?.data?.message || 'Failed to add resource')
+            console.error('Error adding resource:', err);
+            toast.error(
+                err.response?.data?.message || 'Failed to add resource'
+            );
         } finally {
-            setLoading(false)
+            setLoading(false);
         }
-    }
+    };
 
     // Rendering different form fields based on resource type
     const renderFormFields = () => {
@@ -234,7 +236,7 @@ const ResourceFormModal = ({
                             />
                         </Form.Group>
                     </>
-                )
+                );
 
             case 'vehicle':
                 return (
@@ -291,7 +293,7 @@ const ResourceFormModal = ({
                             />
                         </Form.Group>
                     </>
-                )
+                );
 
             case 'personnel':
                 return (
@@ -355,7 +357,7 @@ const ResourceFormModal = ({
                             />
                         </Form.Group>
                     </>
-                )
+                );
 
             case 'equipment':
                 return (
@@ -415,12 +417,12 @@ const ResourceFormModal = ({
                             />
                         </Form.Group>
                     </>
-                )
+                );
 
             default:
-                return null
+                return null;
         }
-    }
+    };
 
     return (
         <Modal show={show} onHide={handleClose} size="lg">
@@ -498,7 +500,7 @@ const ResourceFormModal = ({
                 </Form>
             </Modal.Body>
         </Modal>
-    )
+    );
 }
 
-export default ResourceFormModal
+export default ResourceFormModal;

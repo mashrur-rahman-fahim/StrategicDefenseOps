@@ -1,23 +1,23 @@
-import ApplicationLogo from '@/components/ApplicationLogo'
-import Dropdown from '@/components/Dropdown'
+import ApplicationLogo from '@/components/ApplicationLogo';
+import Dropdown from '@/components/Dropdown';
 //import Link from 'next/link'
 //import NavLink from '@/components/NavLink'
 import ResponsiveNavLink, {
-    ResponsiveNavButton
-} from '@/components/ResponsiveNavLink'
-import { DropdownButton } from '@/components/DropdownLink'
+    ResponsiveNavButton,
+} from '@/components/ResponsiveNavLink';
+import { DropdownButton } from '@/components/DropdownLink';
 //import { useAuth } from '@/hooks/auth'
 //import { usePathname } from 'next/navigation'
-import { useState } from 'react'
-import { useAuth } from '@/hooks/auth'
-import Link from 'next/link'
-import NavLink from '@/components/NavLink'
-import { usePathname } from 'next/navigation'
+import { useState } from 'react';
+import { useAuth } from '@/hooks/auth';
+import Link from 'next/link';
+import NavLink from '@/components/NavLink';
+import { usePathname } from 'next/navigation';
 
 const Navigation = ({ user }) => {
-    const { logout } = useAuth()
-    const pathname = usePathname()
-    const [open, setOpen] = useState(false)
+    const { logout } = useAuth();
+    const pathname = usePathname();
+    const [open, setOpen] = useState(false);
 
     return (
         <nav className="bg-white border-b border-gray-100">
@@ -162,7 +162,7 @@ const Navigation = ({ user }) => {
                 </div>
             )}
         </nav>
-    )
+    );
 }
 
-export default Navigation
+export default Navigation;

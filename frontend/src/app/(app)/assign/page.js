@@ -1,58 +1,58 @@
-'use client'
-import { useState, useEffect } from 'react'
-import axios from '@/lib/axios'
-import { useAuth } from '@/hooks/auth'
-import Layout from '@/components/layout'
+'use client';
+import { useState, useEffect } from 'react';
+import axios from '@/lib/axios';
+import { useAuth } from '@/hooks/auth';
+import Layout from '@/components/layout';
 
 export default function Assign() {
-    const { user } = useAuth({ middleware: 'auth' })
-    const [role, setRole] = useState(null)
-    const [managerEmail, setManagerEmail] = useState('')
-    const [operatorEmail, setOperatorEmail] = useState('')
-    const [viewerEmail, setViewerEmail] = useState('')
-    const [operatorManagerEmail, setOperatorManagerEmail] = useState('') // Separate manager email for operators
-    const [viewerManagerEmail, setViewerManagerEmail] = useState('') // Separate manager email for viewers
+    const { user } = useAuth({ middleware: 'auth' });
+    const [role, setRole] = useState(null);
+    const [managerEmail, setManagerEmail] = useState('');
+    const [operatorEmail, setOperatorEmail] = useState('');
+    const [viewerEmail, setViewerEmail] = useState('');
+    const [operatorManagerEmail, setOperatorManagerEmail] = useState(''); // Separate manager email for operators
+    const [viewerManagerEmail, setViewerManagerEmail] = useState(''); // Separate manager email for viewers
 
     useEffect(() => {
         if (user) {
-            setRole(user.role_id)
+            setRole(user.role_id);
         }
-    }, [user])
+    }, [user]);
 
     const assignRole = async (roleType) => {
         try {
-            let payload = {}
-            let endpoint = ''
+            let payload = {};
+            let endpoint = '';
 
             if (roleType === 'manager') {
-                endpoint = '/api/manager-assign'
-                payload = { managerEmail }
+                endpoint = '/api/manager-assign';
+                payload = { managerEmail };
             } else if (roleType === 'operator') {
-                endpoint = '/api/operator-assign'
-                payload = { operatorEmail, managerEmail: operatorManagerEmail }
+                endpoint = '/api/operator-assign';
+                payload = { operatorEmail, managerEmail: operatorManagerEmail };
             } else if (roleType === 'viewer') {
-                endpoint = '/api/viewer-assign'
-                payload = { viewerEmail, managerEmail: viewerManagerEmail }
+                endpoint = '/api/viewer-assign';
+                payload = { viewerEmail, managerEmail: viewerManagerEmail };
             }
 
-            const response = await axios.post(endpoint, payload)
+            const response = await axios.post(endpoint, payload);
 
-            alert(response.data.message || 'Role assigned successfully')
+            alert(response.data.message || 'Role assigned successfully');
 
             // Clear input fields after assignment
-            if (roleType === 'manager') setManagerEmail('')
+            if (roleType === 'manager') setManagerEmail('');
             if (roleType === 'operator') {
-                setOperatorEmail('')
-                setOperatorManagerEmail('')
+                setOperatorEmail('');
+                setOperatorManagerEmail('');
             }
             if (roleType === 'viewer') {
-                setViewerEmail('')
-                setViewerManagerEmail('')
+                setViewerEmail('');
+                setViewerManagerEmail('');
             }
         } catch (error) {
-            alert(error.response?.data?.message || 'Failed to assign role')
+            alert(error.response?.data?.message || 'Failed to assign role');
         }
-    }
+    };
 
     return (
         <Layout>
@@ -127,10 +127,10 @@ export default function Assign() {
                                 className="form-control"
                                 value={viewerEmail}
                                 onChange={(e) => {
-                                    setViewerEmail(e.target.value)
+                                    setViewerEmail(e.target.value);
                                     // Auto-fill Manager Email only if empty
                                     if (!viewerManagerEmail) {
-                                        setViewerManagerEmail(e.target.value)
+                                        setViewerManagerEmail(e.target.value);
                                     }
                                 }}
                                 placeholder="Viewer Email"
@@ -157,5 +157,5 @@ export default function Assign() {
                 )}
             </div>
         </Layout>
-    )
+    );
 }

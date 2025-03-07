@@ -1,5 +1,5 @@
-'use client'
-import React, { useState, useEffect } from 'react'
+'use client';
+import React, { useState, useEffect } from 'react';
 import {
     Card,
     Button,
@@ -9,174 +9,174 @@ import {
     Form,
     InputGroup,
     Pagination,
-    Dropdown
-} from 'react-bootstrap'
-import { Icon } from '@iconify/react'
-import axios from '@/lib/axios'
-import { useAuth } from '@/hooks/auth'
-import ResourceFormModal from './ResourceFormModal'
-import Layout from '@/components/layout'
-import Loading from '../../../components/Loading'
-import { toast } from 'sonner'
+    Dropdown,
+} from 'react-bootstrap';
+import { Icon } from '@iconify/react';
+import axios from '@/lib/axios';
+import { useAuth } from '@/hooks/auth';
+import ResourceFormModal from './ResourceFormModal';
+import Layout from '@/components/layout';
+import Loading from '../../../components/Loading';
+import { toast } from 'sonner';
 
 export default function Resources() {
     const { user } = useAuth({
         middleware: 'auth',
-        redirectIfAuthenticated: '/resources'
-    })
-    const [resourceData, setResourceData] = useState([])
-    const [loading, setLoading] = useState(true)
-    const [error, setError] = useState(null)
-    const [showModal, setShowModal] = useState(false)
-    const [searchTerm, setSearchTerm] = useState('')
-    const [currentPage, setCurrentPage] = useState(1)
-    const [activeFilter, setActiveFilter] = useState('All')
-    const [filteredResources, setFilteredResources] = useState([])
-    const [selectedResource, setSelectedResource] = useState(null)
-    const [editModalShow, setEditModalShow] = useState(false)
+        redirectIfAuthenticated: '/resources',
+    });
+    const [resourceData, setResourceData] = useState([]);
+    const [loading, setLoading] = useState(true);
+    const [error, setError] = useState(null);
+    const [showModal, setShowModal] = useState(false);
+    const [searchTerm, setSearchTerm] = useState('');
+    const [currentPage, setCurrentPage] = useState(1);
+    const [activeFilter, setActiveFilter] = useState('All');
+    const [filteredResources, setFilteredResources] = useState([]);
+    const [selectedResource, setSelectedResource] = useState(null);
+    const [editModalShow, setEditModalShow] = useState(false);
     const [totalCounts, setTotalCounts] = useState({
         weapons: 0,
         vehicles: 0,
         personnel: 0,
-        equipment: 0
-    })
-    const itemsPerPage = 9
+        equipment: 0,
+    });
+    const itemsPerPage = 9;
 
     const resourceCategories = [
         {
             type: 'Weapons',
             icon: 'tabler:bomb-filled',
-            totalAvailable: totalCounts.weapons
+            totalAvailable: totalCounts.weapons,
         },
         {
             type: 'Vehicles',
             icon: 'mdi:tank',
-            totalAvailable: totalCounts.vehicles
+            totalAvailable: totalCounts.vehicles,
         },
         {
             type: 'Personnel',
             icon: 'fa6-solid:person-military-rifle',
-            totalAvailable: totalCounts.personnel
+            totalAvailable: totalCounts.personnel,
         },
         {
             type: 'Equipments',
             icon: 'mdi:medical-bag',
-            totalAvailable: totalCounts.equipment
-        }
-    ]
+            totalAvailable: totalCounts.equipment,
+        },
+    ];
 
     const fetchResources = async () => {
         try {
-            setLoading(true)
-            const response = await axios.get('/api/get-all-resources')
-            console.log('Resources:', response.data)
-            setResourceData(response.data)
-            setFilteredResources(response.data[1] || [])
-            setError(null)
+            setLoading(true);
+            const response = await axios.get('/api/get-all-resources');
+            console.log('Resources:', response.data);
+            setResourceData(response.data);
+            setFilteredResources(response.data[1] || []);
+            setError(null);
         } catch (err) {
-            setError('Failed to fetch resources')
-            console.error('Error fetching resources:', err)
+            setError('Failed to fetch resources');
+            console.error('Error fetching resources:', err);
         } finally {
-            setLoading(false)
+            setLoading(false);
         }
-    }
+    };
 
     useEffect(() => {
-        fetchResources()
-    }, [])
+        fetchResources();
+    }, []);
 
     //total counts for each resource category
     useEffect(() => {
         const totalWeaponCount = resourceData[1]?.reduce((total, resource) => {
-            return total + (resource.weapon_count || 0)
-        }, 0)
+            return total + (resource.weapon_count || 0);
+        }, 0);
 
         const totalVehicleCount = resourceData[1]?.reduce((total, resource) => {
-            return total + (resource.vehicle_count || 0)
-        }, 0)
+            return total + (resource.vehicle_count || 0);
+        }, 0);
 
         const totalPersonnelCount = resourceData[1]?.reduce(
             (total, resource) => {
-                return total + (resource.personnel_count || 0)
+                return total + (resource.personnel_count || 0);
             },
             0
-        )
+        );
 
         const totalEquipmentCount = resourceData[1]?.reduce(
             (total, resource) => {
-                return total + (resource.equipment_count || 0)
+                return total + (resource.equipment_count || 0);
             },
             0
-        )
+        );
 
         setTotalCounts({
             weapons: totalWeaponCount,
             vehicles: totalVehicleCount,
             personnel: totalPersonnelCount,
-            equipment: totalEquipmentCount
-        })
-    }, [resourceData])
+            equipment: totalEquipmentCount,
+        });
+    }, [resourceData]);
 
     // Filter resources when activeFilter changes
     useEffect(() => {
-        if (!resourceData[1]) return
+        if (!resourceData[1]) return;
 
         if (activeFilter === 'All') {
-            setFilteredResources(resourceData[1])
+            setFilteredResources(resourceData[1]);
         } else {
             let filtered = resourceData[1].filter((resource) => {
                 switch (activeFilter) {
                     case 'Weapons':
-                        return resource.weapon_name || resource.weapon_count
+                        return resource.weapon_name || resource.weapon_count;
                     case 'Vehicles':
-                        return resource.vehicle_name || resource.vehicle_count
+                        return resource.vehicle_name || resource.vehicle_count;
                     case 'Personnel':
                         return (
                             resource.personnel_name || resource.personnel_count
-                        )
+                        );
                     case 'Equipments':
                         return (
                             resource.equipment_name || resource.equipment_count
-                        )
+                        );
                     default:
-                        return true
+                        return true;
                 }
-            })
-            setFilteredResources(filtered)
+            });
+            setFilteredResources(filtered);
         }
         // Reset to first page when filter changes
-        setCurrentPage(1)
-    }, [activeFilter, resourceData])
+        setCurrentPage(1);
+    }, [activeFilter, resourceData]);
 
     useEffect(() => {
         if (searchTerm.trim() === '') {
-            setFilteredResources(resourceData[1] || [])
-            setCurrentPage(1)
+            setFilteredResources(resourceData[1] || []);
+            setCurrentPage(1);
         }
-    }, [searchTerm, resourceData])
+    }, [searchTerm, resourceData]);
 
-    const handleOpenModal = () => setShowModal(true)
-    const handleCloseModal = () => setShowModal(false)
+    const handleOpenModal = () => setShowModal(true);
+    const handleCloseModal = () => setShowModal(false);
 
     const handleSearch = (e) => {
-        e.preventDefault()
+        e.preventDefault();
         if (!resourceData[1] || searchTerm.trim() === '') {
-            setFilteredResources(resourceData[1] || [])
+            setFilteredResources(resourceData[1] || []);
             return
         }
 
-        const term = searchTerm.toLowerCase()
+        const term = searchTerm.toLowerCase();
         let searchResults = resourceData[1].filter((resource) => {
-            const weaponName = (resource.weapon_name || '').toLowerCase()
-            const vehicleName = (resource.vehicle_name || '').toLowerCase()
-            const personnelName = (resource.personnel_name || '').toLowerCase()
-            const equipmentName = (resource.equipment_name || '').toLowerCase()
-            const weaponType = (resource.weapon_type || '').toLowerCase()
-            const vehicleType = (resource.vehicle_type || '').toLowerCase()
+            const weaponName = (resource.weapon_name || '').toLowerCase();
+            const vehicleName = (resource.vehicle_name || '').toLowerCase();
+            const personnelName = (resource.personnel_name || '').toLowerCase();
+            const equipmentName = (resource.equipment_name || '').toLowerCase();
+            const weaponType = (resource.weapon_type || '').toLowerCase();
+            const vehicleType = (resource.vehicle_type || '').toLowerCase();
             const personnelCategory = (
                 resource.personnel_category || ''
-            ).toLowerCase()
-            const equipmentType = (resource.equipment_type || '').toLowerCase()
+            ).toLowerCase();
+            const equipmentType = (resource.equipment_type || '').toLowerCase();
 
             return (
                 weaponName.includes(term) ||
@@ -187,25 +187,25 @@ export default function Resources() {
                 vehicleType.includes(term) ||
                 personnelCategory.includes(term) ||
                 equipmentType.includes(term)
-            )
+            );
         })
 
-        setFilteredResources(searchResults)
-        setCurrentPage(1)
+        setFilteredResources(searchResults);
+        setCurrentPage(1);
     }
 
     // Get current resources for pagination
-    const indexOfLastItem = currentPage * itemsPerPage
-    const indexOfFirstItem = indexOfLastItem - itemsPerPage
+    const indexOfLastItem = currentPage * itemsPerPage;
+    const indexOfFirstItem = indexOfLastItem - itemsPerPage;
     const currentResources =
-        filteredResources?.slice(indexOfFirstItem, indexOfLastItem) || []
+        filteredResources?.slice(indexOfFirstItem, indexOfLastItem) || [];
 
     const totalPages = filteredResources
         ? Math.ceil(filteredResources.length / itemsPerPage)
-        : 0
+        : 0;
 
     // Generate pagination items
-    const paginationItems = []
+    const paginationItems = [];
     for (let number = 1; number <= totalPages; number++) {
         paginationItems.push(
             <Pagination.Item
@@ -215,7 +215,7 @@ export default function Resources() {
             >
                 {number}
             </Pagination.Item>
-        )
+        );
     }
 
     const getResourceName = (resource) => {
@@ -225,7 +225,7 @@ export default function Resources() {
             resource.personnel_name ||
             resource.equipment_name ||
             'Unknown Resource'
-        )
+        );
     }
 
     // const getResourceImage = resource => {
@@ -245,7 +245,7 @@ export default function Resources() {
             resource.personnel_category ||
             resource.equipment_type ||
             'N/A'
-        )
+        );
     }
 
     const getResourceCount = (resource) => {
@@ -255,61 +255,61 @@ export default function Resources() {
             resource.personnel_count ||
             resource.equipment_count ||
             0
-        )
+        );
     }
 
     const getResourceTypeCategory = (resource) => {
-        if (resource.weapon_name) return 'weapon'
-        if (resource.vehicle_name) return 'vehicle'
-        if (resource.personnel_name) return 'personnel'
-        if (resource.equipment_name) return 'equipment'
-        return ''
+        if (resource.weapon_name) return 'weapon';
+        if (resource.vehicle_name) return 'vehicle';
+        if (resource.personnel_name) return 'personnel';
+        if (resource.equipment_name) return 'equipment';
+        return '';
     }
 
     const handleDelete = async (resource) => {
         if (window.confirm('Are you sure you want to delete this resource?')) {
-            const resourceName = getResourceName(resource)
+            const resourceName = getResourceName(resource);
             try {
-                let endpoint = ''
-                const resourceType = getResourceTypeCategory(resource)
+                let endpoint = '';
+                const resourceType = getResourceTypeCategory(resource);
 
                 switch (resourceType) {
                     case 'weapon':
-                        endpoint = `/api/delete-weapon/${resource.id}`
+                        endpoint = `/api/delete-weapon/${resource.id}`;
                         break
                     case 'vehicle':
-                        endpoint = `/api/delete-vehicle/${resource.id}`
+                        endpoint = `/api/delete-vehicle/${resource.id}`;
                         break
                     case 'personnel':
-                        endpoint = `/api/delete-personnel/${resource.id}`
+                        endpoint = `/api/delete-personnel/${resource.id}`;
                         break
                     case 'equipment':
-                        endpoint = `/api/delete-equipment/${resource.id}`
+                        endpoint = `/api/delete-equipment/${resource.id}`;
                         break
                     default:
-                        throw new Error('Invalid resource type')
+                        throw new Error('Invalid resource type');
                 }
 
-                await axios.delete(endpoint)
+                await axios.delete(endpoint);
                 toast.success(
                     `${resourceName} deleted successfully` ||
                         'Resource deleted successfully'
-                )
-                fetchResources()
+                );
+                fetchResources();
             } catch (error) {
-                console.error('Delete error:', error)
+                console.error('Delete error:', error);
                 toast.error(
                     `Failed to delete ${resourceName}` ||
                         'Failed to delete resource'
-                )
+                );
             }
         }
-    }
+    };
 
     const handleEdit = (resource) => {
-        const type = getResourceTypeCategory(resource)
-        setSelectedResource({ ...resource, resourceType: type })
-        setEditModalShow(true)
+        const type = getResourceTypeCategory(resource);
+        setSelectedResource({ ...resource, resourceType: type });
+        setEditModalShow(true);
     }
 
     return (
@@ -490,8 +490,8 @@ export default function Resources() {
                                         <Button
                                             variant="outline-primary"
                                             onClick={() => {
-                                                setSearchTerm('')
-                                                setActiveFilter('All')
+                                                setSearchTerm('');
+                                                setActiveFilter('All');
                                             }}
                                         >
                                             Clear Filters
@@ -644,9 +644,9 @@ export default function Resources() {
                         <ResourceFormModal
                             show={showModal || editModalShow}
                             handleClose={() => {
-                                handleCloseModal()
-                                setEditModalShow(false)
-                                setSelectedResource(null)
+                                handleCloseModal();
+                                setEditModalShow(false);
+                                setSelectedResource(null);
                             }}
                             refreshResources={fetchResources}
                             resource={selectedResource}
@@ -655,5 +655,5 @@ export default function Resources() {
                 )}
             </Container>
         </Layout>
-    )
+    );
 }

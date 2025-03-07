@@ -1,51 +1,51 @@
-import React, { useEffect, useState } from 'react'
-import axios from '../lib/axios'
-import UpdateOperation from './UpdateOperation'
+import React, { useEffect, useState } from "react";
+import axios from "../lib/axios";
+import UpdateOperation from "./UpdateOperation";
 
 const ListOperations = () => {
-    const [setRoleId] = useState(null)
-    const [operations, setOperations] = useState([])
-    const [loading, setLoading] = useState(true) // Track loading state
+    const [setRoleId] = useState(null);
+    const [operations, setOperations] = useState([]);
+    const [loading, setLoading] = useState(true); // Track loading state
 
     useEffect(() => {
         const fetchUserDetails = async () => {
             try {
                 const response = await axios.get(
-                    `${process.env.NEXT_PUBLIC_BACKEND_URL}/api/user`
-                )
-                setRoleId(response.data.role_id || 'Unknown')
+                    `${process.env.NEXT_PUBLIC_BACKEND_URL}/api/user`,
+                );
+                setRoleId(response.data.role_id || "Unknown");
             } catch (error) {
-                console.error('Error fetching user details:', error)
+                console.error("Error fetching user details:", error);
             }
-        }
+        };
 
-        fetchUserDetails()
-    }, [])
+        fetchUserDetails();
+    }, []);
 
     useEffect(() => {
         const fetchOperations = async () => {
             try {
                 const response = await axios.get(
-                    `${process.env.NEXT_PUBLIC_BACKEND_URL}/api/get-all-operations`
-                )
-                const operationsData = response.data[1] || []
-                setOperations(operationsData)
-                setLoading(false) // Data has been fetched, stop loading
+                    `${process.env.NEXT_PUBLIC_BACKEND_URL}/api/get-all-operations`,
+                );
+                const operationsData = response.data[1] || [];
+                setOperations(operationsData);
+                setLoading(false); // Data has been fetched, stop loading
             } catch (error) {
-                console.error('Error fetching operations:', error)
-                setLoading(false) // Stop loading even if there's an error
+                console.error("Error fetching operations:", error);
+                setLoading(false); // Stop loading even if there's an error
             }
-        }
+        };
 
-        fetchOperations()
-    }, [])
+        fetchOperations();
+    }, []);
 
     const handleOperationUpdated = (updatedOperation) => {
         setOperations(
             operations.map((op) =>
-                op.id === updatedOperation.id ? updatedOperation : op
-            )
-        )
+                op.id === updatedOperation.id ? updatedOperation : op,
+            ),
+        );
     }
 
     return (
@@ -57,8 +57,8 @@ const ListOperations = () => {
             ) : (
                 operations.map((operation) => (
                     <div key={operation.id}>
-                        <h2>{operation.name || 'No Name'}</h2>
-                        <p>{operation.description || 'No Description'}</p>
+                        <h2>{operation.name || "No Name"}</h2>
+                        <p>{operation.description || "No Description"}</p>
                         <UpdateOperation
                             operation={operation}
                             onOperationUpdated={handleOperationUpdated}
@@ -67,7 +67,7 @@ const ListOperations = () => {
                 ))
             )}
         </div>
-    )
+    );
 }
 
-export default ListOperations
+export default ListOperations;

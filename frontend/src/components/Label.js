@@ -5,6 +5,6 @@ const Label = ({ className, children, ...props }) => (
     >
         {children}
     </label>
-)
+);
 
-export default Label
+export default Label;

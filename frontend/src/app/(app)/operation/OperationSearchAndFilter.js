@@ -1,15 +1,15 @@
-import React from 'react'
-import { Button, Form, InputGroup, Dropdown, Row, Col } from 'react-bootstrap'
-import { Icon } from '@iconify/react'
+import React from 'react';
+import { Button, Form, InputGroup, Dropdown, Row, Col } from 'react-bootstrap';
+import { Icon } from '@iconify/react';
 
 const OperationSearchAndFilter = ({
     searchTerm,
     setSearchTerm,
     activeFilter,
     setActiveFilter,
-    handleSearch
+    handleSearch,
 }) => {
-    const filterOptions = ['All', 'Ongoing', 'Upcoming', 'Completed']
+    const filterOptions = ['All', 'Ongoing', 'Upcoming', 'Completed'];
 
     return (
         <Row className="mb-4 g-3">
@@ -63,7 +63,7 @@ const OperationSearchAndFilter = ({
                 </Form>
             </Col>
         </Row>
-    )
+    );
 }
 
-export default OperationSearchAndFilter
+export default OperationSearchAndFilter;

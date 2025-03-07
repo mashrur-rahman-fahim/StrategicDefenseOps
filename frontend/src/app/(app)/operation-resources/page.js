@@ -1,8 +1,8 @@
-'use client'
-import Layout from '@/components/layout'
-import { useAuth } from '@/hooks/auth'
-import axios from '@/lib/axios.js'
-import { useState, useEffect } from 'react'
+'use client';
+import Layout from '@/components/layout';
+import { useAuth } from '@/hooks/auth';
+import axios from '@/lib/axios.js';
+import { useState, useEffect } from 'react';
 import {
     Search,
     Filter,
@@ -10,48 +10,48 @@ import {
     Plus,
     Eye,
     Edit,
-    RefreshCw
-} from 'lucide-react'
+    RefreshCw,
+} from 'lucide-react';
 
 export default function OperationResources() {
-    useAuth({ middleware: 'auth' })
+    useAuth({ middleware: 'auth' });
 
-    const [operations, setOperations] = useState([])
-    const [completedOperations, setCompletedOperations] = useState([])
-    const [allResources, setAllResources] = useState([])
-    const [selectedOperation, setSelectedOperation] = useState(null)
+    const [operations, setOperations] = useState([]);
+    const [completedOperations, setCompletedOperations] = useState([]);
+    const [allResources, setAllResources] = useState([]);
+    const [selectedOperation, setSelectedOperation] = useState(null);
     const [formEntries, setFormEntries] = useState([
         {
             category: '',
             serialNumber: '',
-            count: ''
-        }
-    ])
-    const [message, setMessage] = useState('')
-    const [error, setError] = useState('')
-    const [fetchedResources, setFetchedResources] = useState([])
-    const [showResourceModal, setShowResourceModal] = useState(false)
-    const [currentEntryIndex, setCurrentEntryIndex] = useState(0)
-    const [showCompletedOnly, setShowCompletedOnly] = useState(true)
-    const [searchTerm, setSearchTerm] = useState('')
+            count: '',
+        },
+    ]);
+    const [message, setMessage] = useState('');
+    const [error, setError] = useState('');
+    const [fetchedResources, setFetchedResources] = useState([]);
+    const [showResourceModal, setShowResourceModal] = useState(false);
+    const [currentEntryIndex, setCurrentEntryIndex] = useState(0);
+    const [showCompletedOnly, setShowCompletedOnly] = useState(true);
+    const [searchTerm, setSearchTerm] = useState('');
 
     useEffect(() => {
-        fetchOperations()
-        fetchAllResources()
-    }, [])
+        fetchOperations();
+        fetchAllResources();
+    }, []);
 
     useEffect(() => {
         if (operations.length > 0) {
             if (showCompletedOnly) {
                 const filtered = operations.filter(
                     (op) => op.status === 'completed'
-                )
-                setCompletedOperations(filtered)
+                );
+                setCompletedOperations(filtered);
             } else {
-                setCompletedOperations(operations)
+                setCompletedOperations(operations);
             }
         }
-    }, [operations, showCompletedOnly])
+    }, [operations, showCompletedOnly]);
 
     useEffect(() => {
         if (selectedOperation) {
@@ -59,42 +59,42 @@ export default function OperationResources() {
                 {
                     category: '',
                     serialNumber: '',
-                    count: ''
-                }
-            ])
-            setFetchedResources([])
-            setMessage('')
-            setError('')
+                    count: '',
+                },
+            ]);
+            setFetchedResources([]);
+            setMessage('');
+            setError('');
         }
-    }, [selectedOperation])
+    }, [selectedOperation]);
 
     const fetchOperations = async () => {
         try {
-            const response = await axios.get('/api/get-all-operations')
-            setOperations(response.data[1])
+            const response = await axios.get('/api/get-all-operations');
+            setOperations(response.data[1]);
         } catch (err) {
-            setError('Failed to fetch operations')
+            setError('Failed to fetch operations');
         }
-    }
+    };
 
     const fetchAllResources = async () => {
         try {
-            const response = await axios.get('/api/get-all-resources')
-            setAllResources(response.data[1])
+            const response = await axios.get('/api/get-all-resources');
+            setAllResources(response.data[1]);
         } catch (err) {
-            setError('Failed to fetch resources')
+            setError('Failed to fetch resources');
         }
-    }
+    };
 
     const handleFormChange = (index, field, value) => {
-        const updatedEntries = [...formEntries]
-        updatedEntries[index][field] = value
+        const updatedEntries = [...formEntries];
+        updatedEntries[index][field] = value;
 
         if (field === 'category') {
-            updatedEntries[index].serialNumber = ''
+            updatedEntries[index].serialNumber = '';
         }
 
-        setFormEntries(updatedEntries)
+        setFormEntries(updatedEntries);
     }
 
     const addFormEntry = () => {
@@ -103,143 +103,143 @@ export default function OperationResources() {
             {
                 category: '',
                 serialNumber: '',
-                count: ''
-            }
-        ])
+                count: '',
+            },
+        ]);
     }
 
     const handleResourceSelect = (resource, category) => {
-        const updatedEntries = [...formEntries]
-        const entry = updatedEntries[currentEntryIndex]
+        const updatedEntries = [...formEntries];
+        const entry = updatedEntries[currentEntryIndex];
 
-        entry.serialNumber = getSerialNumber(resource, category)
-        entry.category = category
-        entry.resourceName = getResourceName(resource, category)
-        entry.resourceDescription = getResourceDescription(resource, category)
+        entry.serialNumber = getSerialNumber(resource, category);
+        entry.category = category;
+        entry.resourceName = getResourceName(resource, category);
+        entry.resourceDescription = getResourceDescription(resource, category);
 
-        setFormEntries(updatedEntries)
-        setShowResourceModal(false)
+        setFormEntries(updatedEntries);
+        setShowResourceModal(false);
     }
 
     const getResourceName = (resource, category) => {
         switch (category) {
             case '1':
-                return resource.vehicle_name
+                return resource.vehicle_name;
             case '2':
-                return resource.weapon_name
+                return resource.weapon_name;
             case '3':
-                return resource.personnel_name
+                return resource.personnel_name;
             case '4':
-                return resource.equipment_name
+                return resource.equipment_name;
             default:
-                return ''
+                return '';
         }
-    }
+    };
 
     const getResourceDescription = (resource, category) => {
         switch (category) {
             case '1':
-                return resource.vehicle_description || 'No description'
+                return resource.vehicle_description || 'No description';
             case '2':
-                return resource.weapon_description || 'No description'
+                return resource.weapon_description || 'No description';
             case '3':
-                return resource.personnel_description || 'No description'
+                return resource.personnel_description || 'No description';
             case '4':
-                return resource.equipment_description || 'No description'
+                return resource.equipment_description || 'No description';
             default:
-                return ''
+                return '';
         }
-    }
+    };
 
     const getSerialNumber = (resource, category) => {
         switch (category) {
             case '1':
-                return resource.vehicle_serial_number
+                return resource.vehicle_serial_number;
             case '2':
-                return resource.weapon_serial_number
+                return resource.weapon_serial_number;
             case '3':
-                return resource.personnel_serial_number
+                return resource.personnel_serial_number;
             case '4':
-                return resource.equipment_serial_number
+                return resource.equipment_serial_number;
             default:
-                return ''
+                return '';
         }
-    }
+    };
 
     const filteredResources = (category) => {
-        if (!allResources || !Array.isArray(allResources)) return []
+        if (!allResources || !Array.isArray(allResources)) return [];
 
         let filtered = allResources.filter((resource) => {
-            if (category === '1') return resource.vehicle_name
-            if (category === '2') return resource.weapon_name
-            if (category === '3') return resource.personnel_name
-            if (category === '4') return resource.equipment_name
-            return false
+            if (category === '1') return resource.vehicle_name;
+            if (category === '2') return resource.weapon_name;
+            if (category === '3') return resource.personnel_name;
+            if (category === '4') return resource.equipment_name;
+            return false;
         })
 
         if (searchTerm) {
             filtered = filtered.filter((resource) => {
-                const name = getResourceName(resource, category).toLowerCase()
+                const name = getResourceName(resource, category).toLowerCase();
                 const description = getResourceDescription(
                     resource,
                     category
-                ).toLowerCase()
+                ).toLowerCase();
                 return (
                     name.includes(searchTerm.toLowerCase()) ||
                     description.includes(searchTerm.toLowerCase())
-                )
+                );
             })
         }
 
-        return filtered
+        return filtered;
     }
 
     const getCategoryName = (categoryId) => {
         switch (categoryId) {
             case '1':
-                return 'Vehicle'
+                return 'Vehicle';
             case '2':
-                return 'Weapon'
+                return 'Weapon';
             case '3':
-                return 'Personnel'
+                return 'Personnel';
             case '4':
-                return 'Equipment'
+                return 'Equipment';
             default:
-                return 'Unknown'
+                return 'Unknown';
         }
-    }
+    };
 
     const getCategoryIcon = (categoryId) => {
         switch (categoryId) {
             case '1':
-                return '🚗'
+                return '🚗';
             case '2':
-                return '🔫'
+                return '🔫';
             case '3':
-                return '👤'
+                return '👤';
             case '4':
-                return '🔧'
+                return '🔧';
             default:
-                return '📦'
+                return '📦';
         }
-    }
+    };
 
     const getStatusBadgeVariant = (status) => {
         switch (status) {
             case 'ongoing':
-                return 'bg-green-500'
+                return 'bg-green-500';
             case 'upcoming':
-                return 'bg-blue-500'
+                return 'bg-blue-500';
             case 'completed':
-                return 'bg-gray-500'
+                return 'bg-gray-500';
             default:
-                return 'bg-purple-500'
+                return 'bg-purple-500';
         }
-    }
+    };
 
     const handleSubmit = async (actionType) => {
         if (!selectedOperation) {
-            setError('Please select an operation first')
+            setError('Please select an operation first');
             return
         }
 
@@ -247,39 +247,39 @@ export default function OperationResources() {
             const invalidEntries = formEntries.some(
                 (entry) =>
                     !entry.category || !entry.serialNumber || !entry.count
-            )
+            );
 
             if (invalidEntries) {
-                setError('Please fill in all resource details')
+                setError('Please fill in all resource details');
                 return
             }
 
             setMessage(
                 `Resources ${actionType === 'add' ? 'added' : 'updated'} successfully`
-            )
-            setError('')
-            setFormEntries([{ category: '', serialNumber: '', count: '' }])
-            handleViewResources()
+            );
+            setError('');
+            setFormEntries([{ category: '', serialNumber: '', count: '' }]);
+            handleViewResources();
         } catch (err) {
-            setError(err.response?.data?.error || 'An error occurred')
-            setMessage('')
+            setError(err.response?.data?.error || 'An error occurred');
+            setMessage('');
         }
-    }
+    };
 
     const handleViewResources = async () => {
         if (!selectedOperation) {
-            setError('Please select an operation first')
+            setError('Please select an operation first');
             return
         }
 
-        setError('')
-        setMessage('')
+        setError('');
+        setMessage('');
 
         try {
             const response = await axios.get(
                 `/api/get-operation-resources/${selectedOperation}`
-            )
-            const transformed = []
+            );
+            const transformed = [];
 
             Object.entries(response.data).forEach(([key, value]) => {
                 if (Array.isArray(value)) {
@@ -291,26 +291,26 @@ export default function OperationResources() {
                             description:
                                 item[`${key}_description`] || 'No description',
                             serialNumber: item[`${key}_serial_number`],
-                            count: item[`${key}_count`]
-                        })
+                            count: item[`${key}_count`],
+                        });
                     })
                 }
-            })
+            });
 
-            setFetchedResources(transformed)
-            setMessage('Resources fetched successfully')
+            setFetchedResources(transformed);
+            setMessage('Resources fetched successfully');
         } catch (err) {
-            setError('Failed to fetch resources for this operation')
-            setFetchedResources([])
+            setError('Failed to fetch resources for this operation');
+            setFetchedResources([]);
         }
-    }
+    };
 
     const handleOperationSelect = (operationId) => {
-        setSelectedOperation(operationId)
+        setSelectedOperation(operationId);
     }
 
     const toggleOperationFilter = () => {
-        setShowCompletedOnly(!showCompletedOnly)
+        setShowCompletedOnly(!showCompletedOnly);
     }
 
     const filteredOperations = completedOperations.filter(
@@ -318,7 +318,7 @@ export default function OperationResources() {
             op.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
             (op.description &&
                 op.description.toLowerCase().includes(searchTerm.toLowerCase()))
-    )
+    );
 
     return (
         <Layout>
@@ -464,17 +464,17 @@ export default function OperationResources() {
                                                     disabled={!entry.category}
                                                     onClick={async () => {
                                                         try {
-                                                            await fetchAllResources()
+                                                            await fetchAllResources();
                                                             setCurrentEntryIndex(
                                                                 index
-                                                            )
+                                                            );
                                                             setShowResourceModal(
                                                                 true
-                                                            )
+                                                            );
                                                         } catch (err) {
                                                             setError(
                                                                 'Failed to refresh resources'
-                                                            )
+                                                            );
                                                         }
                                                     }}
                                                     className={`w-full px-4 py-2 text-left border rounded-lg flex justify-between items-center ${
@@ -630,17 +630,17 @@ export default function OperationResources() {
                                                         const category =
                                                             formEntries[
                                                                 currentEntryIndex
-                                                            ]?.category
+                                                            ]?.category;
                                                         const name =
                                                             getResourceName(
                                                                 resource,
                                                                 category
-                                                            )
+                                                            );
                                                         const description =
                                                             getResourceDescription(
                                                                 resource,
                                                                 category
-                                                            )
+                                                            );
                                                         const count =
                                                             category === '1'
                                                                 ? resource.vehicle_count
@@ -653,7 +653,7 @@ export default function OperationResources() {
                                                                     : category ===
                                                                         '4'
                                                                       ? resource.equipment_count
-                                                                      : 0
+                                                                      : 0;
 
                                                         return (
                                                             <tr
@@ -690,7 +690,7 @@ export default function OperationResources() {
                                                                     </button>
                                                                 </td>
                                                             </tr>
-                                                        )
+                                                        );
                                                     })}
 
                                                     {filteredResources(
@@ -826,5 +826,5 @@ export default function OperationResources() {
                 </div>
             </div>
         </Layout>
-    )
+    );
 }

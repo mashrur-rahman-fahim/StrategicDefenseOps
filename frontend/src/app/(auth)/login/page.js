@@ -1,51 +1,51 @@
-'use client'
+'use client';
 
-import { useState, useEffect } from 'react'
-import Link from 'next/link'
-import { useAuth } from '@/hooks/auth'
-import { useRouter } from 'next/navigation'
-import AuthSessionStatus from '@/app/(auth)/AuthSessionStatus'
+import { useState, useEffect } from 'react';
+import Link from 'next/link';
+import { useAuth } from '@/hooks/auth';
+import { useRouter } from 'next/navigation';
+import AuthSessionStatus from '@/app/(auth)/AuthSessionStatus';
 
 const Login = () => {
-    const router = useRouter()
+    const router = useRouter();
     const { login } = useAuth({
         middleware: 'guest',
-        redirectIfAuthenticated: '/dashboard'
-    })
+        redirectIfAuthenticated: '/dashboard',
+    });
 
-    const [email, setEmail] = useState('')
-    const [password, setPassword] = useState('')
-    const [shouldRemember, setShouldRemember] = useState(false)
-    const [errors, setErrors] = useState([])
-    const [status, setStatus] = useState(null)
-    const [showPassword, setShowPassword] = useState(false)
+    const [email, setEmail] = useState('');
+    const [password, setPassword] = useState('');
+    const [shouldRemember, setShouldRemember] = useState(false);
+    const [errors, setErrors] = useState([]);
+    const [status, setStatus] = useState(null);
+    const [showPassword, setShowPassword] = useState(false);
 
     useEffect(() => {
         if (router.reset?.length > 0 && errors.length === 0) {
-            setStatus(atob(router.reset))
+            setStatus(atob(router.reset));
         } else {
-            setStatus(null)
+            setStatus(null);
         }
-    }, [router.reset, errors])
+    }, [router.reset, errors]);
 
     const submitForm = async (event) => {
-        event.preventDefault()
+        event.preventDefault();
         login({
             email,
             password,
             remember: shouldRemember,
             setErrors,
-            setStatus
-        })
+            setStatus,
+        });
     }
 
     const handleGoogleLogin = async () => {
         try {
-            window.location.href = `http://127.0.0.1:8000/auth/google`
+            window.location.href = `http://127.0.0.1:8000/auth/google`;
         } catch (error) {
-            console.error('Google login error:', error)
+            console.error('Google login error:', error);
         }
-    }
+    };
 
     return (
         <div className="flex h-screen w-screen">
@@ -163,12 +163,12 @@ const Login = () => {
                     style={{
                         backgroundImage: `url('/login1.jpg')`,
                         backgroundSize: 'cover',
-                        backgroundPosition: 'center'
+                        backgroundPosition: 'center',
                     }}
                 />
             </div>
         </div>
-    )
+    );
 }
 
-export default Login
+export default Login;

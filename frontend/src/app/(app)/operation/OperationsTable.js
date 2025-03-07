@@ -1,14 +1,14 @@
-import React from 'react'
-import { Table, Button } from 'react-bootstrap'
-import { Icon } from '@iconify/react'
-import Link from 'next/link'
+import React from 'react';
+import { Table, Button } from 'react-bootstrap';
+import { Icon } from '@iconify/react';
+import Link from 'next/link';
 
 export default function OperationsTable({
     operations,
     onEdit,
     onDelete,
     formatDate,
-    user
+    user,
 }) {
     return (
         <Table responsive striped hover className="bg-light">
@@ -76,5 +76,5 @@ export default function OperationsTable({
                 ))}
             </tbody>
         </Table>
-    )
+    );
 }

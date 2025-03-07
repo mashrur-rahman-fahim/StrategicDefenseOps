@@ -1,16 +1,16 @@
-'use client'
+'use client';
 
-import Button from '@/components/Button'
-import { useAuth } from '@/hooks/auth'
-import { useState } from 'react'
+import Button from '@/components/Button';
+import { useAuth } from '@/hooks/auth';
+import { useState } from 'react';
 
 const Page = () => {
     const { logout, resendEmailVerification } = useAuth({
         middleware: 'auth',
-        redirectIfAuthenticated: '/dashboard'
-    })
+        redirectIfAuthenticated: '/dashboard',
+    });
 
-    const [status, setStatus] = useState(null)
+    const [status, setStatus] = useState(null);
 
     return (
         <div
@@ -18,7 +18,7 @@ const Page = () => {
             style={{
                 backgroundImage: `url('/verify3.jpg')`,
                 backgroundSize: 'cover',
-                backgroundPosition: 'center'
+                backgroundPosition: 'center',
             }}
         >
             <div
@@ -59,7 +59,7 @@ const Page = () => {
                 </div>
             </div>
         </div>
-    )
+    );
 }
 
-export default Page
+export default Page;
