@@ -257,7 +257,7 @@ export default function Resources() {
         )
     }
 
-    const getResourceTypeCategory = (resource) => {
+    const getResourceTypeCategory = resource => {
         if (resource.weapon_name) return 'weapon'
         if (resource.vehicle_name) return 'vehicle'
         if (resource.personnel_name) return 'personnel'
@@ -265,36 +265,51 @@ export default function Resources() {
         return ''
     }
 
-    const handleDelete = async (resource) => {
+    const handleDelete = async resource => {
         if (window.confirm('Are you sure you want to delete this resource?')) {
-          const resourceName = getResourceName(resource)
-          try {
-            let endpoint = ''
-            const resourceType = getResourceTypeCategory(resource)
-            
-            switch(resourceType) {
-              case 'weapon': endpoint = `/api/delete-weapon/${resource.id}`; break
-              case 'vehicle': endpoint = `/api/delete-vehicle/${resource.id}`; break
-              case 'personnel': endpoint = `/api/delete-personnel/${resource.id}`; break
-              case 'equipment': endpoint = `/api/delete-equipment/${resource.id}`; break
-              default: throw new Error('Invalid resource type')
+            const resourceName = getResourceName(resource)
+            try {
+                let endpoint = ''
+                const resourceType = getResourceTypeCategory(resource)
+
+                switch (resourceType) {
+                    case 'weapon':
+                        endpoint = `/api/delete-weapon/${resource.id}`
+                        break
+                    case 'vehicle':
+                        endpoint = `/api/delete-vehicle/${resource.id}`
+                        break
+                    case 'personnel':
+                        endpoint = `/api/delete-personnel/${resource.id}`
+                        break
+                    case 'equipment':
+                        endpoint = `/api/delete-equipment/${resource.id}`
+                        break
+                    default:
+                        throw new Error('Invalid resource type')
+                }
+
+                await axios.delete(endpoint)
+                toast.success(
+                    `${resourceName} deleted successfully` ||
+                        'Resource deleted successfully',
+                )
+                fetchResources()
+            } catch (error) {
+                console.error('Delete error:', error)
+                toast.error(
+                    `Failed to delete ${resourceName}` ||
+                        'Failed to delete resource',
+                )
             }
-      
-            await axios.delete(endpoint)
-            toast.success(`${resourceName} deleted successfully` || 'Resource deleted successfully')
-            fetchResources()
-          } catch (error) {
-            console.error('Delete error:', error)
-            toast.error(`Failed to delete ${resourceName}` || 'Failed to delete resource')
-          }
         }
-      }
-      
-      const handleEdit = (resource) => {
+    }
+
+    const handleEdit = resource => {
         const type = getResourceTypeCategory(resource)
         setSelectedResource({ ...resource, resourceType: type })
         setEditModalShow(true)
-      }
+    }
 
     return (
         <Layout>
@@ -541,7 +556,10 @@ export default function Resources() {
                                                                 </div>
                                                             </div>
                                                             <div className="d-flex gap-2 mt-3">
-                                                                {(user?.role_id === 1 || user?.role_id === 2) && (
+                                                                {(user?.role_id ===
+                                                                    1 ||
+                                                                    user?.role_id ===
+                                                                        2) && (
                                                                     <Button
                                                                         variant="outline-primary"
                                                                         size="sm"
@@ -553,7 +571,8 @@ export default function Resources() {
                                                                         <Icon icon="mdi:pencil" />
                                                                     </Button>
                                                                 )}
-                                                                {user?.role_id === 1 && (
+                                                                {user?.role_id ===
+                                                                    1 && (
                                                                     <Button
                                                                         variant="outline-danger"
                                                                         size="sm"

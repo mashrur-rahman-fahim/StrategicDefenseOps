@@ -23,22 +23,22 @@ export default function Chatbot() {
     }, [messages]) // Runs whenever messages update
 
     const sendMessage = async () => {
-        if (!input.trim()) return
-        setLoading(true)
-        setMessages(prev => [...prev, { sender: 'user', text: input }])
-        setInput('')
-
-        abortControllerRef.current = new AbortController()
-        const { signal } = abortControllerRef.current
-
+        if (!input.trim()) return;
+        setLoading(true);
+        setMessages(prev => [...prev, { sender: 'user', text: input }]);
+        setInput('');
+    
+        abortControllerRef.current = new AbortController();
+        const { signal } = abortControllerRef.current;
+    
         try {
-            const token = localStorage.getItem('api_token')
+            const token = localStorage.getItem('api_token');
             const headers = {
                 'Content-Type': 'application/json',
                 Authorization: token ? `Bearer ${token}` : '',
                 'X-Requested-With': 'XMLHttpRequest',
-            }
-
+            };
+    
             const response = await fetch(
                 `${process.env.NEXT_PUBLIC_BACKEND_URL}/api/ollama/generate`,
                 {
@@ -47,60 +47,50 @@ export default function Chatbot() {
                     credentials: 'include',
                     body: JSON.stringify({ prompt: input }),
                     signal,
-                },
-            )
-
-            if (!response.body) throw new Error('No response body')
-
-            const reader = response.body.getReader()
-            const decoder = new TextDecoder()
-            let botResponse = ''
-
-            setMessages(prev => [...prev, { sender: 'bot', text: '' }])
-
-            let done = false
-
-            while (!done) {
-                const { done: isDone, value } = await reader.read()
-                done = isDone
-                if (done) break
-
-                const chunk = decoder.decode(value, { stream: true })
-                botResponse += chunk
-
+                }
+            );
+    
+            if (!response.ok) throw new Error('Failed to fetch response');
+    
+            const botResponse = await response.text(); // Get the entire response at once
+            setMessages(prev => [...prev, { sender: 'bot', text: '' }]);
+    
+            let currentText = '';
+            for (let i = 0; i < botResponse.length; i++) {
+                if (abortControllerRef.current === null) break; // Stop if user cancels
+                currentText += botResponse[i];
+    
                 setMessages(prev => {
-                    const lastMessage = prev[prev.length - 1]
+                    const lastMessage = prev[prev.length - 1];
                     if (lastMessage.sender === 'bot') {
                         return [
                             ...prev.slice(0, -1),
-                            { sender: 'bot', text: botResponse },
-                        ]
+                            { sender: 'bot', text: currentText },
+                        ];
                     }
-                    return [...prev, { sender: 'bot', text: botResponse }]
-                })
-
-                await new Promise(resolve => setTimeout(resolve, 50))
+                    return [...prev, { sender: 'bot', text: currentText }];
+                });
+    
+                await new Promise(resolve => setTimeout(resolve, 30)); // Delay for typing effect
             }
         } catch (error) {
             if (error.name === 'AbortError') {
                 setMessages(prev => [
                     ...prev,
                     { sender: 'bot', text: 'Response stopped.' },
-                ])
+                ]);
             } else {
-                console.error('Error fetching response:', error)
+                console.error('Error fetching response:', error);
                 setMessages(prev => [
                     ...prev,
-                    {
-                        sender: 'bot',
-                        text: 'An error occurred. Please try again.',
-                    },
-                ])
+                    { sender: 'bot', text: 'An error occurred. Please try again.' },
+                ]);
             }
         } finally {
-            setLoading(false)
+            setLoading(false);
         }
-    }
+    };
+    
 
     const stopResponse = () => {
         if (abortControllerRef.current) {

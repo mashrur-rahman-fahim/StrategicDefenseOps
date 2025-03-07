@@ -28,7 +28,9 @@ class OperationResourcesController extends Controller
             return response()->json(['error' => 'Unauthorized'], 403);
         }
         $operationResource = $this->operationResourcesService->addOperationResources($data, $operationId, $user->id);
-
+        if(!$operationResource){
+            return response()->json(['error' => 'Failed to add operation resource'], 400);
+        }
         return response()->json($operationResource, 201);
     }
 
@@ -39,7 +41,10 @@ class OperationResourcesController extends Controller
             return response()->json(['error' => 'Unauthorized'], 403);
         }
         $operationResources = $this->operationResourcesService->getOperationResource($operationId, $user->id);
-
+        if(!$operationResources)
+        {
+            return response()->json(['error' => 'Operation resources not found'], 404);
+        }
         return response()->json($operationResources);
     }
 
@@ -55,7 +60,9 @@ class OperationResourcesController extends Controller
             return response()->json(['error' => 'Unauthorized'], 403);
         }
         $operationResource = $this->operationResourcesService->updateOperationResource($operationId, $user->id, $data);
-
+        if(!$operationResource){
+            return response()->json(['error' => 'Failed to update operation resource'], 400);
+        }
         return response()->json($operationResource, 200);
     }
 }

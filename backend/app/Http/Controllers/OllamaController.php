@@ -17,28 +17,24 @@ class OllamaController extends Controller
 
     public function generateResponse(Request $request): StreamedResponse
     {
-        // Validate the request
-        set_time_limit(300);
+        set_time_limit(500); // Prevents PHP timeout for long responses
+
         $validated = $request->validate([
             'prompt' => 'required|string',
         ]);
 
         return response()->stream(function () use ($validated) {
             foreach ($this->ollamaService->generateResponse($validated['prompt']) as $chunk) {
-                if (! empty($chunk)) {
-                    echo $chunk."\n"; // Preserve formatting (Markdown-friendly)
-
-                    if (ob_get_level() > 0) {
-                        ob_flush();
-                    }
+                if (!empty($chunk)) {
+                    echo $chunk . "\n"; 
+                    ob_flush();
                     flush();
-                    usleep(50000); // Slight delay for smooth streaming
                 }
             }
         }, 200, [
             'Content-Type' => 'text/plain',
             'Cache-Control' => 'no-cache, no-store, must-revalidate',
-            'X-Accel-Buffering' => 'no',
+            'X-Accel-Buffering' => 'no', // Ensures real-time streaming
             'Connection' => 'keep-alive',
         ]);
     }

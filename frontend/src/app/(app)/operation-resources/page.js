@@ -12,23 +12,28 @@ import {
     Row,
     Col,
     Alert,
+    Modal,
 } from 'react-bootstrap'
 
 export default function OperationResources() {
     const { user } = useAuth({ middleware: 'auth' })
     const [operations, setOperations] = useState([])
+    const [allResources, setAllResources] = useState([])
     const [selectedOperation, setSelectedOperation] = useState(null)
-    const [formData, setFormData] = useState({
-        category: [''],
-        serial_number: [''],
-        count: [''],
-    })
+    const [formEntries, setFormEntries] = useState([{ 
+        category: '',
+        serialNumber: '',
+        count: ''
+    }])
     const [message, setMessage] = useState('')
     const [error, setError] = useState('')
-    const [fetchedResources, setFetchedResources] = useState([]) // To store fetched resources
+    const [fetchedResources, setFetchedResources] = useState([])
+    const [showResourceModal, setShowResourceModal] = useState(false)
+    const [currentEntryIndex, setCurrentEntryIndex] = useState(0)
 
     useEffect(() => {
         fetchOperations()
+        fetchAllResources()
     }, [])
 
     const fetchOperations = async () => {
@@ -40,84 +45,112 @@ export default function OperationResources() {
         }
     }
 
-    const handleInputChange = (e, index) => {
-        const { name, value } = e.target
-        const list = { ...formData }
-        list[name][index] = value
-        setFormData(list)
+    const fetchAllResources = async () => {
+        try {
+            const response = await axios.get('/api/get-all-resources')
+            setAllResources(response.data[1])
+        } catch (err) {
+            setError('Failed to fetch resources')
+        }
     }
 
-    const addFields = () => {
-        setFormData({
-            category: [...formData.category, ''],
-            serial_number: [...formData.serial_number, ''],
-            count: [...formData.count, ''],
+    const handleFormChange = (index, field, value) => {
+        const updatedEntries = [...formEntries]
+        updatedEntries[index][field] = value
+        
+        if (field === 'category') {
+            updatedEntries[index].serialNumber = ''
+        }
+        
+        setFormEntries(updatedEntries)
+    }
+
+    const addFormEntry = () => {
+        setFormEntries([...formEntries, { 
+            category: '',
+            serialNumber: '',
+            count: ''
+        }])
+    }
+
+    const handleResourceSelect = (resource, category) => {
+        const updatedEntries = [...formEntries]
+        const entry = updatedEntries[currentEntryIndex]
+        
+        entry.serialNumber = getSerialNumber(resource, category)
+        entry.category = category
+        
+        setFormEntries(updatedEntries)
+        setShowResourceModal(false)
+    }
+
+    const getSerialNumber = (resource, category) => {
+        switch(category) {
+            case '1': return resource.vehicle_serial_number
+            case '2': return resource.weapon_serial_number
+            case '3': return resource.personnel_serial_number
+            case '4': return resource.equipment_serial_number
+            default: return ''
+        }
+    }
+
+    const filteredResources = (category) => {
+        return allResources.filter(resource => {
+            if (category === '1') return resource.vehicle_name
+            if (category === '2') return resource.weapon_name
+            if (category === '3') return resource.personnel_name
+            if (category === '4') return resource.equipment_name
+            return false
         })
     }
 
-    const handleSubmit = async type => {
+    const handleSubmit = async (actionType) => {
         try {
-            // Convert category and count to integers
-            const processedData = {
-                category: formData.category.map(Number), // Convert to integers
-                serial_number: formData.serial_number,
-                count: formData.count.map(Number), // Convert to integers
+            const payload = {
+                category: formEntries.map(entry => Number(entry.category)),
+                serial_number: formEntries.map(entry => entry.serialNumber),
+                count: formEntries.map(entry => Number(entry.count))
             }
 
-            let url = `/api/${type}-operation-resources/${selectedOperation}`
-            let method = type === 'add' ? 'post' : 'put'
-
             const response = await axios({
-                method,
-                url,
-                data: processedData,
+                method: actionType === 'add' ? 'post' : 'put',
+                url: `/api/${actionType}-operation-resources/${selectedOperation}`,
+                data: payload
             })
 
-            setMessage(
-                `${type.charAt(0).toUpperCase() + type.slice(1)} successful`,
-            )
+            setMessage(`Resources ${actionType}ed successfully`)
             setError('')
-            console.log(response.data)
+            setFormEntries([{ category: '', serialNumber: '', count: '' }])
+            handleViewResources() // Refresh the view after submission
         } catch (err) {
             setError(err.response?.data?.error || 'An error occurred')
             setMessage('')
         }
     }
 
-    const handleView = async () => {
+    const handleViewResources = async () => {
         try {
-            const response = await axios.get(
-                `/api/get-operation-resources/${selectedOperation}`,
-            )
-            const resources = response.data
-
-            if (
-                resources &&
-                resources.vehicle &&
-                resources.weapon &&
-                resources.personnel &&
-                resources.equipment
-            ) {
-                const allResources = [
-                    ...resources.vehicle.map(v => ({ ...v, type: 'Vehicle' })),
-                    ...resources.weapon.map(w => ({ ...w, type: 'Weapon' })),
-                    ...resources.personnel.map(p => ({
-                        ...p,
-                        type: 'Personnel',
-                    })),
-                    ...resources.equipment.map(e => ({
-                        ...e,
-                        type: 'Equipment',
-                    })),
-                ]
-                setFetchedResources(allResources) // Store fetched resources
-            }
-
+            const response = await axios.get(`/api/get-operation-resources/${selectedOperation}`)
+            const transformed = []
+            
+            // Transform backend response to match frontend structure
+            Object.entries(response.data).forEach(([key, value]) => {
+                if (Array.isArray(value)) {
+                    value.forEach(item => {
+                        transformed.push({
+                            type: key.charAt(0).toUpperCase() + key.slice(1),
+                            id: item.id,
+                            serialNumber: item[`${key}_serial_number`],
+                            count: item[`${key}_count`]
+                        })
+                    })
+                }
+            })
+            
+            setFetchedResources(transformed)
             setMessage('Resources fetched successfully')
-            setError('')
         } catch (err) {
-            setError(err.response?.data?.error || 'Failed to fetch resources')
-            setMessage('')
+            setError('Failed to fetch resources')
         }
     }
 
@@ -125,115 +158,164 @@ export default function OperationResources() {
         <Layout>
             <Container>
                 <h1 className="my-4">Operation Resources</h1>
-                <p>Welcome, {user?.name}!</p>
-
-                {/* Operations Table */}
-                <Table striped bordered hover responsive className="mb-4">
-                    <thead>
-                        <tr>
-                            <th>#</th>
-                            <th>Operation ID</th>
-                            <th>Select</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        {operations.map((op, index) => (
-                            <tr key={op.id}>
-                                <td>{index + 1}</td>
-                                <td>{op.id}</td>
-                                <td>
-                                    <Button
-                                        variant="primary"
-                                        onClick={() =>
-                                            setSelectedOperation(op.id)
-                                        }
-                                        disabled={selectedOperation === op.id}>
-                                        {selectedOperation === op.id
-                                            ? 'Selected'
-                                            : 'Select'}
-                                    </Button>
-                                </td>
-                            </tr>
+                
+                {/* Operations Selection */}
+                <div className="mb-4">
+                    <h3>Select Operation</h3>
+                    <Row>
+                        {operations.map(op => (
+                            <Col key={op.id} md={3} className="mb-3">
+                                <Button
+                                    variant={selectedOperation === op.id ? 'primary' : 'outline-primary'}
+                                    onClick={() => setSelectedOperation(op.id)}
+                                    block>
+                                    Operation #{op.id}
+                                    {selectedOperation === op.id && ' ✓'}
+                                </Button>
+                            </Col>
                         ))}
-                    </tbody>
-                </Table>
-
-                {!selectedOperation && <p>Please select an operation first</p>}
+                    </Row>
+                </div>
 
                 {selectedOperation && (
                     <>
-                        {/* Messages */}
-                        {message && <Alert variant="success">{message}</Alert>}
-                        {error && <Alert variant="danger">{error}</Alert>}
+                        {/* Resource Management Section */}
+                        <div className="mb-4">
+                            <h3>Manage Resources</h3>
+                            
+                            {formEntries.map((entry, index) => (
+                                <div key={index} className="resource-entry mb-3 p-3 border rounded">
+                                    <Row className="align-items-center">
+                                        <Col md={3}>
+                                            <Form.Select
+                                                value={entry.category}
+                                                onChange={(e) => handleFormChange(index, 'category', e.target.value)}
+                                                required>
+                                                <option value="">Select Category</option>
+                                                <option value="1">Vehicle</option>
+                                                <option value="2">Weapon</option>
+                                                <option value="3">Personnel</option>
+                                                <option value="4">Equipment</option>
+                                            </Form.Select>
+                                        </Col>
 
-                        {/* Add Resources Form */}
-                        <h3>Add Resources</h3>
-                        {formData.category.map((field, index) => (
-                            <Row key={index} className="mb-3">
-                                <Col>
-                                    <Form.Control
-                                        type="number"
-                                        placeholder="Category (1-4)"
-                                        name="category"
-                                        value={formData.category[index]}
-                                        onChange={e =>
-                                            handleInputChange(e, index)
-                                        }
-                                        required
-                                    />
-                                </Col>
-                                <Col>
-                                    <Form.Control
-                                        type="text"
-                                        placeholder="Serial Number"
-                                        name="serial_number"
-                                        value={formData.serial_number[index]}
-                                        onChange={e =>
-                                            handleInputChange(e, index)
-                                        }
-                                        required
-                                    />
-                                </Col>
-                                <Col>
-                                    <Form.Control
-                                        type="number"
-                                        placeholder="Count"
-                                        name="count"
-                                        value={formData.count[index]}
-                                        onChange={e =>
-                                            handleInputChange(e, index)
-                                        }
-                                        required
-                                    />
-                                </Col>
-                            </Row>
-                        ))}
+                                        <Col md={3}>
+                                            <Button
+                                                variant="outline-secondary"
+                                                disabled={!entry.category}
+                                                onClick={async() => {
+                                                    try{
+                                                        await fetchAllResources()
+                                                        setCurrentEntryIndex(index)
+                                                        setShowResourceModal(true)
+                                                    }
+                                                    catch(err) {
+                                                        setError('Failed to refresh resources')
+                                                    }
+                                                    
+                                                }}>
+                                                {entry.serialNumber || 'Select Resource'}
+                                            </Button>
+                                        </Col>
 
-                        <div className="mb-3">
-                            <Button variant="success" onClick={addFields}>
-                                Add More
-                            </Button>
-                            <Button
-                                variant="primary"
-                                className="ms-2"
-                                onClick={() => handleSubmit('add')}>
-                                Submit
-                            </Button>
+                                        <Col md={3}>
+                                            <Form.Control
+                                                type="number"
+                                                placeholder="Count"
+                                                value={entry.count}
+                                                onChange={(e) => handleFormChange(index, 'count', e.target.value)}
+                                                min="1"
+                                                required
+                                            />
+                                        </Col>
+                                    </Row>
+                                </div>
+                            ))}
+
+                            <div className="mb-3">
+                                <Button variant="success" onClick={addFormEntry}>
+                                    + Add Another Resource
+                                </Button>
+                            </div>
+
+                            <div className="button-group">
+                                <Button variant="primary" onClick={() => handleSubmit('add')} className="me-2">
+                                    Add Resources
+                                </Button>
+                                <Button variant="warning" onClick={() => handleSubmit('update')} className="me-2">
+                                    Update Resources
+                                </Button>
+                                <Button variant="info" onClick={handleViewResources}>
+                                    View Current Resources
+                                </Button>
+                            </div>
                         </div>
 
-                        {/* View Resources Button */}
-                        <Button
-                            variant="info"
-                            className="me-2 mb-3"
-                            onClick={handleView}>
-                            View Resources
-                        </Button>
+                        {/* Resource Selection Modal */}
+                        <Modal show={showResourceModal} onHide={() => setShowResourceModal(false)} size="lg">
+                            <Modal.Header closeButton>
+                                <Modal.Title>Select Resource</Modal.Title>
+                            </Modal.Header>
+                            <Modal.Body>
+                                <Table striped bordered hover>
+                                    <thead>
+                                        <tr>
+                                            <th>ID</th>
+                                            <th>Name</th>
+                                            <th>Serial Number</th>
+                                            <th>Available</th>
+                                            <th>Select</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        {filteredResources(formEntries[currentEntryIndex]?.category).map(resource => (
+                                            <tr key={resource.id}>
+                                                <td>{resource.id}</td>
+                                                <td>
+                                                    {resource.vehicle_name || 
+                                                     resource.weapon_name || 
+                                                     resource.personnel_name || 
+                                                     resource.equipment_name}
+                                                </td>
+                                                <td>
+                                                    {resource.vehicle_serial_number || 
+                                                     resource.weapon_serial_number || 
+                                                     resource.personnel_serial_number || 
+                                                     resource.equipment_serial_number}
+                                                </td>
+                                                <td>
+                                                    {resource.vehicle_count || 
+                                                     resource.weapon_count || 
+                                                     resource.personnel_count || 
+                                                     resource.equipment_count}
+                                                </td>
+                                                <td>
+                                                    <Button 
+                                                        variant="primary"
+                                                        size="sm"
+                                                        onClick={() => handleResourceSelect(
+                                                            resource,
+                                                            formEntries[currentEntryIndex].category
+                                                        )}>
+                                                        Select
+                                                    </Button>
+                                                </td>
+                                            </tr>
+                                        ))}
+                                    </tbody>
+                                </Table>
+                            </Modal.Body>
+                        </Modal>
+
+                        {/* Display Messages */}
+                        {message && <Alert variant="success" className="mt-3">{message}</Alert>}
+                        {error && <Alert variant="danger" className="mt-3">{error}</Alert>}
 
                         {/* Display Fetched Resources */}
                         {fetchedResources.length > 0 && (
-                            <>
-                                <h3 className="mt-4">Fetched Resources</h3>
-                                <Table striped bordered hover responsive>
+                            <div className="mt-4">
+                                <h4>Current Operation Resources</h4>
+                                <Table striped bordered hover>
                                     <thead>
                                         <tr>
                                             <th>Type</th>
@@ -242,38 +324,17 @@ export default function OperationResources() {
                                         </tr>
                                     </thead>
                                     <tbody>
-                                        {fetchedResources.map(
-                                            (resource, index) => (
-                                                <tr key={index}>
-                                                    <td>{resource.type}</td>
-                                                    <td>
-                                                        {resource.vehicle_serial_number ||
-                                                            resource.weapon_serial_number ||
-                                                            resource.personnel_serial_number ||
-                                                            resource.equipment_serial_number}
-                                                    </td>
-                                                    <td>
-                                                        {resource.vehicle_count ||
-                                                            resource.weapon_count ||
-                                                            resource.personnel_count ||
-                                                            resource.equipment_count}
-                                                    </td>
-                                                </tr>
-                                            ),
-                                        )}
+                                        {fetchedResources.map((resource, index) => (
+                                            <tr key={index}>
+                                                <td>{resource.type}</td>
+                                                <td>{resource.serialNumber}</td>
+                                                <td>{resource.count}</td>
+                                            </tr>
+                                        ))}
                                     </tbody>
                                 </Table>
-                            </>
+                            </div>
                         )}
-
-                        {/* Update Resources Form */}
-                        <h3 className="mt-4">Update Resources</h3>
-                        <p>Use the same form above to update resources</p>
-                        <Button
-                            variant="warning"
-                            onClick={() => handleSubmit('update')}>
-                            Update Resources
-                        </Button>
                     </>
                 )}
             </Container>
