@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\User;
 use App\Providers\RouteServiceProvider;
+use Carbon\Carbon;
 use Exception;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -18,39 +19,35 @@ class SocialiteController extends Controller
         return Socialite::driver('google')->redirect();
     }
 
-    public function googleAuthentication(Request $request)
-    {
+    public function googleAuthentication(Request $request) {
         try {
             $googleUser = Socialite::driver('google')->user();
             $role = $request->query('role', 1); // Default to role 1 if not provided
-
+    
             if (! in_array($role, [1, 2, 3, 4])) {
                 return redirect()->route('login')->with('error', 'Invalid role specified.');
             }
-
+    
             $user = User::where('google_id', $googleUser->id)->first();
+    
             if ($user) {
                 Auth::login($user);
-
-                return redirect()->intended(
-                    config('app.frontend_url').RouteServiceProvider::HOME.'?verified=1'
-                );
+                return redirect()->intended(config('app.frontend_url').RouteServiceProvider::HOME);
             } else {
-                $userData = User::create([
-                    'name' => $googleUser->name,
-                    'email' => $googleUser->email,
-                    'password' => Hash::make('password'),
-                    'google_id' => $googleUser->id,
-                    'role_id' => $role,
-                    'parent_id' => null,
-                ]);
-
-                if ($userData) {
-                    Auth::login($userData);
-
-                    return redirect()->intended(
-                        config('app.frontend_url').RouteServiceProvider::HOME.'?verified=1'
-                    );
+                // Create a new User instance
+                $user = new User();
+                $user->name = $googleUser->name;
+                $user->email = $googleUser->email;
+                $user->password = Hash::make('password');
+                $user->google_id = $googleUser->id;
+                $user->role_id = $role;
+                $user->parent_id = null;
+                $user->email_verified_at = now(); // Set email_verified_at manually
+                $user->save(); // Save the user to the database
+    
+                if ($user) {
+                    Auth::login($user);
+                    return redirect()->intended(config('app.frontend_url').RouteServiceProvider::HOME);
                 }
             }
         } catch (\Laravel\Socialite\Two\InvalidStateException $e) {
