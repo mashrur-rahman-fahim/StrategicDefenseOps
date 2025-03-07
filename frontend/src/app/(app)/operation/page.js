@@ -240,7 +240,7 @@ export default function Operation() {
                             xs={12}
                             md={6}
                             className="d-flex justify-content-md-end mt-3 mt-md-0">
-                            {user.role_id == 1 && (
+                            {user?.role_id == 1 && (
                                 <Button
                                     variant="primary"
                                     onClick={() => setShowModal(true)}>

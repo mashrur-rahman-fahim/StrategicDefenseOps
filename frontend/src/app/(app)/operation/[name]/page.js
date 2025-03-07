@@ -9,6 +9,7 @@ import {
     Button,
     Badge,
     Spinner,
+    Table,
 } from 'react-bootstrap'
 import { Icon } from '@iconify/react'
 import { toast } from 'sonner'
@@ -22,25 +23,24 @@ export default function OperationDetail() {
     const [operation, setOperation] = useState(null)
     const [loading, setLoading] = useState(true)
     const [error, setError] = useState(null)
+    const [resources, setResources] = useState([])
 
     const operationName = params?.name ? decodeURIComponent(params.name) : null
 
     const formatDate = dateString => {
         if (!dateString) return ''
         const date = new Date(dateString)
-    
+
         const day = date.getDate().toString().padStart(2, '0')
         const month = (date.getMonth() + 1).toString().padStart(2, '0')
         const year = date.getFullYear()
-    
+
         const hours = date.getHours().toString().padStart(2, '0')
         const minutes = date.getMinutes().toString().padStart(2, '0')
-    
+
         // Combine date and time
         return `${day}/${month}/${year} at ${hours}:${minutes}`
     }
-    
-    
 
     const fetchOperationDetails = async () => {
         try {
@@ -59,10 +59,48 @@ export default function OperationDetail() {
         }
     }
 
+    const fetchOperationResources = async () => {
+        try {
+            setLoading(true)
+            const response = await axios.get(
+                `/api/get-operation-resources/${operation.id}`,
+            )
+            console.log('Operation resources:', response.data)
+            const { 
+                vehicle = [], 
+                weapon = [], 
+                personnel = [], 
+                equipment = [] 
+            } = response.data || {}
+            const allResources = [
+                ...vehicle.map(v => ({ ...v, type: 'Vehicle' })),
+                ...weapon.map(w => ({ ...w, type: 'Weapon' })),
+                ...personnel.map(p => ({ ...p, type: 'Personnel' })),
+                ...equipment.map(e => ({ ...e, type: 'Equipment' })),
+            ]
+            setResources(allResources)
+            console.log('All resources:', allResources)
+        } catch (error) {
+            console.error('Error fetching operation resources:', error)
+            setError('Failed to fetch operation resources')
+        } finally {
+            setLoading(false)
+        }
+    }
+
     useEffect(() => {
-        if (operationName) fetchOperationDetails()
-        else setError('Operation not found')
+        if (operationName) {
+            fetchOperationDetails()
+        } else {
+            setError('Operation not found')
+        }
     }, [operationName])
+
+    useEffect(() => {
+        if (operation?.id) {
+            fetchOperationResources()
+        }
+    }, [operation])
 
     const getStatusColor = status => {
         switch (status) {
@@ -218,6 +256,55 @@ export default function OperationDetail() {
                                 )}
                             </Card.Body>
                         </Card>
+
+                        <Col lg={12}>
+                            <Card className="shadow-sm mb-4">
+                                <Card.Header className="bg-white">
+                                    <h5 className="mb-0">Resources Used</h5>
+                                </Card.Header>
+                                <Card.Body>
+                                    {resources.length > 0 ? (
+                                        <Table
+                                            striped
+                                            bordered
+                                            hover
+                                            responsive>
+                                            <thead>
+                                                <tr>
+                                                    <th>Type</th>
+                                                    <th>Name</th>
+                                                    <th>Count</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                                {resources.map((res, index) => {
+                                                    // Dynamically determine the keys
+                                                    const nameKey = `${res.type.toLowerCase()}_name`
+                                                    const countKey = `${res.type.toLowerCase()}_count`
+
+                                                    return (
+                                                        <tr key={index}>
+                                                            <td>{res.type}</td>
+                                                            <td>
+                                                                {res[nameKey] ||
+                                                                    'N/A'}
+                                                            </td>
+                                                            <td>
+                                                                {res[
+                                                                    countKey
+                                                                ] || 'N/A'}
+                                                            </td>
+                                                        </tr>
+                                                    )
+                                                })}
+                                            </tbody>
+                                        </Table>
+                                    ) : (
+                                        <p>No resources assigned.</p>
+                                    )}
+                                </Card.Body>
+                            </Card>
+                        </Col>
                     </Col>
 
                     {/* Right Column - Additional Information */}

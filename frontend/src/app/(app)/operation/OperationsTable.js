@@ -44,7 +44,7 @@ export default function OperationsTable({
                                     <Icon icon="material-symbols:info-outline" width="20" height="20" />
                                 </Button>
                             </Link>
-                            {user.role_id != 4 && (
+                            {user?.role_id != 4 && (
                                 <Button
                                     variant="outline-success"
                                     size="sm"
@@ -53,7 +53,7 @@ export default function OperationsTable({
                                     <Icon icon="mdi:pencil" />
                                 </Button>
                             )}
-                            {user.role_id == 1 && (
+                            {user?.role_id == 1 && (
                                 <Button
                                     variant="outline-danger"
                                     size="sm"
