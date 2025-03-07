@@ -10,8 +10,13 @@ import OperationStats from './OperationStats'
 import OperationsTable from './OperationsTable'
 import OperationModal from './OperationModal'
 import DeleteConfirmationModal from './DeleteConfirmationModal'
+import { useAuth } from '@/hooks/auth'
 
 export default function Operation() {
+    const { user } = useAuth({
+        middleware: 'auth',
+        redirectIfAuthenticated: '/operation',
+    })
     const [operations, setOperations] = useState([])
     const [stats, setStats] = useState({
         ongoing: 0,
@@ -193,14 +198,16 @@ export default function Operation() {
                     <OperationStats stats={stats} />
 
                     {/* Filter and Search */}
-                    <Row className="mt-4 mb-4">
+                    <Row className="mb-4">
                         <Col>
-                            <Button
-                                variant="primary"
-                                className="me-2"
-                                onClick={() => setShowModal(true)}>
-                                New Operation
-                            </Button>
+                            {user.role_id == 1 && (
+                                <Button
+                                    variant="primary"
+                                    className="me-2"
+                                    onClick={() => setShowModal(true)}>
+                                    New Operation
+                                </Button>
+                            )}
                             <Button
                                 variant="outline-primary"
                                 className="dropdown-toggle">
@@ -227,6 +234,7 @@ export default function Operation() {
                             onEdit={openUpdateModal}
                             onDelete={openDeleteConfirmation}
                             formatDate={formatDate}
+                            user={user}
                         />
                     ) : (
                         <div className="text-center py-4 bg-light rounded">
