@@ -17,15 +17,18 @@ class AuditLogAccess
      */
     public function handle(Request $request, Closure $next)
     {
+        // Retrieve the authenticated user
         $user = Auth::user();
-        $logUser = User::find($request->route('user'));
+
+        // Retrieve the user associated with the provided ID from the route parameter
+        $logUser = User::find($request->route('id'));
 
         if (! $logUser) {
-            return response()->json(['error' => 'User not found'], 404);
+            return response()->json(['error' => 'User not found (AuditLogAccess).'], 404);
         }
 
-        // Check if the authenticated user is an admin or the assigned admin
-        if ($user->is_admin || $user->id === $logUser->admin_id) {
+        // Check if the authenticated user is an admin or assigned admin for the log user
+        if ($user->role_id==1 || $user->id === $logUser->admin_id) {
             return $next($request);
         }
 

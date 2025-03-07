@@ -5,6 +5,7 @@ import CreateOperation from '../../../components/CreateOperation'
 import ListOperations from '../../../components/ListOperations'
 import './dashboard.css'
 import Layout from '@/components/layout'
+import AuditLogs from '@/components/AuditLogs'
 
 const Dashboard = () => {
     const [userName, setUserName] = useState('Unknown')
@@ -12,6 +13,7 @@ const Dashboard = () => {
     const [roleName, setRoleName] = useState('')
     const [operations, setOperations] = useState([])
     const [loading, setLoading] = useState(true)
+    const [user, setUser] = useState(null)
 
     const roleMapping = {
         1: 'Admin',
@@ -28,6 +30,7 @@ const Dashboard = () => {
                 setUserName(response.data.name || 'Unknown')
                 setRoleId(response.data.role_id || null)
                 setRoleName(roleMapping[response.data.role_id] || 'Unknown')
+                setUser(response.data.id || null)
             } catch (error) {
                 console.error('Error fetching user details:', error)
             } finally {
@@ -45,13 +48,14 @@ const Dashboard = () => {
     return (
         <Layout>
             <div className="dashboard">
-                <h2>Welcome, {userName} ({roleName})</h2>
+                <h2>Welcome, {userName} ({roleName}) ({user})</h2>
                 {loading ? (
                     <p>Loading...</p>
                 ) : (
                     <>
                         {roleId === 1 && <CreateOperation onOperationCreated={handleOperationCreated} />}
                         <ListOperations />
+                        {user && <AuditLogs user={user} />}
                     </>
                 )}
             </div>

@@ -15,6 +15,8 @@ use App\Http\Controllers\UserDetailsController;
 use App\Http\Controllers\VehicleController;
 use App\Http\Controllers\WeaponController;
 use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\AuditLogController;
+use App\Http\Middleware\AuditLogAccess;
 
 /*
 |--------------------------------------------------------------------------
@@ -125,3 +127,7 @@ Route::get('/role-view', [RoleViewController::class, 'roleView'])->middleware('a
 Route::put('/update-profile', [ProfileController::class, 'updateProfile'])->middleware('auth:sanctum');
 
 Route::delete('/delete-profile', [ProfileController::class, 'deleteProfile'])->middleware('auth:sanctum');
+
+Route::middleware(['auth:sanctum', 'audit.log.access'])->group(function () {
+    Route::get('/audit-logs/{id}', [AuditLogController::class, 'index']);
+});
