@@ -32,7 +32,7 @@ const RecentOperations = ({ operations }) => {
             <Card.Header className="bg-white border-bottom-0 pt-4">
                 <div className="d-flex justify-content-between align-items-center">
                     <h5 className="mb-0">Recent Operations</h5>
-                    <Button as={Link} href="/operations" variant="link" className="p-0">
+                    <Button as={Link} href="/operation" variant="link" className="p-0">
                         View All
                     </Button>
                 </div>
@@ -49,7 +49,7 @@ const RecentOperations = ({ operations }) => {
                             <tr>
                                 <th>Name</th>
                                 <th>Status</th>
-                                <th>Date</th>
+                                <th>Start Date</th>
                             </tr>
                         </thead>
                         <tbody>
