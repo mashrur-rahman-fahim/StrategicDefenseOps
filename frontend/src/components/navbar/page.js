@@ -1,6 +1,7 @@
 "use client"
 import React, { useState, useEffect, useRef } from "react"
 import "./navbar.css"
+import Link from "next/link"
 
 const Navbar = ({ toggleSidebar, logout }) => {
     const [isDropdownOpen, setDropdownOpen] = useState(false)
@@ -33,23 +34,10 @@ const Navbar = ({ toggleSidebar, logout }) => {
                     >
                         ☰
                     </button>
-                    <h1 className="navbar-title">StrategicDefenseOps</h1>
+                    <Link href="/dashboard" className="text-decoration-none"><h1 className="navbar-title">StrategicDefenseOps</h1></Link>
                 </div>
 
                 <div className="right-side">
-                    <button className="nav-button new-button">New</button>
-
-                    {/* Notification button */}
-                    <button className="nav-button" onClick={() => setDropdownOpen(!isDropdownOpen)}>🔔</button>
-
-                    {/* Notification dropdown */}
-                    {isDropdownOpen && (
-                        <div className="nav-dropdown">
-                            <p>Notification 1</p>
-                            <p>Notification 2</p>
-                        </div>
-                    )}
-
                     {/* Logout button */}
                     <button className="nav-button" onClick={handleLogoutClick}>🚪</button>
                 </div>
