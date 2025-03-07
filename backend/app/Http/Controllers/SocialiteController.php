@@ -30,12 +30,8 @@ class SocialiteController extends Controller
     
             $user = User::where('google_id', $googleUser->id)->first();
     
-            if ($user) {
-                Auth::login($user);
-                $token = $user->createToken('api_token')->plainTextToken;
-                return redirect()->intended(config('app.frontend_url').'\dashboard');
-            } else {
-                // Create a new User instance
+            if (!$user) {
+                // Create a new user
                 $user = new User();
                 $user->name = $googleUser->name;
                 $user->email = $googleUser->email;
@@ -44,21 +40,32 @@ class SocialiteController extends Controller
                 $user->role_id = $role;
                 $user->parent_id = null;
                 $user->email_verified_at = now(); 
-                $user->save(); 
-    
-                if ($user) {
-                    Auth::login($user);
-                    $token = $user->createToken('api_token')->plainTextToken;
-                    return redirect()->intended(config('app.frontend_url').'\dashboard');
-                }
+                $user->save();
             }
+    
+            // Prepare credentials to send to login API
+            $credentials = [
+                'email' => $user->email,
+                'password' => $user->password, // Ensure this matches what was stored
+            ];
+    
+            // Make an internal request to the login API
+            $loginRequest = Request::create('/login', 'POST', $credentials);
+            $response = app()->handle($loginRequest);
+    
+            // Check if login was successful
+            if ($response->getStatusCode() === 200) {
+                return redirect()->intended(config('app.frontend_url').'/dashboard');
+            }
+    
+            return redirect()->route('login')->with('error', 'Auto-login failed.');
+            
         } catch (\Laravel\Socialite\Two\InvalidStateException $e) {
             Log::error('InvalidStateException: '.$e->getMessage());
-            Log::error('Session State: '.session()->get('state'));
-            Log::error('Request State: '.$request->input('state'));
-            throw $e;
+            return redirect()->route('login')->with('error', 'Authentication failed.');
         } catch (Exception $e) {
             return redirect()->route('login')->with('error', 'An error occurred during authentication.');
         }
     }
+    
 }
