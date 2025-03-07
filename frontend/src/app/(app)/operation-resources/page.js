@@ -9,13 +9,12 @@ import {
     ChevronDown,
     Plus,
     Eye,
-   
     Edit,
     RefreshCw
 } from 'lucide-react'
 
 export default function OperationResources() {
-     useAuth({ middleware: 'auth' })
+    useAuth({ middleware: 'auth' })
 
     const [operations, setOperations] = useState([])
     const [completedOperations, setCompletedOperations] = useState([])
@@ -254,14 +253,6 @@ export default function OperationResources() {
                 setError('Please fill in all resource details')
                 return
             }
-
-            const payload = {
-                category: formEntries.map((entry) => Number(entry.category)),
-                serial_number: formEntries.map((entry) => entry.serialNumber),
-                count: formEntries.map((entry) => Number(entry.count))
-            }
-
-           
 
             setMessage(
                 `Resources ${actionType === 'add' ? 'added' : 'updated'} successfully`
