@@ -173,7 +173,7 @@ export default function Chatbot() {
             <div
                 className={`min-h-screen ${theme === 'dark' ? 'bg-gray-900 text-white' : 'bg-gray-50 text-gray-800'} transition-colors duration-300`}
             >
-                <div className="mx-auto px-4 py-8 w-full max-w-screen-2xl">
+                <div className="container mx-auto px-4 py-8 max-w-6xl w-full">
                     {' '}
                     {/* Increased from max-w-4xl to max-w-6xl */}
                     <div
