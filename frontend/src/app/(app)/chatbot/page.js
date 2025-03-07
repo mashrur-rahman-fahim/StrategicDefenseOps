@@ -14,7 +14,7 @@ export default function Chatbot() {
     const [input, setInput] = useState('')
     const [loading, setLoading] = useState(false)
     const [theme, setTheme] = useState('light') // 'light' or 'dark'
-    const [model, setModel] = useState('default') // Model selection
+    const [model] = useState('default') // Model selection
     const abortControllerRef = useRef(null)
     const chatHistoryRef = useRef(null)
     const inputRef = useRef(null)
@@ -262,26 +262,19 @@ export default function Chatbot() {
                                                     ]}
                                                     components={{
                                                         // Apply custom styling to different markdown elements
-                                                        p: ({
-                                                            
-                                                            ...props
-                                                        }) => (
+                                                        p: ({ ...props }) => (
                                                             <p
                                                                 className="my-1"
                                                                 {...props}
                                                             />
                                                         ),
-                                                        pre: ({
-                                                            
-                                                            ...props
-                                                        }) => (
+                                                        pre: ({ ...props }) => (
                                                             <pre
                                                                 className={`p-3 my-2 rounded-md overflow-auto ${theme === 'dark' ? 'bg-gray-900' : 'bg-gray-100'}`}
                                                                 {...props}
                                                             />
                                                         ),
                                                         code: ({
-                                                            
                                                             inline,
                                                             ...props
                                                         }) =>
@@ -295,71 +288,49 @@ export default function Chatbot() {
                                                                     {...props}
                                                                 />
                                                             ),
-                                                        a: ({
-                                                            
-                                                            ...props
-                                                        }) => (
+                                                        a: ({ ...props }) => (
                                                             <a
                                                                 className="text-blue-400 hover:underline"
                                                                 {...props}
                                                             />
                                                         ),
-                                                        ul: ({
-                                                            
-                                                            ...props
-                                                        }) => (
+                                                        ul: ({ ...props }) => (
                                                             <ul
                                                                 className="list-disc pl-5 my-2"
                                                                 {...props}
                                                             />
                                                         ),
-                                                        ol: ({
-                                                            
-                                                            ...props
-                                                        }) => (
+                                                        ol: ({ ...props }) => (
                                                             <ol
                                                                 className="list-decimal pl-5 my-2"
                                                                 {...props}
                                                             />
                                                         ),
-                                                        li: ({
-                                                            
-                                                            ...props
-                                                        }) => (
+                                                        li: ({ ...props }) => (
                                                             <li
                                                                 className="my-1"
                                                                 {...props}
                                                             />
                                                         ),
-                                                        h1: ({
-                                                            
-                                                            ...props
-                                                        }) => (
+                                                        h1: ({ ...props }) => (
                                                             <h1
                                                                 className="text-xl font-bold my-2"
                                                                 {...props}
                                                             />
                                                         ),
-                                                        h2: ({
-                                                            
-                                                            ...props
-                                                        }) => (
+                                                        h2: ({ ...props }) => (
                                                             <h2
                                                                 className="text-lg font-bold my-2"
                                                                 {...props}
                                                             />
                                                         ),
-                                                        h3: ({
-                                                            
-                                                            ...props
-                                                        }) => (
+                                                        h3: ({ ...props }) => (
                                                             <h3
                                                                 className="text-md font-bold my-2"
                                                                 {...props}
                                                             />
                                                         ),
                                                         blockquote: ({
-                                                            
                                                             ...props
                                                         }) => (
                                                             <blockquote
