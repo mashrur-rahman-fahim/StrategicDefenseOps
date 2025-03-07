@@ -9,7 +9,7 @@ export default function OperationStats({ stats }) {
     ]
 
     return (
-        <Row className="mb-4">
+        <Row className="g-3 mb-4">
             {statCards.map(stat => (
                 <Col md={4} key={stat.label}>
                     <Card className="bg-light">

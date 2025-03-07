@@ -1,8 +1,7 @@
 'use client'
 import React, { useState, useEffect } from 'react'
-import { Container, Button, Form, Row, Col } from 'react-bootstrap'
+import { Container, Button, Row, Col } from 'react-bootstrap'
 import { toast } from 'sonner'
-import { Icon } from '@iconify/react'
 import axios from '@/lib/axios'
 import Layout from '@/components/layout'
 import Loading from '@/components/Loading'
@@ -11,6 +10,7 @@ import OperationsTable from './OperationsTable'
 import OperationModal from './OperationModal'
 import DeleteConfirmationModal from './DeleteConfirmationModal'
 import { useAuth } from '@/hooks/auth'
+import OperationSearchAndFilter from './OperationSearchAndFilter'
 
 export default function Operation() {
     const { user } = useAuth({
@@ -38,6 +38,9 @@ export default function Operation() {
     const [loading, setLoading] = useState(false)
     const [deleteConfirmModal, setDeleteConfirmModal] = useState(false)
     const [operationToDelete, setOperationToDelete] = useState(null)
+    const [searchTerm, setSearchTerm] = useState('')
+    const [activeFilter, setActiveFilter] = useState('All')
+    const [filteredOperations, setFilteredOperations] = useState([])
 
     // Helper functions
     const formatDate = dateString => {
@@ -72,6 +75,7 @@ export default function Operation() {
             const response = await axios.get('/api/get-all-operations')
             console.log('Operations:', response.data)
             setOperations(response.data)
+            setFilteredOperations(response.data[1] || [])
 
             // Calculate stats from the operations data
             const counts = calculateStats(response.data[1])
@@ -83,9 +87,30 @@ export default function Operation() {
             setLoading(false)
         }
     }
+
     useEffect(() => {
         fetchOperations()
     }, [])
+
+    useEffect(() => {
+        if (searchTerm.trim() === '') {
+            setFilteredOperations(operations[1] || [])
+        }
+    }, [searchTerm, operations])
+
+    // Filter operations when activeFilter changes
+    useEffect(() => {
+        if (!operations[1]) return
+
+        if (activeFilter === 'All') {
+            setFilteredOperations(operations[1])
+        } else {
+            let filtered = operations[1].filter(
+                op => op.status === activeFilter.toLowerCase(),
+            )
+            setFilteredOperations(filtered)
+        }
+    }, [activeFilter, operations])
 
     const handleInputChange = e => {
         const { name, value } = e.target
@@ -186,51 +211,61 @@ export default function Operation() {
         setDeleteConfirmModal(true)
     }
 
+    const handleSearch = e => {
+        e.preventDefault()
+
+        if (!operations[1]) return
+
+        let filtered = operations[1]
+        if (searchTerm.trim() !== '') {
+            const term = searchTerm.toLowerCase()
+            filtered = operations[1].filter(op =>
+                op.name.toLowerCase().includes(term),
+            )
+        }
+        setFilteredOperations(filtered)
+    }
+
     return (
         <Layout>
             {loading ? (
                 <Loading text={'Loading Operations...'} />
             ) : (
                 <Container fluid className="p-4">
-                    <h1 className="mb-4">Operations</h1>
+                    <Row className="mb-4">
+                        <Col xs={12} md={6}>
+                            <h1>Operations</h1>
+                        </Col>
+                        <Col
+                            xs={12}
+                            md={6}
+                            className="d-flex justify-content-md-end mt-3 mt-md-0">
+                            {user.role_id == 1 && (
+                                <Button
+                                    variant="primary"
+                                    onClick={() => setShowModal(true)}>
+                                    New Operation
+                                </Button>
+                            )}
+                        </Col>
+                    </Row>
 
                     {/* Stats Cards */}
                     <OperationStats stats={stats} />
 
                     {/* Filter and Search */}
-                    <Row className="mb-4">
-                        <Col>
-                            {user.role_id == 1 && (
-                                <Button
-                                    variant="primary"
-                                    className="me-2"
-                                    onClick={() => setShowModal(true)}>
-                                    New Operation
-                                </Button>
-                            )}
-                            <Button
-                                variant="outline-primary"
-                                className="dropdown-toggle">
-                                All Operations
-                            </Button>
-                        </Col>
-                        <Col className="d-flex justify-content-end">
-                            <Form.Control
-                                type="search"
-                                placeholder="Search"
-                                className="me-2"
-                                style={{ maxWidth: '250px' }}
-                            />
-                            <Button variant="primary">
-                                <Icon icon="mdi:magnify" />
-                            </Button>
-                        </Col>
-                    </Row>
+                    <OperationSearchAndFilter
+                        searchTerm={searchTerm}
+                        setSearchTerm={setSearchTerm}
+                        activeFilter={activeFilter}
+                        setActiveFilter={setActiveFilter}
+                        handleSearch={handleSearch}
+                    />
 
-                    {/* view operations*/}
-                    {operations[0] > 0 ? (
+                    {/* View operations */}
+                    {filteredOperations.length > 0 ? (
                         <OperationsTable
-                            operations={operations[1]}
+                            operations={filteredOperations}
                             onEdit={openUpdateModal}
                             onDelete={openDeleteConfirmation}
                             formatDate={formatDate}
@@ -238,7 +273,7 @@ export default function Operation() {
                         />
                     ) : (
                         <div className="text-center py-4 bg-light rounded">
-                            <h4 className="mb-3">No operations yet</h4>
+                            <h4 className="mb-3">No operations found</h4>
                         </div>
                     )}
 
