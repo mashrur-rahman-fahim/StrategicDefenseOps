@@ -145,7 +145,7 @@ export default function Dashboard() {
         <Layout>
             <Container fluid className="p-4">
                 <DashboardHeader user={user} />
-                <QuickActions />
+                <QuickActions user={user} />
                 <ResourceOverview stats={stats.resources} />
                 <OperationsStatus stats={stats.operations} />
                 <div className="row g-4 mt-2">

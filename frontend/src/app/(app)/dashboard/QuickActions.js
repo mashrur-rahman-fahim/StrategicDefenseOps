@@ -3,39 +3,44 @@ import { Card, Row, Col } from 'react-bootstrap'
 import { Icon } from '@iconify/react'
 import Link from 'next/link'
 
-const QuickActions = () => {
+const QuickActions = ({ user }) => {
     const actions = [
         {
-            title: 'New Operation',
-            icon: 'mdi:plus-circle-outline',
-            link: '/operation',
+            title: 'Chatbot',
+            icon: 'hugeicons:bot',
+            link: '/chatbot',
             colorClass: 'bg-primary',
         },
         {
-            title: 'Resources',
+            title: 'Operation Resources',
             icon: 'mdi:cube-outline',
-            link: '/resources',
+            link: '/operation-resources',
             colorClass: 'bg-success',
         },
-        {
-            title: 'Assign Resources',
-            icon: 'mdi:arrow-right-bold-box',
-            link: '/assign',
-            colorClass: 'bg-info',
-        },
-        {
-            title: 'Unassign Resources',
-            icon: 'mdi:arrow-left-bold-box',
-            link: '/un-assign',
-            colorClass: 'bg-warning',
-        },
-        {
-            title: 'View Roles',
-            icon: 'mdi:account-group',
-            link: '/view-roles',
-            colorClass: 'bg-secondary',
-        },
     ]
+
+    if (user?.role_id < 3) {
+        actions.push(
+            {
+                title: 'Assign Roles',
+                icon: 'mdi:arrow-right-bold-box',
+                link: '/assign',
+                colorClass: 'bg-info',
+            },
+            {
+                title: 'Unassign Roles',
+                icon: 'mdi:arrow-left-bold-box',
+                link: '/un-assign',
+                colorClass: 'bg-warning',
+            },
+            {
+                title: 'View Roles',
+                icon: 'mdi:account-group',
+                link: '/view-roles',
+                colorClass: 'bg-secondary',
+            },
+        )
+    }
 
     return (
         <>
@@ -45,8 +50,11 @@ const QuickActions = () => {
                     <Col key={index} xs={6} sm={4} md={3} xl={2}>
                         <Card className="shadow-sm h-100 border-0 text-center">
                             <Card.Body className="p-3">
-                                <Link href={action.link} className="text-decoration-none">
-                                    <div className={`${action.colorClass} bg-opacity-10 p-3 rounded-circle d-inline-block mb-3`}>
+                                <Link
+                                    href={action.link}
+                                    className="text-decoration-none">
+                                    <div
+                                        className={`${action.colorClass} bg-opacity-10 p-3 rounded-circle d-inline-block mb-3`}>
                                         <Icon
                                             icon={action.icon}
                                             width="28"
@@ -54,7 +62,9 @@ const QuickActions = () => {
                                             className={`text-${action.colorClass.replace('bg-', '')}`}
                                         />
                                     </div>
-                                    <h6 className="mb-0 text-body">{action.title}</h6>
+                                    <h6 className="mb-0 text-body">
+                                        {action.title}
+                                    </h6>
                                 </Link>
                             </Card.Body>
                         </Card>
