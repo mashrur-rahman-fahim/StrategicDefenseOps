@@ -2,13 +2,14 @@
 
 import { useState } from 'react'
 import Link from 'next/link'
-import { useAuth } from '@/hooks/auth' // Adjust import path if needed
+import { useAuth } from '@/hooks/auth' 
 
 const Page = () => {
-    const { register } = useAuth({
+    const { register} = useAuth({
         middleware: 'guest',
         redirectIfAuthenticated: '/dashboard',
     })
+    const { loginWithGoogle } = useAuth({})
 
     const [name, setName] = useState('')
     const [email, setEmail] = useState('')
@@ -175,7 +176,7 @@ const Page = () => {
 
                         {/* Google Button */}
                         <button
-                            onClick={handleGoogleLogin}
+                            onClick={loginWithGoogle}
                             className="w-full bg-black text-white py-2 rounded-md font-bold">
                             Continue with Google
                         </button>

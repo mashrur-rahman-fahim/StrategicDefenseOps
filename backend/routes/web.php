@@ -37,5 +37,12 @@ Route::get('/mail', function () {
 //    Route::get('/dashboard', function () {
 //     return view('dashboard');
 //  })->name('dashboard');
+Route::middleware(['web', EnsureFrontendRequestsAreStateful::class])
+    ->group(function () {
+        Route::controller(SocialiteController::class)->group(function () {
+            Route::get('auth/google', 'googleLogin');
+            Route::get('auth/google-callback', 'googleAuthentication');
+        });
+    });
 
 require __DIR__.'/auth.php';

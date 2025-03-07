@@ -1,6 +1,10 @@
 {
     "require": {
         "laravel/socialite": "^5.18"
-        
+    },
+    "autoload": {
+        "exclude-from-classmap": [
+            "vendor/laravel/pint/app/Providers/AppServiceProvider.php"
+        ]
     }
 }

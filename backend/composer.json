@@ -13,6 +13,7 @@
         "laravel/sanctum": "^3.3",
         "laravel/socialite": "^5.17",
         "laravel/tinker": "^2.7",
+        "nesbot/carbon": "^2.73",
         "spatie/laravel-activitylog": "^4.10"
     },
     "require-dev": {

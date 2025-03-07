@@ -1,4 +1,4 @@
-"use client"
+'use client'
 import useSWR from 'swr'
 import axios from '@/lib/axios'
 import { useEffect } from 'react'
@@ -15,17 +15,13 @@ export const useAuth = ({ middleware, redirectIfAuthenticated } = {}) => {
     } = useSWR('/api/user', () =>
         axios
             .get('/api/user')
-            .then(res => 
-               
-                res.data
-            )
+            .then(res => res.data)
             .catch(error => {
                 if (error.response.status !== 409) throw error
 
                 router.push('/verify-email')
             }),
     )
-   
 
     const csrf = () => axios.get('/sanctum/csrf-cookie')
 
@@ -110,6 +106,14 @@ export const useAuth = ({ middleware, redirectIfAuthenticated } = {}) => {
             .then(response => setStatus(response.data.status))
     }
 
+    const loginWithGoogle = async () => {
+        try {
+            window.location.href = `${process.env.NEXT_PUBLIC_BACKEND_URL}/auth/google`;
+        } catch (error) {
+            console.error('Google login error:', error);
+        }
+    };
+
     const logout = async () => {
         await csrf()
         if (!error) {
@@ -120,34 +124,30 @@ export const useAuth = ({ middleware, redirectIfAuthenticated } = {}) => {
     }
 
     useEffect(() => {
-        if (middleware === 'guest' && redirectIfAuthenticated && user){
-          
-            router.push(redirectIfAuthenticated)}
+        if (middleware === 'guest' && redirectIfAuthenticated && user) {
+            router.push(redirectIfAuthenticated)
+        }
 
-        if (user && middleware === 'auth' && !user?.email_verified_at){
-         
-            router.push('/verify-email')}
+        if (user && middleware === 'auth' && !user?.email_verified_at) {
+            router.push('/verify-email')
+        }
 
         if (
             window.location.pathname === '/verify-email' &&
             user?.email_verified_at
-        ){
-           
-        
-            router.push(redirectIfAuthenticated)}
-        if (middleware === 'auth' && error){ 
-           
-            logout()
-
-
+        ) {
+            router.push(redirectIfAuthenticated)
         }
-        
+        if (middleware === 'auth' && error) {
+            logout()
+        }
     }, [user, error])
 
     return {
         user,
         register,
         login,
+        loginWithGoogle,
         forgotPassword,
         resetPassword,
         resendEmailVerification,
