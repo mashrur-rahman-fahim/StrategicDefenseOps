@@ -240,14 +240,18 @@ class OperationController extends Controller
      */
     public function searchByName($name)
     {
-        $user = User::find(auth()->id());
+      
 
-        if ($user->role_id == 1) {
+       
             $operations = $this->operationService->searchByName($name, auth()->id());
+            if ($operations) {
+                return response()->json($operations, 200);
+            } else {
+                return response()->json(['message' => 'not found'], 404);
+            }
 
-            return response()->json($operations, 200);
-        }
+          
+       
 
-        return response()->json(['message' => 'not found'], 404);
     }
 }
