@@ -114,7 +114,7 @@ export default function OperationDetail() {
             <Container fluid className="p-4">
                 {/* Header */}
                 <div className="d-flex justify-content-between align-items-center mb-4">
-                    <h1>{operation.operation_name}</h1>
+                    <h1>{operation.name}</h1>
                     <Link href="/operation" passHref>
                         <Button variant="outline-secondary">
                             <Icon icon="mdi:arrow-left" className="me-2" /> Back
@@ -206,17 +206,6 @@ export default function OperationDetail() {
                                     </Col>
                                 </Row>
 
-                                <Row className="mb-4">
-                                    <Col sm={4} className="fw-bold">
-                                        Created By
-                                    </Col>
-                                    <Col sm={8}>
-                                        {operation.name
-                                            ? operation.name
-                                            : 'Not available'}
-                                    </Col>
-                                </Row>
-
                                 {operation?.updated_at && (
                                     <Row>
                                         <Col sm={4} className="fw-bold">
@@ -278,7 +267,7 @@ export default function OperationDetail() {
                         </Card>
 
                         {/* Quick Actions Card */}
-                        <Card className="shadow-sm mb-4">
+                        {/* <Card className="shadow-sm mb-4">
                             <Card.Body>
                                 <h5 className="mb-3">Quick Actions</h5>
                                 <div className="d-grid gap-2">
@@ -298,7 +287,7 @@ export default function OperationDetail() {
                                     </Button>
                                 </div>
                             </Card.Body>
-                        </Card>
+                        </Card> */}
 
                         {/* Location Card (if location exists) */}
                         {operation.location && (
