@@ -9,14 +9,14 @@ const QuickActions = ({ user }) => {
             title: 'Chatbot',
             icon: 'hugeicons:bot',
             link: '/chatbot',
-            colorClass: 'bg-primary',
+            colorClass: 'bg-primary'
         },
         {
             title: 'Operation Resources',
             icon: 'mdi:cube-outline',
             link: '/operation-resources',
-            colorClass: 'bg-success',
-        },
+            colorClass: 'bg-success'
+        }
     ]
 
     if (user?.role_id < 3) {
@@ -25,20 +25,20 @@ const QuickActions = ({ user }) => {
                 title: 'Assign Roles',
                 icon: 'mdi:arrow-right-bold-box',
                 link: '/assign',
-                colorClass: 'bg-info',
+                colorClass: 'bg-info'
             },
             {
                 title: 'Unassign Roles',
                 icon: 'mdi:arrow-left-bold-box',
                 link: '/un-assign',
-                colorClass: 'bg-warning',
+                colorClass: 'bg-warning'
             },
             {
                 title: 'View Roles',
                 icon: 'mdi:account-group',
                 link: '/view-roles',
-                colorClass: 'bg-secondary',
-            },
+                colorClass: 'bg-secondary'
+            }
         )
     }
 
@@ -52,9 +52,11 @@ const QuickActions = ({ user }) => {
                             <Card.Body className="p-3">
                                 <Link
                                     href={action.link}
-                                    className="text-decoration-none">
+                                    className="text-decoration-none"
+                                >
                                     <div
-                                        className={`${action.colorClass} bg-opacity-10 p-3 rounded-circle d-inline-block mb-3`}>
+                                        className={`${action.colorClass} bg-opacity-10 p-3 rounded-circle d-inline-block mb-3`}
+                                    >
                                         <Icon
                                             icon={action.icon}
                                             width="28"

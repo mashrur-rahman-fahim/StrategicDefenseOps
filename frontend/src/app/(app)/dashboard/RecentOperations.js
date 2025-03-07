@@ -4,7 +4,7 @@ import { Icon } from '@iconify/react'
 import Link from 'next/link'
 
 const RecentOperations = ({ operations }) => {
-    const getStatusBadge = status => {
+    const getStatusBadge = (status) => {
         switch (status) {
             case 'ongoing':
                 return <Badge bg="primary">Ongoing</Badge>
@@ -17,13 +17,13 @@ const RecentOperations = ({ operations }) => {
         }
     }
 
-    const formatDate = dateString => {
+    const formatDate = (dateString) => {
         if (!dateString) return 'N/A'
         const date = new Date(dateString)
         return date.toLocaleDateString('en-US', {
             year: 'numeric',
             month: 'short',
-            day: 'numeric',
+            day: 'numeric'
         })
     }
 
@@ -32,7 +32,12 @@ const RecentOperations = ({ operations }) => {
             <Card.Header className="bg-white border-bottom-0 pt-4">
                 <div className="d-flex justify-content-between align-items-center">
                     <h5 className="mb-0">Recent Operations</h5>
-                    <Button as={Link} href="/operation" variant="link" className="p-0">
+                    <Button
+                        as={Link}
+                        href="/operation"
+                        variant="link"
+                        className="p-0"
+                    >
                         View All
                     </Button>
                 </div>
@@ -40,7 +45,12 @@ const RecentOperations = ({ operations }) => {
             <Card.Body className="pt-0">
                 {operations.length === 0 ? (
                     <div className="text-center py-4 text-muted">
-                        <Icon icon="mdi:clipboard-text-outline" width="48" height="48" className="mb-2" />
+                        <Icon
+                            icon="mdi:clipboard-text-outline"
+                            width="48"
+                            height="48"
+                            className="mb-2"
+                        />
                         <p>No operations found</p>
                     </div>
                 ) : (
@@ -56,7 +66,10 @@ const RecentOperations = ({ operations }) => {
                             {operations.map((operation, index) => (
                                 <tr key={index}>
                                     <td>
-                                        <Link href={`/operations/${operation.id}`} className="text-decoration-none">
+                                        <Link
+                                            href={`/operations/${operation.id}`}
+                                            className="text-decoration-none"
+                                        >
                                             {operation.name}
                                         </Link>
                                     </td>

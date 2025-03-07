@@ -9,7 +9,7 @@ import {
     Form,
     InputGroup,
     Pagination,
-    Dropdown,
+    Dropdown
 } from 'react-bootstrap'
 import { Icon } from '@iconify/react'
 import axios from '@/lib/axios'
@@ -22,7 +22,7 @@ import { toast } from 'sonner'
 export default function Resources() {
     const { user } = useAuth({
         middleware: 'auth',
-        redirectIfAuthenticated: '/resources',
+        redirectIfAuthenticated: '/resources'
     })
     const [resourceData, setResourceData] = useState([])
     const [loading, setLoading] = useState(true)
@@ -38,7 +38,7 @@ export default function Resources() {
         weapons: 0,
         vehicles: 0,
         personnel: 0,
-        equipment: 0,
+        equipment: 0
     })
     const itemsPerPage = 9
 
@@ -46,23 +46,23 @@ export default function Resources() {
         {
             type: 'Weapons',
             icon: 'tabler:bomb-filled',
-            totalAvailable: totalCounts.weapons,
+            totalAvailable: totalCounts.weapons
         },
         {
             type: 'Vehicles',
             icon: 'mdi:tank',
-            totalAvailable: totalCounts.vehicles,
+            totalAvailable: totalCounts.vehicles
         },
         {
             type: 'Personnel',
             icon: 'fa6-solid:person-military-rifle',
-            totalAvailable: totalCounts.personnel,
+            totalAvailable: totalCounts.personnel
         },
         {
             type: 'Equipments',
             icon: 'mdi:medical-bag',
-            totalAvailable: totalCounts.equipment,
-        },
+            totalAvailable: totalCounts.equipment
+        }
     ]
 
     const fetchResources = async () => {
@@ -99,21 +99,21 @@ export default function Resources() {
             (total, resource) => {
                 return total + (resource.personnel_count || 0)
             },
-            0,
+            0
         )
 
         const totalEquipmentCount = resourceData[1]?.reduce(
             (total, resource) => {
                 return total + (resource.equipment_count || 0)
             },
-            0,
+            0
         )
 
         setTotalCounts({
             weapons: totalWeaponCount,
             vehicles: totalVehicleCount,
             personnel: totalPersonnelCount,
-            equipment: totalEquipmentCount,
+            equipment: totalEquipmentCount
         })
     }, [resourceData])
 
@@ -124,7 +124,7 @@ export default function Resources() {
         if (activeFilter === 'All') {
             setFilteredResources(resourceData[1])
         } else {
-            let filtered = resourceData[1].filter(resource => {
+            let filtered = resourceData[1].filter((resource) => {
                 switch (activeFilter) {
                     case 'Weapons':
                         return resource.weapon_name || resource.weapon_count
@@ -158,7 +158,7 @@ export default function Resources() {
     const handleOpenModal = () => setShowModal(true)
     const handleCloseModal = () => setShowModal(false)
 
-    const handleSearch = e => {
+    const handleSearch = (e) => {
         e.preventDefault()
         if (!resourceData[1] || searchTerm.trim() === '') {
             setFilteredResources(resourceData[1] || [])
@@ -166,7 +166,7 @@ export default function Resources() {
         }
 
         const term = searchTerm.toLowerCase()
-        let searchResults = resourceData[1].filter(resource => {
+        let searchResults = resourceData[1].filter((resource) => {
             const weaponName = (resource.weapon_name || '').toLowerCase()
             const vehicleName = (resource.vehicle_name || '').toLowerCase()
             const personnelName = (resource.personnel_name || '').toLowerCase()
@@ -211,13 +211,14 @@ export default function Resources() {
             <Pagination.Item
                 key={number}
                 active={number === currentPage}
-                onClick={() => setCurrentPage(number)}>
+                onClick={() => setCurrentPage(number)}
+            >
                 {number}
-            </Pagination.Item>,
+            </Pagination.Item>
         )
     }
 
-    const getResourceName = resource => {
+    const getResourceName = (resource) => {
         return (
             resource.weapon_name ||
             resource.vehicle_name ||
@@ -237,7 +238,7 @@ export default function Resources() {
     //     )
     // }
 
-    const getResourceType = resource => {
+    const getResourceType = (resource) => {
         return (
             resource.weapon_type ||
             resource.vehicle_type ||
@@ -247,7 +248,7 @@ export default function Resources() {
         )
     }
 
-    const getResourceCount = resource => {
+    const getResourceCount = (resource) => {
         return (
             resource.weapon_count ||
             resource.vehicle_count ||
@@ -257,7 +258,7 @@ export default function Resources() {
         )
     }
 
-    const getResourceTypeCategory = resource => {
+    const getResourceTypeCategory = (resource) => {
         if (resource.weapon_name) return 'weapon'
         if (resource.vehicle_name) return 'vehicle'
         if (resource.personnel_name) return 'personnel'
@@ -265,7 +266,7 @@ export default function Resources() {
         return ''
     }
 
-    const handleDelete = async resource => {
+    const handleDelete = async (resource) => {
         if (window.confirm('Are you sure you want to delete this resource?')) {
             const resourceName = getResourceName(resource)
             try {
@@ -292,20 +293,20 @@ export default function Resources() {
                 await axios.delete(endpoint)
                 toast.success(
                     `${resourceName} deleted successfully` ||
-                        'Resource deleted successfully',
+                        'Resource deleted successfully'
                 )
                 fetchResources()
             } catch (error) {
                 console.error('Delete error:', error)
                 toast.error(
                     `Failed to delete ${resourceName}` ||
-                        'Failed to delete resource',
+                        'Failed to delete resource'
                 )
             }
         }
     }
 
-    const handleEdit = resource => {
+    const handleEdit = (resource) => {
         const type = getResourceTypeCategory(resource)
         setSelectedResource({ ...resource, resourceType: type })
         setEditModalShow(true)
@@ -326,7 +327,8 @@ export default function Resources() {
                                 <Button
                                     variant="primary"
                                     className="mb-4"
-                                    onClick={handleOpenModal}>
+                                    onClick={handleOpenModal}
+                                >
                                     New Resource
                                 </Button>
                             )}
@@ -340,7 +342,8 @@ export default function Resources() {
                                         style={{ cursor: 'pointer' }}
                                         onClick={() =>
                                             setActiveFilter(category.type)
-                                        }>
+                                        }
+                                    >
                                         <Card.Body>
                                             <div className="d-flex align-items-center mb-3">
                                                 <Icon
@@ -355,7 +358,8 @@ export default function Resources() {
                                                     }
                                                 />
                                                 <h5
-                                                    className={`fw-bold mb-0 ms-1 ${activeFilter === category.type ? 'text-primary' : ''}`}>
+                                                    className={`fw-bold mb-0 ms-1 ${activeFilter === category.type ? 'text-primary' : ''}`}
+                                                >
                                                     {category.type}
                                                 </h5>
                                             </div>
@@ -395,7 +399,8 @@ export default function Resources() {
                                     <Button
                                         variant="outline-secondary"
                                         className="mb-0"
-                                        onClick={() => setActiveFilter('All')}>
+                                        onClick={() => setActiveFilter('All')}
+                                    >
                                         <Icon
                                             icon="mdi:filter-remove"
                                             className="me-1"
@@ -411,7 +416,8 @@ export default function Resources() {
                                     <Dropdown.Toggle
                                         variant="outline-primary"
                                         id="dropdown-filter"
-                                        className="px-4">
+                                        className="px-4"
+                                    >
                                         <Icon
                                             icon="mdi:filter"
                                             className="me-1"
@@ -424,7 +430,8 @@ export default function Resources() {
                                             active={activeFilter === 'All'}
                                             onClick={() =>
                                                 setActiveFilter('All')
-                                            }>
+                                            }
+                                        >
                                             All Resources
                                         </Dropdown.Item>
                                         <Dropdown.Divider />
@@ -438,12 +445,13 @@ export default function Resources() {
                                                     }
                                                     onClick={() =>
                                                         setActiveFilter(
-                                                            category.type,
+                                                            category.type
                                                         )
-                                                    }>
+                                                    }
+                                                >
                                                     {category.type}
                                                 </Dropdown.Item>
-                                            ),
+                                            )
                                         )}
                                     </Dropdown.Menu>
                                 </Dropdown>
@@ -453,7 +461,7 @@ export default function Resources() {
                                         <Form.Control
                                             placeholder="Search"
                                             value={searchTerm}
-                                            onChange={e =>
+                                            onChange={(e) =>
                                                 setSearchTerm(e.target.value)
                                             }
                                         />
@@ -484,7 +492,8 @@ export default function Resources() {
                                             onClick={() => {
                                                 setSearchTerm('')
                                                 setActiveFilter('All')
-                                            }}>
+                                            }}
+                                        >
                                             Clear Filters
                                         </Button>
                                     )}
@@ -499,7 +508,8 @@ export default function Resources() {
                                                     key={index}
                                                     sm={12}
                                                     md={6}
-                                                    lg={4}>
+                                                    lg={4}
+                                                >
                                                     <Card className="shadow-sm h-100">
                                                         {/* <Card.Img
                                                             variant="top"
@@ -518,7 +528,7 @@ export default function Resources() {
                                                         <Card.Body>
                                                             <Card.Title className="fs-4">
                                                                 {getResourceName(
-                                                                    resource,
+                                                                    resource
                                                                 )}
                                                             </Card.Title>
                                                             <div className="mb-3">
@@ -528,7 +538,7 @@ export default function Resources() {
                                                                     </span>
                                                                     <span>
                                                                         {getResourceType(
-                                                                            resource,
+                                                                            resource
                                                                         )}
                                                                     </span>
                                                                 </div>
@@ -550,7 +560,7 @@ export default function Resources() {
                                                                     </span>
                                                                     <span>
                                                                         {getResourceCount(
-                                                                            resource,
+                                                                            resource
                                                                         )}
                                                                     </span>
                                                                 </div>
@@ -565,9 +575,10 @@ export default function Resources() {
                                                                         size="sm"
                                                                         onClick={() =>
                                                                             handleEdit(
-                                                                                resource,
+                                                                                resource
                                                                             )
-                                                                        }>
+                                                                        }
+                                                                    >
                                                                         <Icon icon="mdi:pencil" />
                                                                     </Button>
                                                                 )}
@@ -578,9 +589,10 @@ export default function Resources() {
                                                                         size="sm"
                                                                         onClick={() =>
                                                                             handleDelete(
-                                                                                resource,
+                                                                                resource
                                                                             )
-                                                                        }>
+                                                                        }
+                                                                    >
                                                                         <Icon icon="mdi:delete" />
                                                                     </Button>
                                                                 )}
@@ -588,7 +600,7 @@ export default function Resources() {
                                                         </Card.Body>
                                                     </Card>
                                                 </Col>
-                                            ),
+                                            )
                                         )}
                                     </Row>
 
@@ -598,11 +610,11 @@ export default function Resources() {
                                             <Pagination>
                                                 <Pagination.Prev
                                                     onClick={() =>
-                                                        setCurrentPage(prev =>
+                                                        setCurrentPage((prev) =>
                                                             Math.max(
                                                                 prev - 1,
-                                                                1,
-                                                            ),
+                                                                1
+                                                            )
                                                         )
                                                     }
                                                     disabled={currentPage === 1}
@@ -610,11 +622,11 @@ export default function Resources() {
                                                 {paginationItems}
                                                 <Pagination.Next
                                                     onClick={() =>
-                                                        setCurrentPage(prev =>
+                                                        setCurrentPage((prev) =>
                                                             Math.min(
                                                                 prev + 1,
-                                                                totalPages,
-                                                            ),
+                                                                totalPages
+                                                            )
                                                         )
                                                     }
                                                     disabled={

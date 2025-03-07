@@ -16,63 +16,79 @@ class ReportController extends Controller
 
     public function __construct(ReportService $reportService, OllamaService $ollamaService)
     {
+         set_time_limit(500);
         $this->reportService = $reportService;
         $this->ollamaService = $ollamaService;
     }
 
     public function generateReport(Request $request, $operationId)
-    {
-        set_time_limit(300); // 5 minutes
+{
+    set_time_limit(500); // 5 minutes
 
-        $data = $request->validate([
-            'report_type' => 'required|string',
-            'operation_status' => 'required|string',
-        ]);
-        $user = User::find(auth()->id());
-        if (! $user || $user->role_id > 2) {
-            return response()->json(['error' => 'Unauthorized'], 403);
-        }
+    $data = $request->validate([
+        'report_type' => 'required|string',
+        'operation_status' => 'required|string',
+    ]);
 
-        $info = $this->reportService->getReport($operationId, auth()->id(), $data);
+    $user = User::find(auth()->id());
+    if (! $user || $user->role_id > 2) {
+        return response()->json(['error' => 'Unauthorized'], 403);
+    }
 
-        // return response( $report["operation"]->id);
-        if (! $info) {
-            return response()->json(['error' => 'Failed to generate report'], 500);
-        }
-        $prompt = $info[0];
-        $data['report_name'] = $info[1];
+    $info = $this->reportService->getReport($operationId, auth()->id(), $data);
 
-        // Construct the prompt for the AI model
+    if (! $info) {
+        return response()->json(['error' => 'Failed to generate report'], 500);
+    }
 
-        return response()->stream(function () use ($data, $prompt, $operationId, $user) {
-            $reportContent = '';
-            $wordCount = 0;
+    $prompt = $info[0];
+    $data['report_name'] = $info[1];
 
-            // Stream the AI response in chunks
+    return response()->stream(function () use ($data, $prompt, $operationId, $user) {
+        $reportContent = '';
+        $errorOccurred = false;
+
+        try {
             foreach ($this->ollamaService->generateResponse($prompt) as $chunk) {
-                if (! empty($chunk)) {
-                    echo $chunk."\n"; // Preserve formatting (Markdown-friendly)
-                    $reportContent .= $chunk.' ';
+                if (!empty($chunk)) {
+                    echo $chunk . "\n";
+                    $reportContent .= $chunk . ' ';
 
                     if (ob_get_level() > 0) {
                         ob_flush();
                     }
                     flush();
-                    usleep(50000); // Slight delay for smooth streaming
                 }
             }
+        } catch (\Exception $e) {
+            \Log::error('Error generating AI report: ' . $e->getMessage());
+            $errorOccurred = true;
+            echo json_encode(['error' => 'AI generation failed.']) . "\n";
+            flush();
+        }
 
-            // Once AI finishes, save the report to the database
-            $report = Report::create([
-                'report_name' => $data['report_name'],
-                'operation_id' => $operationId,
-                'generated_by' => $user->id,
-                'report_summary' => 'A concise summary of the operation with key insights.',
-                'report_details' => $reportContent,
-                'operation_status' => $data['operation_status'],
-                'report_type' => $data['report_type'],
-            ]);
+        if (!$errorOccurred && !empty($reportContent)) {
+            try {
+                Report::create([
+                    'report_name' => $data['report_name'],
+                    'operation_id' => $operationId,
+                    'generated_by' => $user->id,
+                    'report_summary' => 'A concise summary of the operation with key insights.',
+                    'report_details' => trim($reportContent),
+                    'operation_status' => $data['operation_status'],
+                    'report_type' => $data['report_type'],
+                ]);
+            } catch (\Exception $e) {
+                \Log::error('Error saving report to database: ' . $e->getMessage());
+            }
+        }
 
-        });
-    }
+    }, 200, [
+       'Content-Type' => 'text/plain',
+            'Cache-Control' => 'no-cache, no-store, must-revalidate',
+            'X-Accel-Buffering' => 'no',
+            'Connection' => 'keep-alive',
+    ]);
+}
+
 }

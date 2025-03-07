@@ -6,7 +6,7 @@ const ResourceAllocation = ({ resourceStats }) => {
         { name: 'Weapons', value: resourceStats.weapons, color: 'primary' },
         { name: 'Vehicles', value: resourceStats.vehicles, color: 'success' },
         { name: 'Personnel', value: resourceStats.personnel, color: 'info' },
-        { name: 'Equipment', value: resourceStats.equipment, color: 'warning' },
+        { name: 'Equipment', value: resourceStats.equipment, color: 'warning' }
     ]
 
     return (
@@ -17,7 +17,9 @@ const ResourceAllocation = ({ resourceStats }) => {
                         <h5 className="mb-0">Resource Allocation</h5>
                     </Card.Header>
                     <Card.Body>
-                        <h6 className="text-muted mb-3">Resource Distribution</h6>
+                        <h6 className="text-muted mb-3">
+                            Resource Distribution
+                        </h6>
                         {resourceStats.total === 0 ? (
                             <div className="text-center py-4 text-muted">
                                 <p>No resource data available</p>
@@ -29,11 +31,20 @@ const ResourceAllocation = ({ resourceStats }) => {
                                         <div className="d-flex justify-content-between mb-1">
                                             <span>{resource.name}</span>
                                             <span>
-                                                {Math.round((resource.value / resourceStats.total) * 100)}%
+                                                {Math.round(
+                                                    (resource.value /
+                                                        resourceStats.total) *
+                                                        100
+                                                )}
+                                                %
                                             </span>
                                         </div>
                                         <ProgressBar
-                                            now={(resource.value / resourceStats.total) * 100}
+                                            now={
+                                                (resource.value /
+                                                    resourceStats.total) *
+                                                100
+                                            }
                                             variant={resource.color}
                                         />
                                     </div>

@@ -10,7 +10,7 @@ const Login = () => {
     const router = useRouter()
     const { login } = useAuth({
         middleware: 'guest',
-        redirectIfAuthenticated: '/dashboard',
+        redirectIfAuthenticated: '/dashboard'
     })
 
     const [email, setEmail] = useState('')
@@ -28,14 +28,14 @@ const Login = () => {
         }
     }, [router.reset, errors])
 
-    const submitForm = async event => {
+    const submitForm = async (event) => {
         event.preventDefault()
         login({
             email,
             password,
             remember: shouldRemember,
             setErrors,
-            setStatus,
+            setStatus
         })
     }
 
@@ -63,7 +63,7 @@ const Login = () => {
                             placeholder="E-mail"
                             className="w-full px-4 py-2 rounded-md border border-gray-600 mb-3 bg-white text-black placeholder-gray-500"
                             value={email}
-                            onChange={e => setEmail(e.target.value)}
+                            onChange={(e) => setEmail(e.target.value)}
                             autoComplete="email"
                             required
                         />
@@ -78,13 +78,14 @@ const Login = () => {
                                 placeholder="Password"
                                 className="w-full px-4 py-2 rounded-md border border-gray-600 mb-3 bg-white text-black placeholder-gray-500"
                                 value={password}
-                                onChange={e => setPassword(e.target.value)}
+                                onChange={(e) => setPassword(e.target.value)}
                                 required
                             />
                             <button
                                 type="button"
                                 className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-700"
-                                onClick={() => setShowPassword(!showPassword)}>
+                                onClick={() => setShowPassword(!showPassword)}
+                            >
                                 {showPassword ? '👁️' : '🙈'}
                             </button>
                         </div>
@@ -96,7 +97,8 @@ const Login = () => {
                         <div className="text-right mt-3  ">
                             <Link
                                 href="/forgot-password"
-                                className="text-white underline">
+                                className="text-white underline"
+                            >
                                 Forgot your password?
                             </Link>
                         </div>
@@ -105,13 +107,14 @@ const Login = () => {
                         <div className="block mt-4">
                             <label
                                 htmlFor="remember_me"
-                                className="inline-flex items-center">
+                                className="inline-flex items-center"
+                            >
                                 <input
                                     id="remember_me"
                                     type="checkbox"
                                     name="remember"
                                     className="rounded border-gray-300 text-indigo-600 shadow-sm"
-                                    onChange={e =>
+                                    onChange={(e) =>
                                         setShouldRemember(e.target.checked)
                                     }
                                 />
@@ -134,17 +137,20 @@ const Login = () => {
                         {/* Google Button */}
                         <button
                             onClick={handleGoogleLogin}
-                            className="w-full bg-black text-white py-2 rounded-md font-bold">
+                            className="w-full bg-black text-white py-2 rounded-md font-bold"
+                        >
                             Continue with Google
                         </button>
 
                         {/* Don't have an account? */}
                         <p className="text-center mt-3">
-                            <Link href="/register" className="text-white underline">
+                            <Link
+                                href="/register"
+                                className="text-white underline"
+                            >
                                 Don't have an account?
                             </Link>
                         </p>
-                        
                     </form>
                 </div>
             </div>
@@ -157,8 +163,9 @@ const Login = () => {
                     style={{
                         backgroundImage: `url('/login1.jpg')`,
                         backgroundSize: 'cover',
-                        backgroundPosition: 'center',
-                    }} />
+                        backgroundPosition: 'center'
+                    }}
+                />
             </div>
         </div>
     )

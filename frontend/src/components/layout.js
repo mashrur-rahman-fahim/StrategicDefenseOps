@@ -21,7 +21,7 @@ export default function Layout({ children }) {
             '/operation': 'operation',
             '/report': 'reports',
             '/resources': 'resources',
-            '/chatbot': 'chatbot',
+            '/chatbot': 'chatbot'
         }
         setSelectedItem(routeToItemMap[pathname] || '')
     }, [pathname])
@@ -34,13 +34,13 @@ export default function Layout({ children }) {
         setIsSidebarOpen(!isSidebarOpen) // Toggle the sidebar state
     }
 
-    const handleNavigation = item => {
+    const handleNavigation = (item) => {
         const routes = {
             dashboard: '/dashboard',
             operation: '/operation',
             reports: '/report',
             resources: '/resources',
-            chatbot: '/chatbot',
+            chatbot: '/chatbot'
         }
 
         const route = routes[item.toLowerCase()]

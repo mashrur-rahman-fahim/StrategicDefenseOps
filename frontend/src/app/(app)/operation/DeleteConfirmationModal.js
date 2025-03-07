@@ -23,7 +23,7 @@ export default function DeleteConfirmationModal({
                     Cancel
                 </Button>
                 <Button variant="danger" onClick={onDelete} disabled={loading}>
-                    {loading ? <Loading text='Deleting...'/>: 'Delete'}
+                    {loading ? <Loading text="Deleting..." /> : 'Delete'}
                 </Button>
             </Modal.Footer>
         </Modal>

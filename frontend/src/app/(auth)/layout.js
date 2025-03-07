@@ -1,7 +1,5 @@
-
-
 export const metadata = {
-    title: 'Strategic Defense Operations',
+    title: 'Strategic Defense Operations'
 }
 
 const Layout = ({ children }) => {

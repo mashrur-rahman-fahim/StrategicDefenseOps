@@ -1,4 +1,9 @@
-:root {
+/* :root {
+  
+} */
+
+.chatbot-container {
+    font-size: var(--font-size-base); 
     --color-primary: #00ffcc; 
     --color-secondary: #ff00ff; 
     --color-page-background: #000000; 
@@ -11,10 +16,6 @@
     --spacing-md: 24px;
     --border-radius: 12px;
     --font-size-base: 16px;
-}
-
-body {
-    font-size: var(--font-size-base); 
 }
 
 .chatbot-page {

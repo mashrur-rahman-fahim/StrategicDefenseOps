@@ -29,17 +29,31 @@ class ReportService
                 throw new Exception('Operation is not completed');
             }
 
-            $prompt = "Generate a concise, well-structured report with the following sections based solely on the provided data:\n";
+            $prompt = "Generate a concise and well-structured report based only on the provided operation data. The report should include:
+
+Brief Summary (Max 40 Words)  Summarize the operations objective, execution, and outcome in one paragraph.
+Key Insights (3-5 Bullet Points)  Highlight important details, including mission success/failure reasons, resource utilization (vehicles, weapons, personnel, equipment), and any major challenges.
+Final Status & Conclusion (Max 3 Sentences)  State the final status of the operation and provide a short conclusion.
+🔹 Keep the report under 500 words.
+🔹 Do not generate extra information beyond the given data.
+🔹 Use a formal and professional tone.
+
+Operation Data:
+(Include operation details, vehicles, weapons, personnel, and equipment as provided in the data)
+
+Conclusions: Add a conlusion within 50 words
+
+Now, generate the report in a short, structured format";
 
             $prompt .= "1. A short summary of the operation in no more than 50 words.\n";
 
-            $prompt .= "2. Key insights and performance metrics, such as vehicle,weapon,personnel,equipment details and operation status. Limit the key points to 5-10 bullet points.\n";
-            $prompt .= "The total report length should be under 250 words. Only generate report not other any extra topic and word\n\n";
+            $prompt .= "2. Key insights and performance metrics, such as vehicle,weapon,personnel,equipment details and operation status and generate this by reporting style. Limit the key points to 3-5 bullet points.\n";
+            $prompt .= "The total report length should be under 500 words. Only generate report not other any extra topic and word\n\n";
 
             $prompt .= "Operation Details:\n";
-            $prompt .= "ID: {$report['operation']->id}\n";
+           
             $prompt .= "Name: {$report['operation']->name}\n";
-            $prompt .= "Status: {$report['operation']->status}\n";
+            $prompt .= "Status: {$report['operation']->status}\n why it is fail or success in conlusion";
             $prompt .= 'Start Date: '.($report['operation']->start_date ?? 'Not provided')."\n";
             $prompt .= 'End Date: '.($report['operation']->end_date ?? 'Not provided')."\n";
             $prompt .= 'Location: '.($report['operation']->location ?? 'Not provided')."\n";

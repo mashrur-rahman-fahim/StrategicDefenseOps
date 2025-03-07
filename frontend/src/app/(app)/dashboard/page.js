@@ -17,7 +17,7 @@ import ResourceAllocation from './ResourceAllocation'
 export default function Dashboard() {
     const { user } = useAuth({
         middleware: 'auth',
-        redirectIfAuthenticated: '/dashboard',
+        redirectIfAuthenticated: '/dashboard'
     })
 
     const [loading, setLoading] = useState(true)
@@ -28,14 +28,14 @@ export default function Dashboard() {
             vehicles: 0,
             personnel: 0,
             equipment: 0,
-            total: 0,
+            total: 0
         },
         operations: {
             ongoing: 0,
             upcoming: 0,
             completed: 0,
-            total: 0,
-        },
+            total: 0
+        }
     })
     const [recentOperations, setRecentOperations] = useState([])
     const [topResources, setTopResources] = useState([])
@@ -49,7 +49,9 @@ export default function Dashboard() {
             const resourceData = resourcesResponse.data[1] || []
 
             // Get operations
-            const operationsResponse = await axios.get('/api/get-all-operations')
+            const operationsResponse = await axios.get(
+                '/api/get-all-operations'
+            )
             const operationsData = operationsResponse.data[1] || []
 
             // Calculate resource stats
@@ -61,18 +63,30 @@ export default function Dashboard() {
                 return total + (resource.vehicle_count || 0)
             }, 0)
 
-            const totalPersonnelCount = resourceData.reduce((total, resource) => {
-                return total + (resource.personnel_count || 0)
-            }, 0)
+            const totalPersonnelCount = resourceData.reduce(
+                (total, resource) => {
+                    return total + (resource.personnel_count || 0)
+                },
+                0
+            )
 
-            const totalEquipmentCount = resourceData.reduce((total, resource) => {
-                return total + (resource.equipment_count || 0)
-            }, 0)
+            const totalEquipmentCount = resourceData.reduce(
+                (total, resource) => {
+                    return total + (resource.equipment_count || 0)
+                },
+                0
+            )
 
             // Calculate operation stats
-            const ongoingOps = operationsData.filter(op => op.status === 'ongoing').length
-            const upcomingOps = operationsData.filter(op => op.status === 'upcoming').length
-            const completedOps = operationsData.filter(op => op.status === 'completed').length
+            const ongoingOps = operationsData.filter(
+                (op) => op.status === 'ongoing'
+            ).length
+            const upcomingOps = operationsData.filter(
+                (op) => op.status === 'upcoming'
+            ).length
+            const completedOps = operationsData.filter(
+                (op) => op.status === 'completed'
+            ).length
 
             setStats({
                 resources: {
@@ -80,14 +94,18 @@ export default function Dashboard() {
                     vehicles: totalVehicleCount,
                     personnel: totalPersonnelCount,
                     equipment: totalEquipmentCount,
-                    total: totalWeaponCount + totalVehicleCount + totalPersonnelCount + totalEquipmentCount,
+                    total:
+                        totalWeaponCount +
+                        totalVehicleCount +
+                        totalPersonnelCount +
+                        totalEquipmentCount
                 },
                 operations: {
                     ongoing: ongoingOps,
                     upcoming: upcomingOps,
                     completed: completedOps,
-                    total: operationsData.length,
-                },
+                    total: operationsData.length
+                }
             })
 
             // Get recent operations (5 most recent)
@@ -100,8 +118,18 @@ export default function Dashboard() {
             // Get top resources (most available)
             const topResourcesList = [...resourceData]
                 .sort((a, b) => {
-                    const countA = a.weapon_count || a.vehicle_count || a.personnel_count || a.equipment_count || 0
-                    const countB = b.weapon_count || b.vehicle_count || b.personnel_count || b.equipment_count || 0
+                    const countA =
+                        a.weapon_count ||
+                        a.vehicle_count ||
+                        a.personnel_count ||
+                        a.equipment_count ||
+                        0
+                    const countB =
+                        b.weapon_count ||
+                        b.vehicle_count ||
+                        b.personnel_count ||
+                        b.equipment_count ||
+                        0
                     return countB - countA
                 })
                 .slice(0, 5)

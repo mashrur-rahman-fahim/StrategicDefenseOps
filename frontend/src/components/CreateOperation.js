@@ -9,7 +9,7 @@ const CreateOperation = ({ onOperationCreated }) => {
         start_date: '',
         end_date: '',
         location: '',
-        budget: '',
+        budget: ''
     })
     const [userID, setUserID] = useState(null)
     const startDateRef = useRef(null)
@@ -19,7 +19,7 @@ const CreateOperation = ({ onOperationCreated }) => {
         const fetchUserDetails = async () => {
             try {
                 const response = await axios.get(
-                    `${process.env.NEXT_PUBLIC_BACKEND_URL}/api/user`,
+                    `${process.env.NEXT_PUBLIC_BACKEND_URL}/api/user`
                 )
                 setUserID(response.data.id || null)
             } catch (error) {
@@ -30,28 +30,28 @@ const CreateOperation = ({ onOperationCreated }) => {
         fetchUserDetails()
     }, [])
 
-    const validateDate = dateString => {
+    const validateDate = (dateString) => {
         return /^\d{4}-\d{2}-\d{2}$/.test(dateString)
     }
 
-    const handleChange = e => {
+    const handleChange = (e) => {
         setFormData({ ...formData, [e.target.name]: e.target.value })
     }
 
-    const handleDateChange = e => {
+    const handleDateChange = (e) => {
         const { name, value } = e.target
         const formattedValue = value.replace(/[^0-9-]/g, '') // Prevent invalid characters
         setFormData({ ...formData, [name]: formattedValue })
     }
 
-    const handleBlur = name => {
+    const handleBlur = (name) => {
         if (!validateDate(formData[name])) {
             alert('Please enter a valid date in YYYY-MM-DD format.')
             setFormData({ ...formData, [name]: '' })
         }
     }
 
-    const handleSubmit = async e => {
+    const handleSubmit = async (e) => {
         e.preventDefault()
         if (!userID) {
             alert('User not identified. Please try again.')
@@ -69,13 +69,13 @@ const CreateOperation = ({ onOperationCreated }) => {
         const operationData = {
             ...formData,
             created_by: userID,
-            updated_by: null,
+            updated_by: null
         }
 
         try {
             const response = await axios.post(
                 `${process.env.NEXT_PUBLIC_BACKEND_URL}/api/create-operation`,
-                operationData,
+                operationData
             )
             console.log('API Response:', response)
             onOperationCreated(response.data)
@@ -89,9 +89,8 @@ const CreateOperation = ({ onOperationCreated }) => {
                 start_date: '',
                 end_date: '',
                 location: '',
-                budget: '',
+                budget: ''
             })
-            
         } catch (error) {
             console.error('Error creating operation:', error)
             alert('Failed to create operation')
@@ -105,7 +104,8 @@ const CreateOperation = ({ onOperationCreated }) => {
             </h2>
             <form
                 onSubmit={handleSubmit}
-                className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                className="grid grid-cols-1 sm:grid-cols-2 gap-4"
+            >
                 <div className="sm:col-span-2">
                     <input
                         type="text"
@@ -122,14 +122,16 @@ const CreateOperation = ({ onOperationCreated }) => {
                         placeholder="Description"
                         onChange={handleChange}
                         required
-                        className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-400 outline-none" />
+                        className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-400 outline-none"
+                    />
                 </div>
                 <div>
                     <select
                         name="status"
                         onChange={handleChange}
                         required
-                        className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-400 outline-none">
+                        className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-400 outline-none"
+                    >
                         <option value="ongoing">Ongoing</option>
                         <option value="upcoming">Upcoming</option>
                         <option value="completed">Completed</option>
@@ -157,17 +159,18 @@ const CreateOperation = ({ onOperationCreated }) => {
                     <button
                         type="button"
                         onClick={() => startDateRef.current.showPicker()}
-                        className="absolute right-3 top-3 text-gray-500">
+                        className="absolute right-3 top-3 text-gray-500"
+                    >
                         📅
                     </button>
                     <input
                         ref={startDateRef}
                         type="date"
                         className="hidden"
-                        onChange={e =>
+                        onChange={(e) =>
                             setFormData({
                                 ...formData,
-                                start_date: e.target.value,
+                                start_date: e.target.value
                             })
                         }
                     />
@@ -186,17 +189,18 @@ const CreateOperation = ({ onOperationCreated }) => {
                     <button
                         type="button"
                         onClick={() => endDateRef.current.showPicker()}
-                        className="absolute right-3 top-3 text-gray-500">
+                        className="absolute right-3 top-3 text-gray-500"
+                    >
                         📅
                     </button>
                     <input
                         ref={endDateRef}
                         type="date"
                         className="hidden"
-                        onChange={e =>
+                        onChange={(e) =>
                             setFormData({
                                 ...formData,
-                                end_date: e.target.value,
+                                end_date: e.target.value
                             })
                         }
                     />
@@ -214,7 +218,8 @@ const CreateOperation = ({ onOperationCreated }) => {
                 <div className="sm:col-span-2">
                     <button
                         type="submit"
-                        className="w-full py-3 bg-blue-600 text-white font-semibold rounded-lg hover:bg-blue-700 transition duration-200">
+                        className="w-full py-3 bg-blue-600 text-white font-semibold rounded-lg hover:bg-blue-700 transition duration-200"
+                    >
                         Create Operation
                     </button>
                 </div>

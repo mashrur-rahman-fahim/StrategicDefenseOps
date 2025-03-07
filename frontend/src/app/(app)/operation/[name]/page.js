@@ -9,7 +9,7 @@ import {
     Button,
     Badge,
     Spinner,
-    Table,
+    Table
 } from 'react-bootstrap'
 import { Icon } from '@iconify/react'
 import { toast } from 'sonner'
@@ -27,7 +27,7 @@ export default function OperationDetail() {
 
     const operationName = params?.name ? decodeURIComponent(params.name) : null
 
-    const formatDate = dateString => {
+    const formatDate = (dateString) => {
         if (!dateString) return ''
         const date = new Date(dateString)
 
@@ -46,7 +46,7 @@ export default function OperationDetail() {
         try {
             setLoading(true)
             const response = await axios.get(
-                `/api/search-operations/${operationName}`,
+                `/api/search-operations/${operationName}`
             )
             console.log('Operation details:', response.data[1][0])
             setOperation(response.data[1][0])
@@ -63,20 +63,20 @@ export default function OperationDetail() {
         try {
             setLoading(true)
             const response = await axios.get(
-                `/api/get-operation-resources/${operation.id}`,
+                `/api/get-operation-resources/${operation.id}`
             )
             console.log('Operation resources:', response.data)
-            const { 
-                vehicle = [], 
-                weapon = [], 
-                personnel = [], 
-                equipment = [] 
+            const {
+                vehicle = [],
+                weapon = [],
+                personnel = [],
+                equipment = []
             } = response.data || {}
             const allResources = [
-                ...vehicle.map(v => ({ ...v, type: 'Vehicle' })),
-                ...weapon.map(w => ({ ...w, type: 'Weapon' })),
-                ...personnel.map(p => ({ ...p, type: 'Personnel' })),
-                ...equipment.map(e => ({ ...e, type: 'Equipment' })),
+                ...vehicle.map((v) => ({ ...v, type: 'Vehicle' })),
+                ...weapon.map((w) => ({ ...w, type: 'Weapon' })),
+                ...personnel.map((p) => ({ ...p, type: 'Personnel' })),
+                ...equipment.map((e) => ({ ...e, type: 'Equipment' }))
             ]
             setResources(allResources)
             console.log('All resources:', allResources)
@@ -102,7 +102,7 @@ export default function OperationDetail() {
         }
     }, [operation])
 
-    const getStatusColor = status => {
+    const getStatusColor = (status) => {
         switch (status) {
             case 'ongoing':
                 return 'success'
@@ -121,7 +121,8 @@ export default function OperationDetail() {
                 <Container fluid className="p-4">
                     <div
                         className="d-flex justify-content-center align-items-center"
-                        style={{ minHeight: '300px' }}>
+                        style={{ minHeight: '300px' }}
+                    >
                         <Spinner animation="border" variant="primary" />
                     </div>
                 </Container>
@@ -138,7 +139,8 @@ export default function OperationDetail() {
                         <p>{error || 'Operation not found'}</p>
                         <Button
                             variant="primary"
-                            onClick={() => router.push('/operation')}>
+                            onClick={() => router.push('/operation')}
+                        >
                             Return to Operations
                         </Button>
                     </div>
@@ -177,9 +179,10 @@ export default function OperationDetail() {
                                     <Col sm={8}>
                                         <Badge
                                             bg={getStatusColor(
-                                                operation.status,
+                                                operation.status
                                             )}
-                                            className="px-3 py-2">
+                                            className="px-3 py-2"
+                                        >
                                             {operation.status.toUpperCase()}
                                         </Badge>
                                     </Col>
@@ -268,7 +271,8 @@ export default function OperationDetail() {
                                             striped
                                             bordered
                                             hover
-                                            responsive>
+                                            responsive
+                                        >
                                             <thead>
                                                 <tr>
                                                     <th>Type</th>
@@ -313,7 +317,8 @@ export default function OperationDetail() {
                         <Card className="shadow-sm mb-4">
                             <Card.Body className="p-0">
                                 <div
-                                    className={`bg-${getStatusColor(operation.status)} text-white p-3`}>
+                                    className={`bg-${getStatusColor(operation.status)} text-white p-3`}
+                                >
                                     <h5 className="mb-0">Current Status</h5>
                                 </div>
                                 <div className="p-3">
@@ -329,7 +334,7 @@ export default function OperationDetail() {
                                             <p className="mt-2 mb-0">
                                                 Started on{' '}
                                                 {formatDate(
-                                                    operation.start_date,
+                                                    operation.start_date
                                                 )}
                                             </p>
                                         )}
@@ -338,7 +343,7 @@ export default function OperationDetail() {
                                             <p className="mt-2 mb-0">
                                                 Starts on{' '}
                                                 {formatDate(
-                                                    operation.start_date,
+                                                    operation.start_date
                                                 )}
                                             </p>
                                         )}
@@ -392,17 +397,19 @@ export default function OperationDetail() {
                                         className="bg-light rounded"
                                         style={{
                                             height: '150px',
-                                            position: 'relative',
-                                        }}>
+                                            position: 'relative'
+                                        }}
+                                    >
                                         <div className="text-center position-absolute top-50 start-50 translate-middle">
                                             <Button
                                                 variant="primary"
                                                 onClick={() =>
                                                     window.open(
                                                         `https://maps.google.com/?q=${operation.location}`,
-                                                        '_blank',
+                                                        '_blank'
                                                     )
-                                                }>
+                                                }
+                                            >
                                                 <Icon
                                                     icon="mdi:map"
                                                     className="me-2"

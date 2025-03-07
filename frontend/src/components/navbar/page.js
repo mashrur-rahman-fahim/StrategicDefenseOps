@@ -1,6 +1,6 @@
-"use client"
-import React, { useState, useEffect, useRef } from "react"
-import "./navbar.css"
+'use client'
+import React, { useState, useEffect, useRef } from 'react'
+import './navbar.css'
 
 const Navbar = ({ toggleSidebar, logout }) => {
     const [isDropdownOpen, setDropdownOpen] = useState(false)
@@ -29,7 +29,7 @@ const Navbar = ({ toggleSidebar, logout }) => {
                         ref={menuButtonRef} // Attach the ref
                         className="menu-button"
                         onClick={toggleSidebar}
-                        style={{ display: "block" }}
+                        style={{ display: 'block' }}
                     >
                         ☰
                     </button>
@@ -40,7 +40,12 @@ const Navbar = ({ toggleSidebar, logout }) => {
                     <button className="nav-button new-button">New</button>
 
                     {/* Notification button */}
-                    <button className="nav-button" onClick={() => setDropdownOpen(!isDropdownOpen)}>🔔</button>
+                    <button
+                        className="nav-button"
+                        onClick={() => setDropdownOpen(!isDropdownOpen)}
+                    >
+                        🔔
+                    </button>
 
                     {/* Notification dropdown */}
                     {isDropdownOpen && (
@@ -51,7 +56,9 @@ const Navbar = ({ toggleSidebar, logout }) => {
                     )}
 
                     {/* Logout button */}
-                    <button className="nav-button" onClick={handleLogoutClick}>🚪</button>
+                    <button className="nav-button" onClick={handleLogoutClick}>
+                        🚪
+                    </button>
                 </div>
             </nav>
 
@@ -59,10 +66,18 @@ const Navbar = ({ toggleSidebar, logout }) => {
             {showLogoutPrompt && (
                 <div className="logout-prompt">
                     <p>Are you sure you want to log out?</p>
-                    <button onClick={handleConfirmLogout} disabled={isLoggingOut}>
-                        {isLoggingOut ? "Logging out..." : "Yes"}
+                    <button
+                        onClick={handleConfirmLogout}
+                        disabled={isLoggingOut}
+                    >
+                        {isLoggingOut ? 'Logging out...' : 'Yes'}
                     </button>
-                    <button onClick={handleCancelLogout} disabled={isLoggingOut}>No</button>
+                    <button
+                        onClick={handleCancelLogout}
+                        disabled={isLoggingOut}
+                    >
+                        No
+                    </button>
                 </div>
             )}
         </header>

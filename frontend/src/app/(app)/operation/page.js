@@ -15,13 +15,13 @@ import OperationSearchAndFilter from './OperationSearchAndFilter'
 export default function Operation() {
     const { user } = useAuth({
         middleware: 'auth',
-        redirectIfAuthenticated: '/operation',
+        redirectIfAuthenticated: '/operation'
     })
     const [operations, setOperations] = useState([])
     const [stats, setStats] = useState({
         ongoing: 0,
         upcoming: 0,
-        completed: 0,
+        completed: 0
     })
     const [showModal, setShowModal] = useState(false)
     const [showUpdateModal, setShowUpdateModal] = useState(false)
@@ -33,7 +33,7 @@ export default function Operation() {
         start_date: '',
         end_date: '',
         location: '',
-        budget: 0,
+        budget: 0
     })
     const [loading, setLoading] = useState(false)
     const [deleteConfirmModal, setDeleteConfirmModal] = useState(false)
@@ -43,26 +43,26 @@ export default function Operation() {
     const [filteredOperations, setFilteredOperations] = useState([])
 
     // Helper functions
-    const formatDate = dateString => {
+    const formatDate = (dateString) => {
         if (!dateString) return ''
         const date = new Date(dateString)
         return `${date.getDate()}/${date.getMonth() + 1}/${date.getFullYear()}`
     }
 
-    const formatDateForInput = dateString => {
+    const formatDateForInput = (dateString) => {
         if (!dateString) return ''
         const date = new Date(dateString)
         return date.toISOString().slice(0, 16)
     }
 
-    const calculateStats = operations => {
+    const calculateStats = (operations) => {
         const counts = {
             ongoing: 0,
             upcoming: 0,
-            completed: 0,
+            completed: 0
         }
 
-        operations.forEach(op => {
+        operations.forEach((op) => {
             counts[op.status]++
         })
 
@@ -106,21 +106,21 @@ export default function Operation() {
             setFilteredOperations(operations[1])
         } else {
             let filtered = operations[1].filter(
-                op => op.status === activeFilter.toLowerCase(),
+                (op) => op.status === activeFilter.toLowerCase()
             )
             setFilteredOperations(filtered)
         }
     }, [activeFilter, operations])
 
-    const handleInputChange = e => {
+    const handleInputChange = (e) => {
         const { name, value } = e.target
         setFormData({
             ...formData,
-            [name]: value,
+            [name]: value
         })
     }
 
-    const handleSubmit = async e => {
+    const handleSubmit = async (e) => {
         e.preventDefault()
         try {
             setLoading(true)
@@ -137,13 +137,13 @@ export default function Operation() {
         }
     }
 
-    const handleUpdateSubmit = async e => {
+    const handleUpdateSubmit = async (e) => {
         e.preventDefault()
         try {
             setLoading(true)
             await axios.put(
                 `/api/update-operation/${editingOperation.id}`,
-                formData,
+                formData
             )
             toast.success('Operation updated successfully')
             setShowUpdateModal(false)
@@ -170,7 +170,7 @@ export default function Operation() {
             toast.error(
                 operationToDelete.status === 'ongoing'
                     ? `Cannot delete ongoing operations!`
-                    : `Failed to delete operation: ${errorMessage}`,
+                    : `Failed to delete operation: ${errorMessage}`
             )
             console.error('Error deleting operation:', error)
         } finally {
@@ -188,12 +188,12 @@ export default function Operation() {
             status: 'ongoing',
             start_date: '',
             end_date: '',
-            location: '',
+            location: ''
         })
         setEditingOperation(null)
     }
 
-    const openUpdateModal = operation => {
+    const openUpdateModal = (operation) => {
         setEditingOperation(operation)
         setFormData({
             name: operation.name || '',
@@ -201,17 +201,17 @@ export default function Operation() {
             status: operation.status || 'ongoing',
             start_date: formatDateForInput(operation.start_date),
             end_date: formatDateForInput(operation.end_date),
-            location: operation.location || '',
+            location: operation.location || ''
         })
         setShowUpdateModal(true)
     }
 
-    const openDeleteConfirmation = operation => {
+    const openDeleteConfirmation = (operation) => {
         setOperationToDelete(operation)
         setDeleteConfirmModal(true)
     }
 
-    const handleSearch = e => {
+    const handleSearch = (e) => {
         e.preventDefault()
 
         if (!operations[1]) return
@@ -219,8 +219,8 @@ export default function Operation() {
         let filtered = operations[1]
         if (searchTerm.trim() !== '') {
             const term = searchTerm.toLowerCase()
-            filtered = operations[1].filter(op =>
-                op.name.toLowerCase().includes(term),
+            filtered = operations[1].filter((op) =>
+                op.name.toLowerCase().includes(term)
             )
         }
         setFilteredOperations(filtered)
@@ -239,11 +239,13 @@ export default function Operation() {
                         <Col
                             xs={12}
                             md={6}
-                            className="d-flex justify-content-md-end mt-3 mt-md-0">
+                            className="d-flex justify-content-md-end mt-3 mt-md-0"
+                        >
                             {user?.role_id == 1 && (
                                 <Button
                                     variant="primary"
-                                    onClick={() => setShowModal(true)}>
+                                    onClick={() => setShowModal(true)}
+                                >
                                     New Operation
                                 </Button>
                             )}

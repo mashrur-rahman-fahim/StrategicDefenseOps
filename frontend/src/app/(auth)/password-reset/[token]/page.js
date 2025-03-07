@@ -20,7 +20,7 @@ const PasswordReset = () => {
     const [errors, setErrors] = useState([])
     const [status, setStatus] = useState(null)
 
-    const submitForm = event => {
+    const submitForm = (event) => {
         event.preventDefault()
 
         resetPassword({
@@ -28,7 +28,7 @@ const PasswordReset = () => {
             password,
             password_confirmation: passwordConfirmation,
             setErrors,
-            setStatus,
+            setStatus
         })
     }
 
@@ -51,7 +51,7 @@ const PasswordReset = () => {
                         type="email"
                         value={email}
                         className="block mt-1 w-full"
-                        onChange={event => setEmail(event.target.value)}
+                        onChange={(event) => setEmail(event.target.value)}
                         required
                         autoFocus
                     />
@@ -67,14 +67,11 @@ const PasswordReset = () => {
                         type="password"
                         value={password}
                         className="block mt-1 w-full"
-                        onChange={event => setPassword(event.target.value)}
+                        onChange={(event) => setPassword(event.target.value)}
                         required
                     />
 
-                    <InputError
-                        messages={errors.password}
-                        className="mt-2"
-                    />
+                    <InputError messages={errors.password} className="mt-2" />
                 </div>
 
                 {/* Confirm Password */}
@@ -88,7 +85,7 @@ const PasswordReset = () => {
                         type="password"
                         value={passwordConfirmation}
                         className="block mt-1 w-full"
-                        onChange={event =>
+                        onChange={(event) =>
                             setPasswordConfirmation(event.target.value)
                         }
                         required

@@ -46,7 +46,7 @@ export default function UnAssign() {
                 data = { [`${role}Email`]: email, managerEmail }
             } else {
                 setMessage(
-                    '❌ You do not have permission to unassign this role.',
+                    '❌ You do not have permission to unassign this role.'
                 )
                 return
             }
@@ -57,7 +57,7 @@ export default function UnAssign() {
             setManagerEmail('')
         } catch (error) {
             setMessage(
-                `❌ Error: ${error.response?.data?.message || error.message}`,
+                `❌ Error: ${error.response?.data?.message || error.message}`
             )
         }
     }
@@ -87,7 +87,8 @@ export default function UnAssign() {
                         <select
                             className="form-select"
                             value={role}
-                            onChange={e => setRole(e.target.value)}>
+                            onChange={(e) => setRole(e.target.value)}
+                        >
                             {/* Admin (Role 1) sees all roles */}
                             {userRole === 1 && (
                                 <option value="manager">Manager</option>
@@ -103,7 +104,7 @@ export default function UnAssign() {
                             type="email"
                             className="form-control"
                             value={email}
-                            onChange={e => setEmail(e.target.value)}
+                            onChange={(e) => setEmail(e.target.value)}
                             placeholder="Enter user email"
                         />
                     </div>
@@ -115,7 +116,9 @@ export default function UnAssign() {
                                 type="email"
                                 className="form-control"
                                 value={managerEmail}
-                                onChange={e => setManagerEmail(e.target.value)}
+                                onChange={(e) =>
+                                    setManagerEmail(e.target.value)
+                                }
                                 placeholder="Enter manager email"
                             />
                         </div>
@@ -123,13 +126,15 @@ export default function UnAssign() {
 
                     <button
                         className="btn btn-danger w-100"
-                        onClick={handleUnassign}>
+                        onClick={handleUnassign}
+                    >
                         <i className="bi bi-trash" /> Unassign Role
                     </button>
 
                     {message && (
                         <div
-                            className={`alert mt-3 ${message.startsWith('✅') ? 'alert-success' : 'alert-danger'}`}>
+                            className={`alert mt-3 ${message.startsWith('✅') ? 'alert-success' : 'alert-danger'}`}
+                        >
                             {message}
                         </div>
                     )}

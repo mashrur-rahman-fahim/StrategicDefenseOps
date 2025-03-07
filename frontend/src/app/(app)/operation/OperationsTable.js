@@ -8,7 +8,7 @@ export default function OperationsTable({
     onEdit,
     onDelete,
     formatDate,
-    user,
+    user
 }) {
     return (
         <Table responsive striped hover className="bg-light">
@@ -22,12 +22,13 @@ export default function OperationsTable({
                 </tr>
             </thead>
             <tbody>
-                {operations.map(operation => (
+                {operations.map((operation) => (
                     <tr key={operation.id}>
                         <td>{operation.name}</td>
                         <td>
                             <span
-                                className={`text-${operation.status === 'ongoing' ? 'success' : operation.status === 'upcoming' ? 'warning' : 'primary'}`}>
+                                className={`text-${operation.status === 'ongoing' ? 'success' : operation.status === 'upcoming' ? 'warning' : 'primary'}`}
+                            >
                                 {operation.status}
                             </span>
                         </td>
@@ -36,12 +37,18 @@ export default function OperationsTable({
                         <td>
                             <Link
                                 href={`/operation/${encodeURIComponent(operation.name)}`}
-                                passHref>
+                                passHref
+                            >
                                 <Button
                                     variant="outline-primary"
                                     size="sm"
-                                    className="me-2">
-                                    <Icon icon="material-symbols:info-outline" width="20" height="20" />
+                                    className="me-2"
+                                >
+                                    <Icon
+                                        icon="material-symbols:info-outline"
+                                        width="20"
+                                        height="20"
+                                    />
                                 </Button>
                             </Link>
                             {user?.role_id != 4 && (
@@ -49,7 +56,8 @@ export default function OperationsTable({
                                     variant="outline-success"
                                     size="sm"
                                     className="me-2"
-                                    onClick={() => onEdit(operation)}>
+                                    onClick={() => onEdit(operation)}
+                                >
                                     <Icon icon="mdi:pencil" />
                                 </Button>
                             )}
@@ -58,7 +66,8 @@ export default function OperationsTable({
                                     variant="outline-danger"
                                     size="sm"
                                     className="me-2"
-                                    onClick={() => onDelete(operation)}>
+                                    onClick={() => onDelete(operation)}
+                                >
                                     <Icon icon="mdi:delete" />
                                 </Button>
                             )}
