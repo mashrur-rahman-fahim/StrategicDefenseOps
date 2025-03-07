@@ -1,5 +1,5 @@
-import React from 'react';
-import { Modal, Form, Row, Col, Button } from 'react-bootstrap';
+import React from 'react'
+import { Modal, Form, Row, Col, Button } from 'react-bootstrap'
 
 export default function OperationModal({
     show,
@@ -113,5 +113,5 @@ export default function OperationModal({
                 </Modal.Footer>
             </Form>
         </Modal>
-    );
+    )
 }
