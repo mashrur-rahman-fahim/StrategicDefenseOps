@@ -5,6 +5,8 @@ use App\Mail\TestEmail;
 use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\Route;
 use Laravel\Sanctum\Http\Middleware\EnsureFrontendRequestsAreStateful;
+use Laravel\Socialite\Facades\Socialite;
+use Illuminate\Http\Request;
 
 /*
 |--------------------------------------------------------------------------
@@ -37,12 +39,24 @@ Route::get('/mail', function () {
 //    Route::get('/dashboard', function () {
 //     return view('dashboard');
 //  })->name('dashboard');
-Route::middleware(['web', EnsureFrontendRequestsAreStateful::class])
+/* Route::middleware(['web', EnsureFrontendRequestsAreStateful::class])
     ->group(function () {
         Route::controller(SocialiteController::class)->group(function () {
             Route::get('auth/google', 'googleLogin');
             Route::get('auth/google-callback', 'googleAuthentication');
         });
+    }); */
+
+    Route::middleware('web')->group(function () {
+        Route::get('auth/google', [SocialiteController::class, 'googleLogin']);
+        Route::get('auth/google-callback', [SocialiteController::class, 'googleAuthentication']);
     });
+
+/*     Route::get('/auth/google',function(Request $request){
+        return Socialite::driver('google')->redirect();
+    });
+    Route::get('/auth/google-callback',function(Request $request){
+        dd($request->all());
+    }); */
 
 require __DIR__.'/auth.php';

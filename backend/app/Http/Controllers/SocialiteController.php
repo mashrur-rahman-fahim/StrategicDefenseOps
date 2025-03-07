@@ -32,7 +32,8 @@ class SocialiteController extends Controller
     
             if ($user) {
                 Auth::login($user);
-                return redirect()->intended(config('app.frontend_url').RouteServiceProvider::HOME);
+                $token = $user->createToken('api_token')->plainTextToken;
+                return redirect()->intended(config('app.frontend_url').'\dashboard');
             } else {
                 // Create a new User instance
                 $user = new User();
@@ -42,12 +43,13 @@ class SocialiteController extends Controller
                 $user->google_id = $googleUser->id;
                 $user->role_id = $role;
                 $user->parent_id = null;
-                $user->email_verified_at = now(); // Set email_verified_at manually
-                $user->save(); // Save the user to the database
+                $user->email_verified_at = now(); 
+                $user->save(); 
     
                 if ($user) {
                     Auth::login($user);
-                    return redirect()->intended(config('app.frontend_url').RouteServiceProvider::HOME);
+                    $token = $user->createToken('api_token')->plainTextToken;
+                    return redirect()->intended(config('app.frontend_url').'\dashboard');
                 }
             }
         } catch (\Laravel\Socialite\Two\InvalidStateException $e) {
