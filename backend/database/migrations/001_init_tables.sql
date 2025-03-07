@@ -152,7 +152,7 @@ insert into resource_category (resource_category) values
 ('personnel'),
 ('equipment');
 
-create table Resources(
+create table resources(
     id INT unsigned AUTO_INCREMENT PRIMARY KEY,
     resources_name VARCHAR(200) not null,
     resource_category int UNSIGNED not null ,
