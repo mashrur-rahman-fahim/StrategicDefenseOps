@@ -44,10 +44,8 @@ const Notification = ({ user }) => {
                     <tbody>
                         {logs
                             .filter(
-                                log =>
-                                    log.log_name.startsWith('Operation') &&
-                                    log.log_name !== 'user_details_access',
-                            ) // Filter logs that start with "Operation"
+                                log => log.log_name !== 'user_details_access',
+                            )
                             .sort(
                                 (a, b) =>
                                     new Date(b.created_at) -

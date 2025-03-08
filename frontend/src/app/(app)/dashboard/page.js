@@ -58,7 +58,7 @@ const Dashboard = () => {
                         {roleId === 1 && <CreateOperation onOperationCreated={handleOperationCreated} />}
                         <ListOperations />
                         {user && <AuditLogs user={user} />}
-                        {/* {user && <Notification user={user} />} */}
+                        {user && <Notification user={user} />}
                     </>
                 )}
             </div>

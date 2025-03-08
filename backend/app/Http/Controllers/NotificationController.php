@@ -32,38 +32,37 @@ class NotificationController extends Controller
     public function getActivityLogs(User $user)
     {
         if ($user->role_id == 1) {
-            return DB::select('SELECT * FROM activity_log WHERE user_id = ? AND log_name LIKE "Operation%" ', [$user->id]);
-        } 
-        elseif ($user->role_id == 2) {
-            return DB::select('
-                (SELECT * FROM activity_log 
-                WHERE user_id =(
-                SELECT id
-                FROM users 
-                WHERE id IN (
-                    SELECT parent_id
-                    FROM users 
-                    WHERE id=?
-                ) )AND log_name LIKE "Operation%") 
-            ', [$user->id]);
+            return DB::select(
+                'SELECT * FROM activity_log WHERE user_id = ? AND log_name LIKE \'Operation%\' ',
+                [$user->id]
+            );
+        } elseif ($user->role_id == 2) {
+            return DB::select(
+                'SELECT * FROM activity_log 
+             WHERE user_id = (
+                 SELECT parent_id
+                 FROM users 
+                 WHERE id = ?
+             ) 
+             AND log_name LIKE \'Operation%\'',
+                [$user->id]
+            );
         } else {
-            return DB::select('
-                SELECT * 
-                FROM activity_log 
-                WHERE user_id = ? AND log_name LIKE "Operation%" 
-                UNION
-                SELECT * 
-                FROM activity_log 
-                WHERE user_id IN (
-                    SELECT id 
-                    FROM users 
-                    WHERE parent_id = ?
-                ) AND log_name LIKE "Operation%"  -- Logs created by Manager
-                UNION
-                SELECT * 
-                FROM activity_log 
-                WHERE user_id = ? AND log_name LIKE "Operation%"  -- Logs created by Admin
-            ', [$user->id, $user->id, $user->id]);
+            return DB::select(
+                'SELECT * 
+             FROM activity_log 
+             WHERE user_id IN ( 
+                 SELECT parent_id 
+                 FROM users 
+                 WHERE id IN (
+                     SELECT parent_id 
+                     FROM users 
+                     WHERE id =?
+                 )
+             ) 
+             AND log_name LIKE \'Operation%\'',
+                [$user->id]
+            );
         }
     }
 }
