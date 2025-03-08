@@ -2,15 +2,23 @@
 import Image from 'next/image';
 import { Button } from '@/components/ui/button';
 import { motion } from 'framer-motion';
+import { useRouter } from 'next/navigation';
 
 export default function Home() {
+  
+  const router = useRouter(); 
+
+  const handleClick = () => {
+    router.push('/login'); };
+
+  
   return (
     <div className="bg-gray-100 text-gray-900 min-h-screen">
       {/* Hero Section */}
       <section className="relative h-screen flex flex-col items-center justify-center text-center">
         <div className="absolute inset-0">
           <video className="w-full h-full object-cover" autoPlay loop muted>
-            <source src="/Military.mp4" type="video/mp4" />
+            <source src="/Military1.mp4" type="video/mp4" />
             Your browser does not support the video tag.
           </video>
           <div className="absolute inset-0 bg-black bg-opacity-50" />
@@ -29,7 +37,7 @@ export default function Home() {
             Preparing the next generation of warriors with cutting-edge military
             training.
           </p>
-          <Button className="mt-6 bg-blue-500 hover:bg-blue-600 text-white px-6 py-3 rounded-xl shadow-lg">
+          <Button onClick={handleClick} className="mt-6 bg-blue-500 hover:bg-blue-600 text-white px-6 py-3 rounded-xl shadow-lg">
             Enroll Now
           </Button>
         </motion.div>
@@ -175,10 +183,10 @@ export default function Home() {
       {/* CTA Section */}
       <section className="py-20 bg-blue-900 text-white text-center">
         <h2 className="text-4xl font-bold">Ready to Join?</h2>
-        <p className="mt-4 text-lg">
+        <p className="mt-4 text-lg" >
           Sign up today and become part of the elite.
         </p>
-        <Button className="mt-6 bg-white text-blue-600 px-6 py-3 rounded-xl shadow-lg hover:bg-gray-200">
+        <Button onClick={handleClick} className="mt-6 bg-white text-blue-600 px-6 py-3 rounded-xl shadow-lg hover:bg-gray-200">
           Get Started
         </Button>
       </section>
