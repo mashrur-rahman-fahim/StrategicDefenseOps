@@ -45,7 +45,11 @@ export default function ViewRoles() {
                                         Manager:{' '}
                                         {managerGroup.manager?.name ||
                                             'Unknown'}
+                                        <div></div>
+                                        Email :{' '}
+                                        {managerGroup.manager?.email || 'Unknown'}
                                     </div>
+                                   
                                     <div className="card-body">
                                         <h5>Operators:</h5>
                                         <ul className="list-group">
@@ -59,6 +63,8 @@ export default function ViewRoles() {
                                                             className="list-group-item"
                                                         >
                                                             {operator.name}
+                                                            <div></div>
+                                                            {operator.email}
                                                         </li>
                                                     )
                                                 )
@@ -80,6 +86,8 @@ export default function ViewRoles() {
                                                             className="list-group-item"
                                                         >
                                                             {viewer.name}
+                                                            <div></div>
+                                                            {viewer.email}
                                                         </li>
                                                     )
                                                 )
@@ -110,6 +118,9 @@ export default function ViewRoles() {
                                 {(rolesData.admin &&
                                     rolesData.admin[1]?.name) ||
                                     'Unknown'}
+                                    <div></div>
+                                    Email :{' '}
+                                    {rolesData.admin && rolesData.admin[1]?.email || 'Unknown'}
                             </div>
                             <div className="card-body">
                                 <h5>Operators:</h5>
@@ -123,6 +134,8 @@ export default function ViewRoles() {
                                                     className="list-group-item"
                                                 >
                                                     {operator.name}
+                                                    <div></div>
+                                                    {operator.email}
                                                 </li>
                                             )
                                         )
@@ -143,6 +156,8 @@ export default function ViewRoles() {
                                                     className="list-group-item"
                                                 >
                                                     {viewer.name}
+                                                    <div></div>
+                                                    {viewer.email}
                                                 </li>
                                             )
                                         )
@@ -170,6 +185,8 @@ export default function ViewRoles() {
                                 {(rolesData.manager &&
                                     rolesData.manager[1]?.name) ||
                                     'Unknown'}
+                                    <div></div>
+                                    {rolesData.manager && rolesData.manager[1]?.email || 'Unknown'}
                             </div>
                             <div className="card-body">
                                 <h5>Admin:</h5>
@@ -178,6 +195,8 @@ export default function ViewRoles() {
                                         {(rolesData.admin &&
                                             rolesData.admin[1]?.name) ||
                                             'Unknown'}
+                                            <div></div>
+                                            {rolesData.admin && rolesData.admin[1]?.email || 'Unknown'}
                                     </li>
                                 </ul>
                             </div>
