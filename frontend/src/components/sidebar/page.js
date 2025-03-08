@@ -103,7 +103,9 @@ const Sidebar = ({ isOpen, toggleSidebar, selectedItem, handleNavigation, menuBu
 
             {/* Menu items */}
             <nav className="menu">
-                {["Dashboard", "Resources", "Operation", "Reports", "AuditLog", "Notifications", "Chatbot"].map(
+
+                {["Dashboard", "Resources", "Operation", "Reports", "AuditLog", "Notifications", "Chatbot","Aboutus",].map(
+
                     (item) => (
                         <div
                             key={item}
