@@ -7,6 +7,7 @@ import { useAuth } from "@/hooks/auth";
 import Loading from "./Loading";
 import { Toaster } from "sonner";
 
+
 export default function Layout({ children }) {
     const { user } = useAuth({ middleware: "auth" });
     const [isSidebarOpen, setIsSidebarOpen] = useState(false);
@@ -25,6 +26,7 @@ export default function Layout({ children }) {
             "/auditlog" : "auditlog",
             "/notifications" : "notifications",
             "/landingpage" : "landingpage",
+            "/aboutus" : "aboutus",
         };
         setSelectedItem(routeToItemMap[pathname] || "");
     }, [pathname]);
@@ -47,6 +49,7 @@ export default function Layout({ children }) {
             auditlog: "/auditlog",
             notifications : "/notifications",
             landingpage : "/landingpage",
+            aboutus : "/aboutus",
         };
 
         const route = routes[item.toLowerCase()];
