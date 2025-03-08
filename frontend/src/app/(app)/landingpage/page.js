@@ -46,7 +46,7 @@ export default function Home() {
               initial={{ opacity: 0, y: 50 }}
               whileInView={{ opacity: 1, y: 0 }}
               transition={{ duration: 1 }}
-              viewport={{ once: true }}
+              viewport={{ once: false }}
               className="flex flex-col md:flex-row items-center bg-white shadow-md rounded-lg overflow-hidden"
             >
               <div className="relative w-full h-64 md:h-80 lg:h-96">
@@ -81,7 +81,7 @@ export default function Home() {
               initial={{ opacity: 0, y: 50 }}
               whileInView={{ opacity: 1, y: 0 }}
               transition={{ duration: 1.2 }}
-              viewport={{ once: true }}
+              viewport={{ once: false }}
               className="flex flex-col md:flex-row items-center bg-white shadow-md rounded-lg overflow-hidden"
             >
               <div className="relative w-full h-64 md:h-80 lg:h-96">
