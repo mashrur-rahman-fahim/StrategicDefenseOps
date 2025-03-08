@@ -73,7 +73,7 @@ const Page = () => {
                 <div className="absolute inset-0 bg-gradient-to-r from-black/70 via-transparent to-black/30" />
                 <div
                     className="absolute inset-0 bg-cover bg-center"
-                    style={{ backgroundImage: `url('/forgot1.jpg')` }}
+                    style={{ backgroundImage: `url('https://res.cloudinary.com/dv97iagt7/image/upload/v1741466583/forgot1_c5zbz0.jpg')` }}
                 />
             </div>
         </div>
