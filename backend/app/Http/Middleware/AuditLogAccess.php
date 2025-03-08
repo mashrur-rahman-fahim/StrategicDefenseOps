@@ -83,7 +83,12 @@ class AuditLogAccess
                 )
             ', [$user->id, $user->id]);
         } else {
-
+            // Operator or Viewer can only view their own logs
+            return DB::select('
+                SELECT * 
+                FROM activity_log 
+                WHERE user_id = ?
+            ', [$user->id]);
         }
     }
 }
