@@ -6,11 +6,21 @@ const Navbar = ({ toggleSidebar, logout }) => {
     const [isDropdownOpen, setDropdownOpen] = useState(false)
     const [showLogoutPrompt, setShowLogoutPrompt] = useState(false)
     const [isLoggingOut, setIsLoggingOut] = useState(false)
-    const menuButtonRef = useRef(null) // Ref for the "three dots" button
+    const menuButtonRef = useRef(null) // Ref for the "Notifications" button
+    const dropdownRef = useRef(null) // Ref for the dropdown menu
+
+    const [dropdownPosition, setDropdownPosition] = useState({ top: 0, left: 0 })
 
     useEffect(() => {
-        setDropdownOpen(false)
-    }, [])
+        // Update the dropdown position when the button is clicked
+        if (menuButtonRef.current && isDropdownOpen) {
+            const rect = menuButtonRef.current.getBoundingClientRect()
+            setDropdownPosition({
+                top: rect.bottom, // position below the button
+                left: rect.left,  // align with the button horizontally
+            })
+        }
+    }, [isDropdownOpen]) // Recalculate the position when the dropdown opens
 
     const handleLogoutClick = () => setShowLogoutPrompt(true)
     const handleCancelLogout = () => setShowLogoutPrompt(false)
@@ -40,6 +50,7 @@ const Navbar = ({ toggleSidebar, logout }) => {
                 <div className="flex items-center space-x-4">
                     {/* Notifications dropdown button */}
                     <button
+                        ref={menuButtonRef}
                         className="bg-white text-gray-700 border border-gray-300 px-5 py-2 rounded-lg transition-colors duration-300 ease-in-out hover:bg-black hover:text-gray-700 dropdown-hover-effect"
                         onClick={() => setDropdownOpen(!isDropdownOpen)}>
                         Notifications
@@ -47,7 +58,14 @@ const Navbar = ({ toggleSidebar, logout }) => {
 
                     {/* Notification dropdown menu */}
                     {isDropdownOpen && (
-                        <div className="absolute top-16 right-6 bg-white border border-gray-300 rounded-lg shadow-lg p-4 w-48">
+                        <div
+                            ref={dropdownRef}
+                            className="absolute bg-white border border-gray-300 rounded-lg shadow-lg p-4 w-48"
+                            style={{
+                                top: `${dropdownPosition.top}px`,
+                                left: `${dropdownPosition.left}px`,
+                            }}
+                        >
                             <p className="text-sm text-gray-700">
                                 Notification 1
                             </p>
