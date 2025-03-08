@@ -6,8 +6,11 @@ const Navbar = ({ toggleSidebar, logout }) => {
     const [isDropdownOpen, setDropdownOpen] = useState(false)
     const [showLogoutPrompt, setShowLogoutPrompt] = useState(false)
     const [isLoggingOut, setIsLoggingOut] = useState(false)
-    const menuButtonRef = useRef(null) // Ref for the "Notifications" button
-    const dropdownRef = useRef(null) // Ref for the dropdown menu
+
+    const sidebarButtonRef = useRef(null) // Ref for sidebar toggle
+    const menuButtonRef = useRef(null) // Ref for Notifications button
+    const dropdownRef = useRef(null) // Ref for dropdown menu
+    const sidebarRef = useRef(null) // Assuming there's a sidebar element
 
     const [dropdownPosition, setDropdownPosition] = useState({ top: 0, left: 0 })
 
@@ -21,6 +24,23 @@ const Navbar = ({ toggleSidebar, logout }) => {
             })
         }
     }, [isDropdownOpen]) // Recalculate the position when the dropdown opens
+
+    useEffect(() => {
+        const handleClickOutside = (event) => {
+            if (
+                sidebarRef.current &&
+                !sidebarRef.current.contains(event.target) &&
+                menuButtonRef.current && // Ensure menuButtonRef is not null
+                !menuButtonRef.current.contains(event.target) // Check only if menuButtonRef.current exists
+            ) {
+                toggleSidebar()
+            }
+        }
+    
+        document.addEventListener('click', handleClickOutside)
+        return () => document.removeEventListener('click', handleClickOutside)
+    }, [toggleSidebar])
+    
 
     const handleLogoutClick = () => setShowLogoutPrompt(true)
     const handleCancelLogout = () => setShowLogoutPrompt(false)
@@ -36,7 +56,7 @@ const Navbar = ({ toggleSidebar, logout }) => {
                 {/* Left section with sidebar toggle */}
                 <div className="flex items-center space-x-4">
                     <button
-                        ref={menuButtonRef}
+                        ref={sidebarButtonRef}
                         className="text-2xl text-gray-600 hover:text-black focus:outline-none"
                         onClick={toggleSidebar}>
                         ☰
