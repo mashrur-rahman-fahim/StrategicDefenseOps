@@ -155,6 +155,7 @@ Now, generate the report in a short, structured format";
         $report=DB::selectOne('select * from reports where operation_id=? ',[$operationId]);
         if(!$report){return false;}
         $report=Report::find($report->id);
+    
         $response=$report->update($data);
         if(!$response){
             return false;

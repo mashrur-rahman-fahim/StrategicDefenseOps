@@ -107,7 +107,7 @@ class ReportController extends Controller
         if (!$user || $user->role_id > 2) {
             return response()->json(['error' => 'Unauthorized'], 403);
         }
-        $report=$this->reportService->editReport($operationId,$data);
+        $report=$this->reportService->editReport($data,$operationId);
         if($report){
             return response()->json($report,200);
         }
