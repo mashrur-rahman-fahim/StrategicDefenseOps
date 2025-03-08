@@ -177,3 +177,7 @@
         font-size: 16px;
     }
 }
+
+.modal-footer .btn {
+    margin: 0 5px;
+}

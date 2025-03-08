@@ -6,7 +6,13 @@ import { Icon } from "@iconify/react";
 import { Modal, Form, Button } from "react-bootstrap";
 import { toast } from "sonner";
 
-const Sidebar = ({ isOpen, toggleSidebar, selectedItem, handleNavigation, menuButtonRef }) => {
+const Sidebar = ({
+    isOpen,
+    toggleSidebar,
+    selectedItem,
+    handleNavigation,
+    menuButtonRef,
+}) => {
     const sidebarRef = useRef();
     const [userName, setUserName] = useState("Error");
     const [userEmail, setUserEmail] = useState("");
@@ -61,7 +67,22 @@ const Sidebar = ({ isOpen, toggleSidebar, selectedItem, handleNavigation, menuBu
     const handleEditProfile = () => {
         setTempName(userName);
         setShowModal(true);
-    }
+    };
+
+    const handleDeleteProfile = async () => {
+        if (window.confirm('This will permanently delete your account! Are you sure you want to proceed?')) {
+            try {
+                setLoading(true);
+                await axios.delete('/api/delete-profile')
+                console.log('Profile bombed')
+            } catch (error) {
+                console.error('Error: ', error)
+                toast.error('Failed to delete profile')
+            } finally {
+                setLoading(false);
+            }
+        }
+    };
 
     // Handle form submission
     const handleSaveChanges = async () => {
@@ -103,20 +124,27 @@ const Sidebar = ({ isOpen, toggleSidebar, selectedItem, handleNavigation, menuBu
 
             {/* Menu items */}
             <nav className="menu">
-                {["Dashboard", "Resources", "Operation", "Reports", "AuditLog", "Notifications", "Chatbot", "LandingPage"].map(
-                    (item) => (
-                        <div
-                            key={item}
-                            className={`menu-item ${selectedItem === item.toLowerCase() ? "active" : ""}`}
-                            onClick={() => {
-                                handleNavigation(item.toLowerCase());
-                                toggleSidebar(); // Close the sidebar after navigation
-                            }}
-                        >
-                            {item}
-                        </div>
-                    ),
-                )}
+                {[
+                    "Dashboard",
+                    "Resources",
+                    "Operation",
+                    "Reports",
+                    "AuditLog",
+                    "Notifications",
+                    "Chatbot",
+                    "LandingPage",
+                ].map((item) => (
+                    <div
+                        key={item}
+                        className={`menu-item ${selectedItem === item.toLowerCase() ? "active" : ""}`}
+                        onClick={() => {
+                            handleNavigation(item.toLowerCase());
+                            toggleSidebar(); // Close the sidebar after navigation
+                        }}
+                    >
+                        {item}
+                    </div>
+                ))}
             </nav>
 
             {/* Modal for Editing Profile */}
@@ -137,19 +165,32 @@ const Sidebar = ({ isOpen, toggleSidebar, selectedItem, handleNavigation, menuBu
                     </Form>
                 </Modal.Body>
                 <Modal.Footer>
-                    <Button
-                        variant="secondary"
-                        onClick={() => setShowModal(false)}
-                    >
-                        Close
-                    </Button>
-                    <Button variant="primary" onClick={handleSaveChanges}>
-                        {loading ? "Saving..." : "Save Changes"}
-                    </Button>
+                    <div className="d-flex justify-content-between w-100">
+                        <Button
+                            variant="danger"
+                            onClick={handleDeleteProfile}
+                        >
+                            {loading ? "Deleting..." : "Delete Profile"}
+                        </Button>
+                        <div>
+                            <Button
+                                variant="secondary"
+                                onClick={() => setShowModal(false)}
+                            >
+                                Close
+                            </Button>
+                            <Button
+                                variant="primary"
+                                onClick={handleSaveChanges}
+                            >
+                                {loading ? "Saving..." : "Save Changes"}
+                            </Button>
+                        </div>
+                    </div>
                 </Modal.Footer>
             </Modal>
         </div>
     );
-}
+};
 
 export default Sidebar;
