@@ -9,6 +9,8 @@ class AuditLog extends Model
 {
     use HasFactory;
 
+    protected $table = 'activity_log'; 
+
     protected $fillable = ['user_id', 'action', 'details'];
 
     public function user()

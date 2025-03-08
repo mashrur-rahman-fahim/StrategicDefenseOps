@@ -6,7 +6,7 @@ import { Icon } from "@iconify/react";
 import { Modal, Form, Button } from "react-bootstrap";
 import { toast } from "sonner";
 
-const Sidebar = ({ isOpen, toggleSidebar, selectedItem, handleNavigation }) => {
+const Sidebar = ({ isOpen, toggleSidebar, selectedItem, handleNavigation, menuButtonRef }) => {
     const sidebarRef = useRef();
     const [userName, setUserName] = useState("Error");
     const [userEmail, setUserEmail] = useState("");
@@ -30,7 +30,7 @@ const Sidebar = ({ isOpen, toggleSidebar, selectedItem, handleNavigation }) => {
                 isOpen &&
                 sidebarRef.current &&
                 !sidebarRef.current.contains(event.target) &&
-                !menuButton.contains(event.target) // Exclude the "three dots" button
+                !menuButtonRef?.current?.contains(event.target) 
             ) {
                 toggleSidebar();
             }
@@ -39,8 +39,8 @@ const Sidebar = ({ isOpen, toggleSidebar, selectedItem, handleNavigation }) => {
         document.addEventListener("mousedown", handleClickOutside);
         return () => {
             document.removeEventListener("mousedown", handleClickOutside);
-        }
-    }, [isOpen, toggleSidebar]);
+        };
+    }, [isOpen, toggleSidebar, menuButtonRef]);
 
     useEffect(() => {
         const fetchUserDetails = async () => {
@@ -103,7 +103,7 @@ const Sidebar = ({ isOpen, toggleSidebar, selectedItem, handleNavigation }) => {
 
             {/* Menu items */}
             <nav className="menu">
-                {["Dashboard", "Resources", "Operation", "Reports"].map(
+                {["Dashboard", "Resources", "Operation", "Reports", "AuditLog", "Notifications", "Chatbot", "LandingPage"].map(
                     (item) => (
                         <div
                             key={item}
