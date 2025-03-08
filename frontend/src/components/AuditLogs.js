@@ -46,6 +46,11 @@ const AuditLogs = ({ user }) => {
                             .filter(
                                 log => log.log_name !== 'user_details_access',
                             )
+                            .sort(
+                                (a, b) =>
+                                    new Date(b.created_at) -
+                                    new Date(a.created_at),
+                            ) // Sorting by created_at
                             .map(log => (
                                 <tr key={log.id} className="border">
                                     <td className="p-2">{log.log_name}</td>
