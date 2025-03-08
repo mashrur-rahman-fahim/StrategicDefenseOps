@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react'
-import axios from '../lib/axios' 
+import axios from '../lib/axios'
 
 const AuditLogs = ({ user }) => {
     const [logs, setLogs] = useState([])
@@ -44,8 +44,10 @@ const AuditLogs = ({ user }) => {
                     <tbody>
                         {logs
                             .filter(
-                                log => log.log_name !== 'user_details_access',
-                            )
+                                log =>
+                                    log.log_name.startsWith('Operation') &&
+                                    log.log_name !== 'user_details_access',
+                            ) // Filter logs that start with "Operation"
                             .sort(
                                 (a, b) =>
                                     new Date(b.created_at) -
