@@ -137,17 +137,17 @@ export default function Home() {
         <div className="space-y-12">
           {[
             {
-              img: '/mission1.jpg',
+              img: 'https://res.cloudinary.com/dv97iagt7/image/upload/v1741467712/mission1_ua1cwd.jpg',
               title: 'Recon Missions',
               desc: 'Gather intelligence from high-risk areas.',
             },
             {
-              img: '/mission2.jpg',
+              img: 'https://res.cloudinary.com/dv97iagt7/image/upload/v1741467712/mission2_w9evse.jpg',
               title: 'Rescue Operations',
               desc: 'Save hostages and stranded soldiers in combat zones.',
             },
             {
-              img: '/mission3.jpg',
+              img: 'https://res.cloudinary.com/dv97iagt7/image/upload/v1741467714/mission3_oth5d5.jpg',
               title: 'Covert Ops',
               desc: 'Execute classified operations under deep cover.',
             },
