@@ -24,7 +24,7 @@ export default function Layout({ children }) {
             "/chatbot": "chatbot",
             "/auditlog" : "auditlog",
             "/notifications" : "notifications",
-            "/landingpage" : "landingpage",
+           
         };
         setSelectedItem(routeToItemMap[pathname] || "");
     }, [pathname]);
@@ -46,7 +46,7 @@ export default function Layout({ children }) {
             chatbot: "/chatbot",
             auditlog: "/auditlog",
             notifications : "/notifications",
-            landingpage : "/landingpage",
+           
         };
 
         const route = routes[item.toLowerCase()];
