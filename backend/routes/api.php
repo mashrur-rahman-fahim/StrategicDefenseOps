@@ -16,7 +16,8 @@ use App\Http\Controllers\VehicleController;
 use App\Http\Controllers\WeaponController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\AuditLogController;
-use App\Http\Middleware\AuditLogAccess;
+use App\Http\Controllers\NotificationController;
+
 
 /*
 |--------------------------------------------------------------------------
@@ -130,4 +131,8 @@ Route::delete('/delete-profile', [ProfileController::class, 'deleteProfile'])->m
 
 Route::middleware(['auth:sanctum', 'audit.log.access'])->group(function () {
     Route::get('/audit-logs/{id}', [AuditLogController::class, 'index']);
+});
+
+Route::middleware(['auth:sanctum', 'audit.log.access'])->group(function () {
+    Route::get('/notifications/{id}', [NotificationController::class, 'index']);
 });

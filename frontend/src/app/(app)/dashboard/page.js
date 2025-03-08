@@ -6,6 +6,7 @@ import ListOperations from '../../../components/ListOperations'
 import './dashboard.css'
 import Layout from '@/components/layout'
 import AuditLogs from '@/components/AuditLogs'
+import Notification from '@/components/Notification'
 
 
 const Dashboard = () => {
@@ -57,6 +58,7 @@ const Dashboard = () => {
                         {roleId === 1 && <CreateOperation onOperationCreated={handleOperationCreated} />}
                         <ListOperations />
                         {user && <AuditLogs user={user} />}
+                        {/* {user && <Notification user={user} />} */}
                     </>
                 )}
             </div>

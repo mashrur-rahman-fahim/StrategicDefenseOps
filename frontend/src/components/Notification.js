@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react'
 import axios from '../lib/axios'
 
-const AuditLogs = ({ user }) => {
+const Notification = ({ user }) => {
     const [logs, setLogs] = useState([])
     const [loading, setLoading] = useState(true)
     const [error, setError] = useState(null)
@@ -12,7 +12,7 @@ const AuditLogs = ({ user }) => {
         const fetchLogs = async () => {
             try {
                 const response = await axios.get(
-                    `${process.env.NEXT_PUBLIC_BACKEND_URL}/api/audit-logs/${user}`,
+                    `${process.env.NEXT_PUBLIC_BACKEND_URL}/api/notifications/${user}`,
                 )
                 setLogs(response.data)
             } catch (err) {
@@ -25,12 +25,12 @@ const AuditLogs = ({ user }) => {
         fetchLogs()
     }, [user])
 
-    if (loading) return <p>Loading audit logs...</p>
+    if (loading) return <p>Loading notifications...</p>
     if (error) return <p className="text-red-500">Error: {error}</p>
 
     return (
         <div className="p-4 bg-white shadow-md rounded-lg">
-            <h2 className="text-xl font-bold mb-4">Audit Logs</h2>
+            <h2 className="text-xl font-bold mb-4">Notifications</h2>
             {logs.length > 0 ? (
                 <table className="w-full border-collapse border border-gray-200">
                     <thead>
@@ -74,4 +74,4 @@ const AuditLogs = ({ user }) => {
     )
 }
 
-export default AuditLogs
+export default Notification
