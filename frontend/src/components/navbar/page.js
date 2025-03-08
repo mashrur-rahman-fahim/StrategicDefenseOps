@@ -1,4 +1,5 @@
 "use client";
+
 import React, { useState, useEffect, useRef } from "react";
 import "./navbar.css";
 import axios from "@/lib/axios";
@@ -11,6 +12,7 @@ const Navbar = ({ toggleSidebar, logout }) => {
     const [logs, setLogs] = useState([]);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
+    const [dropdownPosition, setDropdownPosition] = useState({ top: 0, left: 0 });
 
     const sidebarButtonRef = useRef(null);
     const menuButtonRef = useRef(null);
@@ -20,9 +22,7 @@ const Navbar = ({ toggleSidebar, logout }) => {
     useEffect(() => {
         const fetchUserDetails = async () => {
             try {
-                const response = await axios.get(
-                    `${process.env.NEXT_PUBLIC_BACKEND_URL}/api/user`,
-                );
+                const response = await axios.get(`${process.env.NEXT_PUBLIC_BACKEND_URL}/api/user`);
                 setUser(response.data.id || null);
             } catch (error) {
                 console.error("Error fetching user details:", error);
@@ -30,24 +30,19 @@ const Navbar = ({ toggleSidebar, logout }) => {
                 setLoading(false);
             }
         };
-
         fetchUserDetails();
     }, []);
 
     useEffect(() => {
-        if (!user) return; 
-    
+        if (!user) return;
+
         const fetchLogs = async () => {
             try {
-                const response = await axios.get(
-                    `${process.env.NEXT_PUBLIC_BACKEND_URL}/api/notifications/${user}`
-                );
-    
+                const response = await axios.get(`${process.env.NEXT_PUBLIC_BACKEND_URL}/api/notifications/${user}`);
                 const sortedLogs = response.data
-                    .filter(log => log.log_name !== 'user_details_access') 
+                    .filter(log => log.log_name !== "user_details_access")
                     .sort((a, b) => new Date(b.created_at) - new Date(a.created_at))
-                    .slice(0, 2); 
-    
+                    .slice(0, 2);
                 setLogs(sortedLogs);
             } catch (err) {
                 setError(err.response?.data?.error || "Failed to fetch logs");
@@ -55,34 +50,21 @@ const Navbar = ({ toggleSidebar, logout }) => {
                 setLoading(false);
             }
         };
-    
-        fetchLogs(); 
-    
-        const interval = setInterval(fetchLogs, 10000);
-    
-        return () => clearInterval(interval); 
-    }, [user]);
-    
-    
 
-    const [dropdownPosition, setDropdownPosition] = useState({
-        top: 0,
-        left: 0,
-    });
+        fetchLogs();
+        const interval = setInterval(fetchLogs, 10000);
+        return () => clearInterval(interval);
+    }, [user]);
 
     useEffect(() => {
         if (menuButtonRef.current && isDropdownOpen) {
             const rect = menuButtonRef.current.getBoundingClientRect();
-            setDropdownPosition({
-                top: rect.bottom,
-                left: rect.left,
-            });
+            setDropdownPosition({ top: rect.bottom, left: rect.left });
         }
     }, [isDropdownOpen]);
 
     const handleLogoutClick = () => setShowLogoutPrompt(true);
     const handleCancelLogout = () => setShowLogoutPrompt(false);
-
     const handleConfirmLogout = () => {
         setIsLoggingOut(true);
         logout();
@@ -99,61 +81,43 @@ const Navbar = ({ toggleSidebar, logout }) => {
                     >
                         ☰
                     </button>
-                    <h1 className="text-xl font-semibold text-gray-800">
-                        StrategicDefenseOps
-                    </h1>
+                    <h1 className="text-xl font-semibold text-gray-800">StrategicDefenseOps</h1>
                 </div>
-
                 <div className="flex items-center space-x-4">
                     <button
                         ref={menuButtonRef}
-                        className="bg-white text-gray-700 border border-gray-300 px-5 py-2 rounded-lg transition-colors duration-300 ease-in-out hover:bg-black hover:text-gray-700 dropdown-hover-effect"
+                        className="bg-white text-gray-700 border border-gray-300 px-5 py-2 rounded-lg transition-colors duration-300 ease-in-out hover:bg-black hover:text-gray-700"
                         onClick={() => setDropdownOpen(!isDropdownOpen)}
                     >
                         Notifications
                     </button>
-
                     {isDropdownOpen && (
                         <div
                             ref={dropdownRef}
                             className="absolute bg-white border border-gray-300 rounded-lg shadow-lg p-4 w-48"
-                            style={{
-                                top: `${dropdownPosition.top}px`,
-                                left: `${dropdownPosition.left}px`,
-                            }}
+                            style={{ top: `${dropdownPosition.top}px`, left: `${dropdownPosition.left}px` }}
                         >
                             {logs.length > 0 ? (
                                 logs.map((log, index) => (
-                                    <p
-                                        key={index}
-                                        className="text-sm text-gray-700"
-                                    >
-                                        {log.description}
-                                    </p>
+                                    <p key={index} className="text-sm text-gray-700">{log.description}</p>
                                 ))
                             ) : (
-                                <p className="text-sm text-gray-500">
-                                    No notifications
-                                </p>
+                                <p className="text-sm text-gray-500">No notifications</p>
                             )}
                         </div>
                     )}
-
                     <button
-                        className="bg-white text-gray-700 border border-gray-300 px-5 py-2 rounded-lg transition-colors duration-300 ease-in-out hover:bg-black hover:text-gray-700 custom-hover-effect"
+                        className="bg-white text-gray-700 border border-gray-300 px-5 py-2 rounded-lg transition-colors duration-300 ease-in-out hover:bg-black hover:text-gray-700"
                         onClick={handleLogoutClick}
                     >
                         LogOut
                     </button>
                 </div>
             </nav>
-
             {showLogoutPrompt && (
                 <div className="fixed inset-0 bg-gray-600 bg-opacity-50 flex justify-center items-center z-50">
                     <div className="bg-white p-6 rounded-lg shadow-lg max-w-sm w-full text-center">
-                        <p className="text-lg text-gray-800">
-                            Are you sure you want to log out?
-                        </p>
+                        <p className="text-lg text-gray-800">Are you sure you want to log out?</p>
                         <div className="flex justify-center space-x-4 mt-4">
                             <button
                                 onClick={handleConfirmLogout}
