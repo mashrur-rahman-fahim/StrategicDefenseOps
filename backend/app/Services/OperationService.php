@@ -88,35 +88,40 @@ class OperationService
             return [count($operations), $operations];
         } elseif (($user->role_id == 3 || $user->role_id == 4) && $user->parent_id != null) {
             $user = User::find($user->parent_id);
+            if($user->parent_id==null){
+                return [0,[]];
+            }
             $user = User::find($user->parent_id);
             $operations = DB::select('select * from operations o where o.created_by=? ', [$user->id]);
 
             return [count($operations), $operations];
         } else {
-            return null;
+            return [0,[]];
         }
     }
 
     public function searchByName($name, $userId)
     {
-        $user = User::find($userId);
-        $adminId = null;
-        if ($user->role_id == 3 || $user->role_id == 4) {
+        $user = User::where('id', $userId)->first();
+        if ($user->role_id == 2 && $user->parent_id != null) {
             $user = User::find($user->parent_id);
-            $user = User::find($user->parent_id);
-            $adminId = $user->id;
+            $userId = $user->id;
         }
-        $operations = DB::table('operations as o')
-            ->join('users as u', 'u.id', '=', 'o.created_by')
-            ->select('o.*', 'o.name as operation_name', 'u.*', 'u.name as user_name')
-            ->where(function ($query) use ($userId, $adminId) {
-                $query->where('u.parent_id', $userId)
-                    ->orWhere('u.id', $userId)
-                    ->orWhere('u.id', $adminId);
-            })
-            ->where('o.name', 'LIKE', '%'.$name.'%')->get();
+        if ($user->role_id == 1 || ($user->parent_id == $userId && $user->role_id == 2)) {
+            $operations = DB::select('select * from operations o where o.created_by=? and name Like  ?', [$userId,'%'.$name.'%']);
 
-        return [count($operations), $operations];
+            return [count($operations), $operations];
+        } elseif (($user->role_id == 3 || $user->role_id == 4) && $user->parent_id != null) {
+            $user = User::find($user->parent_id);
+            $user = User::find($user->parent_id);
+            $operations = DB::select('select * from operations o where o.created_by=? and name Like  ?', [$userId,'%'.$name.'%']);
+
+            return [count($operations), $operations];
+        } else {
+            return null;
+        }
+
+        
     }
 
     public function getOperationById($id)

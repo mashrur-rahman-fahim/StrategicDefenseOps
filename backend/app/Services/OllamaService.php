@@ -11,92 +11,75 @@ class OllamaService
 
     public function __construct()
     {
+        set_time_limit(500);
         $this->client = new Client([
-            'timeout' => 120,
-            'connect_timeout' => 120,
+
         ]);
     }
 
-    public function generateResponse(string $prompt)
+    public function generateResponse(string $prompt): \Generator
     {
-
+        set_time_limit(500);
         try {
             $response = $this->client->post('https://rdl84gw0-11434.asse.devtunnels.ms/api/generate', [
                 'json' => [
-                    'model' => 'deepseek-r1:1.5b',
+                    'model' => 'llama3.2:1b',
                     'prompt' => $prompt,
-                    'stream' => true, // Set to true if you want streamed responses
-                    'options' => [
-                        'temperature' => 0.5,
-                        'top_p' => 0.7,
-                        'min_p' => 0.1,
-                        'repeat_last_n' => 64,
-                        'repeat_penalty' => 1.5,
-                        'num_batch' => 4,
-                        'num_gpu' => 1,
-                        'main_gpu' => 0,
-                        'low_vram' => true,
-                        'use_mmap' => true,
-                        'num_thread' => 12,
-                    ],
+                    'stream' => false,
+                    'options' => ['temperature' => 0.6],
                 ],
-
+                // Ensure streaming response
             ]);
 
-            $body = $response->getBody();
-            yield from $this->processStream($body);
-
+            foreach ($this->streamResponse($response->getBody()) as $chunk) {
+                yield $chunk;
+            }
         } catch (\Exception $e) {
-            \Log::error('Ollama API Error: '.$e->getMessage());
+            \Log::error('Ollama API Error: ' . $e->getMessage());
             yield '**Error:** Unable to generate a response.';
+
         }
     }
 
-    private function processStream(StreamInterface $body): \Generator
+    private function streamResponse(StreamInterface $body): \Generator
     {
-        $buffer = ''; // Buffer to handle incomplete JSON objects
+        set_time_limit(500);
+        $buffer = '';
 
-        while (! $body->eof()) {
-            $chunk = $body->read(1024); // Read 1024 bytes at a time
-            $buffer .= $chunk; // Append chunk to buffer
+        while (!$body->eof()) {
+            $buffer .= $body->read(1024);
 
-            // Split the buffer into lines
-            $lines = explode("\n", $buffer);
-            $buffer = array_pop($lines); // Keep the last (possibly incomplete) line in the buffer
+            // Split by newlines while preserving buffer
+            while (($pos = strpos($buffer, "\n")) !== false) {
+                $line = substr($buffer, 0, $pos);
+                $buffer = substr($buffer, $pos + 1);
 
-            foreach ($lines as $line) {
-                $json = json_decode(trim($line), true);
-                if (json_last_error() !== JSON_ERROR_NONE) {
-                    continue; // Skip invalid JSON
-                }
-
-                if (! empty($json['response'])) {
-                    // Clean the response: Remove unwanted tags and fix LaTeX formatting
-                    $cleanedResponse = $this->cleanResponse($json['response']);
-                    yield $cleanedResponse; // Yield the cleaned response text
-                }
-
-                if (! empty($json['done'])) {
-                    return; // Stop processing when done
+                if (!empty(trim($line))) {
+                    $json = json_decode(trim($line), true);
+                    if (json_last_error() === JSON_ERROR_NONE && isset($json['response'])) {
+                        yield $this->cleanResponse($json['response']);
+                    }
                 }
             }
         }
 
-        // Process any remaining data in the buffer
-        if (! empty($buffer)) {
+        // Process remaining buffer
+        if (!empty(trim($buffer))) {
             $json = json_decode(trim($buffer), true);
-            if (json_last_error() === JSON_ERROR_NONE && ! empty($json['response'])) {
-                $cleanedResponse = $this->cleanResponse($json['response']);
-                yield $cleanedResponse;
+            if (json_last_error() === JSON_ERROR_NONE && isset($json['response'])) {
+                yield $this->cleanResponse($json['response']);
             }
         }
     }
-
     private function cleanResponse(string $response): string
     {
-        // Remove unwanted tags like <think></think>
+        // Remove everything between <think> and </think>, including the tags
+        $response = preg_replace('/<think>.*?<\/think>/s', '', $response);
+    
+        // Remove any standalone <think> or </think> tags
         $response = str_replace(['<think>', '</think>'], '', $response);
-
+    
         return trim($response);
     }
+    
 }

@@ -1,56 +1,66 @@
-'use client'
+'use client';
 
-import { useState, useEffect } from 'react'
-import Link from 'next/link'
-import { useAuth } from '@/hooks/auth'
-import { useRouter } from 'next/navigation'
-import AuthSessionStatus from '@/app/(auth)/AuthSessionStatus'
+import { useState, useEffect } from 'react';
+import Link from 'next/link';
+import { useAuth } from '@/hooks/auth';
+import { useRouter } from 'next/navigation';
+import AuthSessionStatus from '@/app/(auth)/AuthSessionStatus';
+import { FiHome } from 'react-icons/fi';
 
 const Login = () => {
-    const router = useRouter()
+    const router = useRouter();
     const { login } = useAuth({
         middleware: 'guest',
         redirectIfAuthenticated: '/dashboard',
-    })
+    });
 
-    const [email, setEmail] = useState('')
-    const [password, setPassword] = useState('')
-    const [shouldRemember, setShouldRemember] = useState(false)
-    const [errors, setErrors] = useState([])
-    const [status, setStatus] = useState(null)
-    const [showPassword, setShowPassword] = useState(false)
+    const [email, setEmail] = useState('');
+    const [password, setPassword] = useState('');
+    const [shouldRemember, setShouldRemember] = useState(false);
+    const [errors, setErrors] = useState([]);
+    const [status, setStatus] = useState(null);
+    const [showPassword, setShowPassword] = useState(false);
 
     useEffect(() => {
         if (router.reset?.length > 0 && errors.length === 0) {
-            setStatus(atob(router.reset))
+            setStatus(atob(router.reset));
         } else {
-            setStatus(null)
+            setStatus(null);
         }
-    }, [router.reset, errors])
+    }, [router.reset, errors]);
 
-    const submitForm = async event => {
-        event.preventDefault()
+    const submitForm = async (event) => {
+        event.preventDefault();
         login({
             email,
             password,
             remember: shouldRemember,
             setErrors,
             setStatus,
-        })
+        });
     }
 
     const handleGoogleLogin = async () => {
         try {
-            window.location.href = `http://127.0.0.1:8000/auth/google`
+            window.location.href = `http://127.0.0.1:8000/auth/google`;
         } catch (error) {
-            console.error('Google login error:', error)
+            console.error('Google login error:', error);
         }
-    }
+    };
 
     return (
         <div className="flex h-screen w-screen">
             {/* Left Side - Form */}
-            <div className="flex-1 bg-[#446158] flex items-center justify-center p-6 md:p-10 rounded-r-xl">
+            <div className="flex-1 bg-[#446158] flex items-center justify-center p-6 md:p-10 rounded-r-xl relative">
+                {/* Home Navigation Icon */}
+                <Link 
+                    href="/" 
+                    className="absolute top-4 left-4 text-white hover:text-gray-200 transition-colors"
+                    title="Return to Home"
+                >
+                    <FiHome className="w-8 h-8" />
+                </Link>
+
                 <div className="w-full max-w-lg">
                     <h2 className="text-4xl font-bold text-black font-[Stencil] text-center">
                         LOGIN
@@ -63,7 +73,7 @@ const Login = () => {
                             placeholder="E-mail"
                             className="w-full px-4 py-2 rounded-md border border-gray-600 mb-3 bg-white text-black placeholder-gray-500"
                             value={email}
-                            onChange={e => setEmail(e.target.value)}
+                            onChange={(e) => setEmail(e.target.value)}
                             autoComplete="email"
                             required
                         />
@@ -78,13 +88,14 @@ const Login = () => {
                                 placeholder="Password"
                                 className="w-full px-4 py-2 rounded-md border border-gray-600 mb-3 bg-white text-black placeholder-gray-500"
                                 value={password}
-                                onChange={e => setPassword(e.target.value)}
+                                onChange={(e) => setPassword(e.target.value)}
                                 required
                             />
                             <button
                                 type="button"
                                 className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-700"
-                                onClick={() => setShowPassword(!showPassword)}>
+                                onClick={() => setShowPassword(!showPassword)}
+                            >
                                 {showPassword ? '👁️' : '🙈'}
                             </button>
                         </div>
@@ -93,10 +104,11 @@ const Login = () => {
                         )}
 
                         {/* Forgot Password */}
-                        <div className="text-right mt-3  ">
+                        <div className="text-right mt-3">
                             <Link
                                 href="/forgot-password"
-                                className="text-white underline">
+                                className="text-white underline"
+                            >
                                 Forgot your password?
                             </Link>
                         </div>
@@ -105,13 +117,14 @@ const Login = () => {
                         <div className="block mt-4">
                             <label
                                 htmlFor="remember_me"
-                                className="inline-flex items-center">
+                                className="inline-flex items-center"
+                            >
                                 <input
                                     id="remember_me"
                                     type="checkbox"
                                     name="remember"
                                     className="rounded border-gray-300 text-indigo-600 shadow-sm"
-                                    onChange={e =>
+                                    onChange={(e) =>
                                         setShouldRemember(e.target.checked)
                                     }
                                 />
@@ -127,24 +140,27 @@ const Login = () => {
                         </button>
 
                         {/* OR Divider */}
-                        <div className="text-center text-white my-3 font-bold">
+                        {/* <div className="text-center text-white my-3 font-bold">
                             or
-                        </div>
+                        </div> */}
 
                         {/* Google Button */}
-                        <button
+                        {/* <button
                             onClick={handleGoogleLogin}
-                            className="w-full bg-black text-white py-2 rounded-md font-bold">
+                            className="w-full bg-black text-white py-2 rounded-md font-bold"
+                        >
                             Continue with Google
-                        </button>
+                        </button> */}
 
                         {/* Don't have an account? */}
                         <p className="text-center mt-3">
-                            <Link href="/register" className="text-white underline">
+                            <Link
+                                href="/register"
+                                className="text-white underline"
+                            >
                                 Don't have an account?
                             </Link>
                         </p>
-                        
                     </form>
                 </div>
             </div>
@@ -155,13 +171,14 @@ const Login = () => {
                 <div
                     className="absolute inset-0 bg-cover bg-center"
                     style={{
-                        backgroundImage: `url('/login1.jpg')`,
+                        backgroundImage: `url('https://res.cloudinary.com/dv97iagt7/image/upload/v1741465703/login1_xtyatb.jpg')`,
                         backgroundSize: 'cover',
                         backgroundPosition: 'center',
-                    }} />
+                    }}
+                />
             </div>
         </div>
-    )
+    );
 }
 
-export default Login
+export default Login;

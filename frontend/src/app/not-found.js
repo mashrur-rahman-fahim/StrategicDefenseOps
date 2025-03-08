@@ -13,7 +13,7 @@ const NotFoundPage = () => {
                 </div>
             </div>
         </div>
-    )
+    );
 }
 
-export default NotFoundPage
+export default NotFoundPage;

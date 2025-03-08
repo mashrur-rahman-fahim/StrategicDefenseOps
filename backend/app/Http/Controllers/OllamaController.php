@@ -18,7 +18,7 @@ class OllamaController extends Controller
     public function generateResponse(Request $request): StreamedResponse
     {
         // Validate the request
-        set_time_limit(300);
+        set_time_limit(500);
         $validated = $request->validate([
             'prompt' => 'required|string',
         ]);
@@ -32,7 +32,7 @@ class OllamaController extends Controller
                         ob_flush();
                     }
                     flush();
-                    usleep(50000); // Slight delay for smooth streaming
+                   // Slight delay for smooth streaming
                 }
             }
         }, 200, [

@@ -2,7 +2,9 @@
 
 namespace App\Services;
 
+use App\Models\Report;
 use Exception;
+use Illuminate\Support\Facades\DB;
 
 class ReportService
 {
@@ -18,6 +20,10 @@ class ReportService
     {
 
         try {
+            $existReport=DB::selectOne('select * from reports where operation_id=?',[$operationId]);
+            if($existReport){
+                return false;
+            }
             $operationResources = $this->operationResourcesService->getOperationResource($operationId, $userId);
 
             if (! $operationResources) {
@@ -29,24 +35,64 @@ class ReportService
                 throw new Exception('Operation is not completed');
             }
 
-            $prompt = "Generate a concise, well-structured report with the following sections based solely on the provided data:\n";
+            $prompt = "Generate a concise and well-structured report based only on the provided operation data. The report should include:
+4 section eg(breif summary,key insights, operation Data,conclusion)
+Brief Summary (Max 40 Words)  Summarize the operations objective, execution, and outcome in one paragraph.
+Key Insights (3-5 Bullet Points)  Highlight important details, including mission success/failure reasons, resource utilization (vehicles, weapons, personnel, equipment), and any major challenges.
 
-            $prompt .= "1. A short summary of the operation in no more than 50 words.\n";
+Operation Details:
 
-            $prompt .= "2. Key insights and performance metrics, such as vehicle,weapon,personnel,equipment details and operation status. Limit the key points to 5-10 bullet points.\n";
-            $prompt .= "The total report length should be under 250 words. Only generate report not other any extra topic and word\n\n";
+Name: [Name of the operation]
+
+Status: [Status of the operation]
+
+Start Date: [Start date in YYYY-MM-DD HH:MM:SS format]
+
+End Date: [End date in YYYY-MM-DD HH:MM:SS format]
+
+Budget: [Budget in USD]
+
+Operation Final Status: [Final status of the operation]
+
+Vehicles:
+
+List all vehicles used in the operation with their details (e.g., type, quantity, condition).
+
+Weapons:
+
+List all weapons used in the operation with their details (e.g., type, quantity, condition).
+
+Personnel:
+
+List all personnel involved in the operation with their details (e.g., name, role, status).
+
+Equipment:
+
+List all equipment used in the operation with their details (e.g., type, quantity, condition).
+Final Status & Conclusion (Max 3 Sentences)  State the final status of the operation and provide a short conclusion.
+🔹 Keep the report under 500 words.
+🔹 Do not generate extra information beyond the given data.
+🔹 Use a formal and professional tone.
+
+
+
+
+
+Now, generate the report in a  structured format";
+
+            
 
             $prompt .= "Operation Details:\n";
-            $prompt .= "ID: {$report['operation']->id}\n";
+           
             $prompt .= "Name: {$report['operation']->name}\n";
-            $prompt .= "Status: {$report['operation']->status}\n";
+            $prompt .= "Status: {$report['operation']->status}\n why it is fail or success in conlusion";
             $prompt .= 'Start Date: '.($report['operation']->start_date ?? 'Not provided')."\n";
             $prompt .= 'End Date: '.($report['operation']->end_date ?? 'Not provided')."\n";
             $prompt .= 'Location: '.($report['operation']->location ?? 'Not provided')."\n";
             $prompt .= 'Budget: '.($report['operation']->budget ?? 'Not provided')."\n";
             $prompt .= 'operation final status:'.($data['operation_status']);
             $prompt .= "\nVehicle Details:\n";
-
+        
             if (count($report['vehicle']) > 0) {
 
                 foreach ($report['vehicle'] as $vehicle) {
@@ -125,5 +171,31 @@ class ReportService
 
             return false;
         }
+    }
+    public function viewReport($operationId){
+        $report=DB::selectOne('select * from reports where operation_id=? ',[$operationId]);
+        if($report){return $report;}
+        return false;
+    }
+    public function editReport($data,$operationId){
+        $report=DB::selectOne('select * from reports where operation_id=? ',[$operationId]);
+        if(!$report){return false;}
+        $report=Report::find($report->id);
+    
+        $response=$report->update($data);
+        if(!$response){
+            return false;
+        }
+        return true;
+    }
+    public function deleteReport($operationId){
+        $report=DB::selectOne('select * from reports where operation_id=?',[$operationId]);
+        if(!$report){return false;}
+        $report=Report::find($report->id);
+        $response=$report->delete();
+        if(!$response){
+            return false;
+        }
+        return true;
     }
 }

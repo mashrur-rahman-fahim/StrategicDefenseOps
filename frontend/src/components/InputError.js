@@ -1,17 +1,18 @@
-const InputError = ({ messages = [], className = '' }) => (
+const InputError = ({ messages = [], className = "" }) => (
     <>
         {messages.length > 0 && (
             <>
                 {messages.map((message, index) => (
                     <p
                         className={`${className} text-sm text-red-600`}
-                        key={index}>
+                        key={index}
+                    >
                         {message}
                     </p>
                 ))}
             </>
         )}
     </>
-)
+);
 
-export default InputError
+export default InputError;

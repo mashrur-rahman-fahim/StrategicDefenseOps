@@ -1,43 +1,43 @@
-'use client'
+'use client';
 
-import { useState } from 'react'
-import Link from 'next/link'
-import { useAuth } from '@/hooks/auth' // Adjust import path if needed
+import { useState } from 'react';
+import Link from 'next/link';
+import { useAuth } from '@/hooks/auth'; // Adjust import path if needed
 
 const Page = () => {
     const { register } = useAuth({
         middleware: 'guest',
         redirectIfAuthenticated: '/dashboard',
-    })
+    });
 
-    const [name, setName] = useState('')
-    const [email, setEmail] = useState('')
-    const [password, setPassword] = useState('')
-    const [passwordConfirmation, setPasswordConfirmation] = useState('')
-    const [role_id, setRoleId] = useState(1)
-    const [parent_id, setParentId] = useState(null)
-    const [errors, setErrors] = useState([])
-    const [showPassword, setShowPassword] = useState(false)
-    const [showConfirmPassword, setShowConfirmPassword] = useState(false)
+    const [name, setName] = useState('');
+    const [email, setEmail] = useState('');
+    const [password, setPassword] = useState('');
+    const [passwordConfirmation, setPasswordConfirmation] = useState('');
+    const [role_id, setRoleId] = useState(1);
+    const [parent_id, setParentId] = useState(null);
+    const [errors, setErrors] = useState([]);
+    const [showPassword, setShowPassword] = useState(false);
+    const [showConfirmPassword, setShowConfirmPassword] = useState(false);
 
     const handleGoogleLogin = async () => {
         try {
             // Redirect user to Laravel's Google login route
-            window.location.href = `http://127.0.0.1:8000/auth/google`
+            window.location.href = `http://127.0.0.1:8000/auth/google`;
         } catch (error) {
-            console.error('Google login error:', error)
+            console.error('Google login error:', error);
         }
-    }
+    };
 
     const roles = [
         { id: 1, name: 'System Administrator' },
         { id: 2, name: 'Operations Coordinator' },
         { id: 3, name: 'Field Specialist' },
         { id: 4, name: 'Mission Observer' },
-    ]
+    ];
 
-    const submitForm = event => {
-        event.preventDefault()
+    const submitForm = (event) => {
+        event.preventDefault();
 
         register({
             name,
@@ -47,7 +47,7 @@ const Page = () => {
             role_id,
             parent_id,
             setErrors,
-        })
+        });
     }
 
     return (
@@ -66,7 +66,7 @@ const Page = () => {
                             placeholder="Name"
                             className="w-full px-4 py-2 rounded-md border border-gray-600 mb-3 bg-white text-black placeholder-gray-500"
                             value={name}
-                            onChange={e => setName(e.target.value)}
+                            onChange={(e) => setName(e.target.value)}
                             required
                         />
                         {errors.name && (
@@ -79,7 +79,7 @@ const Page = () => {
                             placeholder="E-mail"
                             className="w-full px-4 py-2 rounded-md border border-gray-600 mb-3 bg-white text-black placeholder-gray-500"
                             value={email}
-                            onChange={e => setEmail(e.target.value)}
+                            onChange={(e) => setEmail(e.target.value)}
                             autoComplete="email"
                             required
                         />
@@ -94,13 +94,14 @@ const Page = () => {
                                 placeholder="Password"
                                 className="w-full px-4 py-2 rounded-md border border-gray-600 mb-3 bg-white text-black placeholder-gray-500"
                                 value={password}
-                                onChange={e => setPassword(e.target.value)}
+                                onChange={(e) => setPassword(e.target.value)}
                                 required
                             />
                             <button
                                 type="button"
                                 className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-700"
-                                onClick={() => setShowPassword(!showPassword)}>
+                                onClick={() => setShowPassword(!showPassword)}
+                            >
                                 {showPassword ? '👁️' : '🙈'}
                             </button>
                         </div>
@@ -115,7 +116,7 @@ const Page = () => {
                                 placeholder="Confirm Password"
                                 className="w-full px-4 py-2 rounded-md border border-gray-600 mb-3 bg-white text-black placeholder-gray-500"
                                 value={passwordConfirmation}
-                                onChange={e =>
+                                onChange={(e) =>
                                     setPasswordConfirmation(e.target.value)
                                 }
                                 required
@@ -125,7 +126,8 @@ const Page = () => {
                                 className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-700"
                                 onClick={() =>
                                     setShowConfirmPassword(!showConfirmPassword)
-                                }>
+                                }
+                            >
                                 {showConfirmPassword ? '👁️' : '🙈'}
                             </button>
                         </div>
@@ -138,10 +140,11 @@ const Page = () => {
                         {/* Role Selection */}
                         <select
                             value={role_id}
-                            onChange={e => setRoleId(Number(e.target.value))}
+                            onChange={(e) => setRoleId(Number(e.target.value))}
                             className="w-full px-4 py-2 rounded-md border border-gray-600 mb-3 bg-white text-black"
-                            required>
-                            {roles.map(role => (
+                            required
+                        >
+                            {roles.map((role) => (
                                 <option key={role.id} value={role.id}>
                                     {role.name}
                                 </option>
@@ -157,7 +160,7 @@ const Page = () => {
                             placeholder="Parent ID (Optional)"
                             className="w-full px-4 py-2 rounded-md border border-gray-600 mb-3 bg-white text-black placeholder-gray-500"
                             value={parent_id || ''}
-                            onChange={e => setParentId(e.target.value)}
+                            onChange={(e) => setParentId(e.target.value)}
                         />
                         {errors.parent_id && (
                             <p className="text-red-600">{errors.parent_id}</p>
@@ -169,22 +172,24 @@ const Page = () => {
                         </button>
 
                         {/* OR Divider */}
-                        <div className="text-center text-white my-3 font-bold">
+                        {/* <div className="text-center text-white my-3 font-bold">
                             or
-                        </div>
+                        </div> */}
 
                         {/* Google Button */}
-                        <button
+                        {/* <button
                             onClick={handleGoogleLogin}
-                            className="w-full bg-black text-white py-2 rounded-md font-bold">
+                            className="w-full bg-black text-white py-2 rounded-md font-bold"
+                        >
                             Continue with Google
-                        </button>
+                        </button> */}
 
                         {/* Already have an account? */}
                         <p className="text-center mt-3">
                             <Link
                                 href="/login"
-                                className="text-white underline">
+                                className="text-white underline"
+                            >
                                 Already have an account?
                             </Link>
                         </p>
@@ -201,13 +206,14 @@ const Page = () => {
                 <div
                     className="absolute inset-0 bg-cover bg-center"
                     style={{
-                        backgroundImage: `url('/registration1.jpg')`,
+                        backgroundImage: `url('https://res.cloudinary.com/dv97iagt7/image/upload/v1741466241/registration1_erndw1.jpg')`,
                         backgroundSize: 'cover',
                         backgroundPosition: 'center',
-                    }} />
+                    }}
+                />
             </div>
         </div>
-    )
+    );
 }
 
-export default Page
+export default Page;

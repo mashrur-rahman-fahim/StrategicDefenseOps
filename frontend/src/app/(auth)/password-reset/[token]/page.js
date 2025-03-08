@@ -1,27 +1,27 @@
-'use client'
+'use client';
 
-import Button from '@/components/Button'
-import Input from '@/components/Input'
-import InputError from '@/components/InputError'
-import Label from '@/components/Label'
-import { useAuth } from '@/hooks/auth'
-import { useEffect, useState } from 'react'
-import { useSearchParams } from 'next/navigation'
-import AuthSessionStatus from '@/app/(auth)/AuthSessionStatus'
+import Button from '@/components/Button';
+import Input from '@/components/Input';
+import InputError from '@/components/InputError';
+import Label from '@/components/Label';
+import { useAuth } from '@/hooks/auth';
+import { useEffect, useState } from 'react';
+import { useSearchParams } from 'next/navigation';
+import AuthSessionStatus from '@/app/(auth)/AuthSessionStatus';
 
 const PasswordReset = () => {
-    const searchParams = useSearchParams()
+    const searchParams = useSearchParams();
 
-    const { resetPassword } = useAuth({ middleware: 'guest' })
+    const { resetPassword } = useAuth({ middleware: 'guest' });
 
-    const [email, setEmail] = useState('')
-    const [password, setPassword] = useState('')
-    const [passwordConfirmation, setPasswordConfirmation] = useState('')
-    const [errors, setErrors] = useState([])
-    const [status, setStatus] = useState(null)
+    const [email, setEmail] = useState('');
+    const [password, setPassword] = useState('');
+    const [passwordConfirmation, setPasswordConfirmation] = useState('');
+    const [errors, setErrors] = useState([]);
+    const [status, setStatus] = useState(null);
 
-    const submitForm = event => {
-        event.preventDefault()
+    const submitForm = (event) => {
+        event.preventDefault();
 
         resetPassword({
             email,
@@ -29,12 +29,12 @@ const PasswordReset = () => {
             password_confirmation: passwordConfirmation,
             setErrors,
             setStatus,
-        })
+        });
     }
 
     useEffect(() => {
-        setEmail(searchParams.get('email'))
-    }, [searchParams.get('email')])
+        setEmail(searchParams.get('email'));
+    }, [searchParams.get('email')]);
 
     return (
         <>
@@ -51,7 +51,7 @@ const PasswordReset = () => {
                         type="email"
                         value={email}
                         className="block mt-1 w-full"
-                        onChange={event => setEmail(event.target.value)}
+                        onChange={(event) => setEmail(event.target.value)}
                         required
                         autoFocus
                     />
@@ -67,14 +67,11 @@ const PasswordReset = () => {
                         type="password"
                         value={password}
                         className="block mt-1 w-full"
-                        onChange={event => setPassword(event.target.value)}
+                        onChange={(event) => setPassword(event.target.value)}
                         required
                     />
 
-                    <InputError
-                        messages={errors.password}
-                        className="mt-2"
-                    />
+                    <InputError messages={errors.password} className="mt-2" />
                 </div>
 
                 {/* Confirm Password */}
@@ -88,7 +85,7 @@ const PasswordReset = () => {
                         type="password"
                         value={passwordConfirmation}
                         className="block mt-1 w-full"
-                        onChange={event =>
+                        onChange={(event) =>
                             setPasswordConfirmation(event.target.value)
                         }
                         required
@@ -105,7 +102,7 @@ const PasswordReset = () => {
                 </div>
             </form>
         </>
-    )
+    );
 }
 
-export default PasswordReset
+export default PasswordReset;

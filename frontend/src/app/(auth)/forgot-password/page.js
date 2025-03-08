@@ -1,23 +1,23 @@
-'use client'
+'use client';
 
-import { useState } from 'react'
-import { useAuth } from '@/hooks/auth'
-import AuthSessionStatus from '@/app/(auth)/AuthSessionStatus'
-import Link from 'next/link'
+import { useState } from 'react';
+import { useAuth } from '@/hooks/auth';
+import AuthSessionStatus from '@/app/(auth)/AuthSessionStatus';
+import Link from 'next/link';
 
 const Page = () => {
     const { forgotPassword } = useAuth({
         middleware: 'guest',
         redirectIfAuthenticated: '/dashboard',
-    })
+    });
 
-    const [email, setEmail] = useState('')
-    const [errors, setErrors] = useState([])
-    const [status, setStatus] = useState(null)
+    const [email, setEmail] = useState('');
+    const [errors, setErrors] = useState([]);
+    const [status, setStatus] = useState(null);
 
-    const submitForm = event => {
-        event.preventDefault()
-        forgotPassword({ email, setErrors, setStatus })
+    const submitForm = (event) => {
+        event.preventDefault();
+        forgotPassword({ email, setErrors, setStatus });
     }
 
     return (
@@ -43,10 +43,12 @@ const Page = () => {
                             placeholder="E-mail"
                             className="w-full px-4 py-2 rounded-md border border-gray-600 mb-3 bg-white text-black placeholder-gray-500"
                             value={email}
-                            onChange={event => setEmail(event.target.value)}
+                            onChange={(event) => setEmail(event.target.value)}
                             required
                         />
-                        {errors.email && <p className="text-red-600">{errors.email}</p>}
+                        {errors.email && (
+                            <p className="text-red-600">{errors.email}</p>
+                        )}
 
                         {/* Submit Button */}
                         <button className="w-full bg-black text-white py-2 rounded-md mt-3 font-bold">
@@ -55,7 +57,10 @@ const Page = () => {
 
                         {/* Don't have an account? */}
                         <p className="text-center mt-3">
-                            <Link href="/register" className="text-white underline">
+                            <Link
+                                href="/register"
+                                className="text-white underline"
+                            >
                                 Don't have an account?
                             </Link>
                         </p>
@@ -68,11 +73,11 @@ const Page = () => {
                 <div className="absolute inset-0 bg-gradient-to-r from-black/70 via-transparent to-black/30" />
                 <div
                     className="absolute inset-0 bg-cover bg-center"
-                    style={{ backgroundImage: `url('/forgot1.jpg')` }}
-                 />
+                    style={{ backgroundImage: `url('https://res.cloudinary.com/dv97iagt7/image/upload/v1741466583/forgot1_c5zbz0.jpg')` }}
+                />
             </div>
         </div>
-    )
+    );
 }
 
-export default Page
+export default Page;

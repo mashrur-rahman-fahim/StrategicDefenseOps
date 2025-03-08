@@ -1,78 +1,136 @@
-/* Scope styles to a specific container to avoid affecting navbar */
-.main-content {
-    /* Ensure all text is dark */
-    color: #333;
+/* .report-generator {
+    max-width: 1200px;
+    margin: 2rem auto;
+    padding: 1rem;
 }
 
-/* Input fields */
-.main-content input[type="text"] {
-    color: #333; /* Dark text for inputs */
-    background-color: #fff; /* White background for inputs */
-    border: 1px solid #ccc; /* Light gray border */
-    padding: 8px;
-    border-radius: 4px;
-    width: 100%;
+.control-panel {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 1.5rem;
+    margin-bottom: 2rem;
+    background: #f8f9fa;
+    padding: 1.5rem;
+    border-radius: 12px;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.1);
 }
 
-/* Buttons */
-.main-content button {
-    color: #fff; /* White text for buttons */
-    background-color: #007bff; /* Blue background for buttons */
+.form-group {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+}
+
+.form-group label {
+    font-weight: 600;
+    color: #2d3748;
+}
+
+select, .disabled-field {
+    padding: 0.8rem;
+    border: 1px solid #e2e8f0;
+    border-radius: 8px;
+    background: white;
+    font-size: 1rem;
+}
+
+.chat-history {
+    background: white;
+    border-radius: 12px;
+    padding: 1.5rem;
+    min-height: 400px;
+    max-height: 60vh;
+    overflow-y: auto;
+    box-shadow: inset 0 2px 4px rgba(0,0,0,0.05);
+}
+
+.message.bot {
+    background: #f7fafc;
+    padding: 1rem;
+    border-radius: 8px;
+    margin: 1rem 0;
+    animation: messageAppear 0.3s ease-out;
+}
+
+.report-heading {
+    color: #2b6cb0;
+    margin: 1.5rem 0 1rem;
+    border-bottom: 2px solid #cbd5e0;
+    padding-bottom: 0.5rem;
+}
+
+.report-paragraph {
+    line-height: 1.6;
+    margin: 0.8rem 0;
+    color: #4a5568;
+}
+
+.loading-indicator {
+    display: flex;
+    align-items: center;
+    padding: 1rem;
+}
+
+.typing-animation {
+    display: flex;
+    gap: 0.5rem;
+}
+
+.typing-animation .dot {
+    width: 8px;
+    height: 8px;
+    background: #cbd5e0;
+    border-radius: 50%;
+    animation: typing 1.4s infinite ease-in-out;
+}
+
+.typing-animation .dot:nth-child(2) {
+    animation-delay: 0.2s;
+}
+
+.typing-animation .dot:nth-child(3) {
+    animation-delay: 0.4s;
+}
+
+@keyframes messageAppear {
+    from { opacity: 0; transform: translateY(10px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes typing {
+    0%, 80%, 100% { transform: translateY(0); }
+    30% { transform: translateY(-6px); }
+}
+
+.action-controls {
+    display: flex;
+    gap: 1rem;
+    margin-top: 1.5rem;
+}
+
+button {
+    padding: 0.8rem 1.5rem;
     border: none;
-    padding: 8px 16px;
-    border-radius: 4px;
+    border-radius: 8px;
+    background: #4299e1;
+    color: white;
     cursor: pointer;
+    transition: all 0.2s;
 }
 
-.main-content button:disabled {
-    background-color: #ccc; /* Gray background for disabled buttons */
+button:hover:not(:disabled) {
+    background: #3182ce;
+}
+
+button:disabled {
+    background: #cbd5e0;
     cursor: not-allowed;
 }
 
-/* Chat history/messages */
-.main-content .chat-history {
-    background-color: #f9f9f9; /* Light gray background for chat history */
-    padding: 10px;
-    border-radius: 4px;
-    margin-top: 10px;
+.stop-button {
+    background: #fc8181;
 }
 
-.main-content .message {
-    margin-bottom: 10px;
-}
-
-.main-content .message.bot {
-    color: #333; /* Dark text for bot messages */
-}
-
-.main-content .message.user {
-    color: #333; /* Dark text for user messages */
-}
-
-/* Markdown content */
-.main-content .react-markdown {
-    color: #333; /* Dark text for Markdown content */
-}
-
-/* Report container */
-.main-content .report-container {
-    max-width: 800px;
-    margin: 0 auto;
-    padding: 20px;
-    background-color: #fff; /* White background for the container */
-    border: 1px solid #ddd; /* Light gray border */
-    border-radius: 8px;
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1); /* Subtle shadow */
-}
-
-/* Headings */
-.main-content h1, 
-.main-content h2, 
-.main-content h3 {
-    color: #333; /* Dark text for headings */
-}
-
-/* Paragraphs */
-.main-content p {
-    color: #333; /* Dark text for paragraphs */
-}
+.stop-button:hover {
+    background: #f56565;
+} */
