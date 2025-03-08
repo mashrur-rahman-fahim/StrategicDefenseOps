@@ -2,6 +2,7 @@
 
 namespace App\Services;
 
+use App\Models\User;
 use Illuminate\Support\Facades\DB;
 
 class ProfileService
@@ -13,9 +14,11 @@ class ProfileService
         return $response;
     }
 
-    public function deleteProfile($user)
+    public function deleteProfile($userId)
     {
-        DB::update('update from users set parent_id=? where parent_id=?', [null, $user->id]);
+        $user=User::find($userId);
+        DB::update('update  users set parent_id=? where parent_id=?', [null, $user->id]);
+      
         $response = $user->delete();
 
         return $response;

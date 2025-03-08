@@ -155,10 +155,14 @@ export default function ReportGenerator() {
   const handleEditSubmit = async (e) => {
     e.preventDefault();
     try {
-      const response = await axios.put(
+      // Update the report with edited data
+      await axios.put(
         `/api/edit-report/${selectedOperationId}`,
         editFormData
       );
+      
+      // Refresh the report data from server
+      const response = await axios.get(`/api/view-report/${selectedOperationId}`);
       setExistingReport(response.data);
       setIsEditing(false);
     } catch (error) {

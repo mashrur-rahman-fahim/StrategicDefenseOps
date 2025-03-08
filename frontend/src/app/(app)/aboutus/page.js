@@ -7,27 +7,27 @@ import { useAuth } from '@/hooks/auth';
 const teamMembers = [
     {
         name: 'Mashrur Rahman',
-        position: 'Full-stack Developer (Lead)',
+        position: 'Full-stack Developer ( LEAD )',
         email: 'mashrur950@gmail.com',
-        image: '/mashrur.jpg',
+        image: 'https://res.cloudinary.com/dv97iagt7/image/upload/v1741471461/mashrur_azdkeq.jpg',
     },
     {
         name: 'Ahnuf Karim Chowdhury',
         position: 'Full-stack Developer',
         email: 'ahnufkarimchowdhury@gmail.com',
-        image: '/ahnuf.jpg',
+        image: 'https://res.cloudinary.com/dv97iagt7/image/upload/v1741471461/ahnuf_jzsghz.jpg',
     },
     {
         name: 'Nahid Asef',
         position: 'Frontend Developer',
         email: 'naas50dx@gmail.com',
-        image: '/nahid.jpg',
+        image: 'https://res.cloudinary.com/dv97iagt7/image/upload/v1741471472/nahid_bbhsju.jpg',
     },
     {
         name: 'Chowdhury Ajmayeen Adil',
         position: 'Frontend Developer',
         email: 'ajmayeen.cse.20220104121@aust.edu',
-        image: '/ajmayeen.jpeg',
+        image: 'https://res.cloudinary.com/dv97iagt7/image/upload/v1741471461/ajmayeen_oso6ox.jpg',
     },
 ];
 
@@ -49,7 +49,7 @@ export default function AboutUs() {
                             <div className="h-80 w-full relative">
                                 <div 
                                     className="absolute inset-0 bg-cover bg-center"
-                                    style={{ backgroundImage: "url('/aboutus.jpg')" }}
+                                    style={{ backgroundImage: "url('https://res.cloudinary.com/dv97iagt7/image/upload/v1741471462/aboutus_weze37.jpg')" }}
                                 ></div>
                                 <div className="absolute inset-0 bg-gradient-to-r from-blue-800 to-purple-900 opacity-75"></div>
                             </div>
