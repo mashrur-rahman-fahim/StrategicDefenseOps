@@ -98,11 +98,15 @@ class ReportController extends Controller
         return response()->json(['error'=>'Report not found'],404);
     }
     public function editReport($operationId,Request $request){
+        $user = User::find(auth()->id());
         $data=$request->validate([
             'report_name'=>'nullable|string',
             'report_summary'=>'nullable|string',
             'report_details'=>'nullable|string',
         ]);
+        if (!$user || $user->role_id > 2) {
+            return response()->json(['error' => 'Unauthorized'], 403);
+        }
         $report=$this->reportService->editReport($operationId,$data);
         if($report){
             return response()->json($report,200);
@@ -110,6 +114,10 @@ class ReportController extends Controller
         return response()->json(['error'=>'Failed to update report'],500);
     }
     public function deleteReport($operationId){
+        $user = User::find(auth()->id());
+        if (!$user || $user->role_id > 1) {
+            return response()->json(['error' => 'Unauthorized'], 403);
+        }
         $report=$this->reportService->deleteReport($operationId);
         if($report){
             return response()->json(['message'=>'Report deleted successfully'],200);
