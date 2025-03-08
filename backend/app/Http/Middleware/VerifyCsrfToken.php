@@ -14,8 +14,8 @@ class VerifyCsrfToken extends Middleware
     protected $except = [
         //
 
-        '/*',
-        '/api/*',
+      
+        
         'auth/google',
         'auth/google-callback',
 
