@@ -171,7 +171,7 @@ const Login = () => {
                 <div
                     className="absolute inset-0 bg-cover bg-center"
                     style={{
-                        backgroundImage: `url('/login1.jpg')`,
+                        backgroundImage: `url('https://res.cloudinary.com/dv97iagt7/image/upload/v1741465703/login1_xtyatb.jpg')`,
                         backgroundSize: 'cover',
                         backgroundPosition: 'center',
                     }}
