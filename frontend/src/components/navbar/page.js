@@ -11,6 +11,28 @@ const Navbar = ({ toggleSidebar, logout }) => {
     const menuButtonRef = useRef(null) // Ref for Notifications button
     const dropdownRef = useRef(null) // Ref for dropdown menu
     const sidebarRef = useRef(null) // Assuming there's a sidebar element
+    const [logs, setLogs] = useState([])
+    const [loading, setLoading] = useState(true)
+    const [error, setError] = useState(null)
+
+    useEffect(() => {
+        if (!user) return // Ensure user is provided
+
+        const fetchLogs = async () => {
+            try {
+                const response = await axios.get(
+                    `${process.env.NEXT_PUBLIC_BACKEND_URL}/api/notifications/${user}`,
+                )
+                setLogs(response.data)
+            } catch (err) {
+                setError(err.response?.data?.error || 'Failed to fetch logs')
+            } finally {
+                setLoading(false)
+            }
+        }
+
+        fetchLogs()
+    }, [user])
 
     const [dropdownPosition, setDropdownPosition] = useState({ top: 0, left: 0 })
 
