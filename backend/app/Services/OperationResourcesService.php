@@ -213,17 +213,22 @@ class OperationResourcesService
             }
             $operation = DB::selectOne('select * from operations where created_by=? and id=?', [$userId, $operationId]);
             $operation = Operation::find($operation->id);
+           
             if (!$operation) {
                 throw new \Exception('Could not find operation');
             }
             $operationResources = DB::select('select * from operation_resources where operation_id=?', [$operation->id]);
-            if (!$operationResources[0]) {
-                throw new \Exception('Could not find operation resources');
+           
+            if (!$operationResources) {
+               
+                return ['operation' => [], 'vehicle' => [], 'weapon' => [], 'personnel' => [], 'equipment' => []];
             }
+            
             $vehicle = [];
             $weapon = [];
             $personnel = [];
             $equipment = [];
+           
 
             for ($i = 0; $i < count($operationResources); $i++) {
                 $operationId = $operationResources[$i]->operation_id;

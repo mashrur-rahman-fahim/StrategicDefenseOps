@@ -88,12 +88,15 @@ class OperationService
             return [count($operations), $operations];
         } elseif (($user->role_id == 3 || $user->role_id == 4) && $user->parent_id != null) {
             $user = User::find($user->parent_id);
+            if($user->parent_id==null){
+                return [0,[]];
+            }
             $user = User::find($user->parent_id);
             $operations = DB::select('select * from operations o where o.created_by=? ', [$user->id]);
 
             return [count($operations), $operations];
         } else {
-            return null;
+            return [0,[]];
         }
     }
 

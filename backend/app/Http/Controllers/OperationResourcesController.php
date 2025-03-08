@@ -37,9 +37,7 @@ class OperationResourcesController extends Controller
     public function getAllOperationResources($operationId)
     {
         $user = User::find(auth()->id());
-        if (! $user || $user->role_id > 3) {
-            return response()->json(['error' => 'Unauthorized'], 403);
-        }
+        
         $operationResources = $this->operationResourcesService->getOperationResource($operationId, $user->id);
         if(!$operationResources)
         {

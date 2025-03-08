@@ -242,18 +242,29 @@ export default function OperationResources() {
             setError('Please select an operation first');
             return
         }
+        
 
         try {
             const invalidEntries = formEntries.some(
                 (entry) =>
                     !entry.category || !entry.serialNumber || !entry.count
             );
+            console.log(formEntries);
 
             if (invalidEntries) {
                 setError('Please fill in all resource details');
                 return
             }
-
+            const transformedData = {
+                category: formEntries.map((entry) => parseInt(entry.category)),
+                serial_number: formEntries.map((entry) => entry.serialNumber),
+                count: formEntries.map((entry) => parseInt(entry.count)), // Convert to integer
+              };
+              console.log(transformedData);
+            if(actionType === 'add'){
+               const response= await axios.post(`/api/add-operation-resources/${selectedOperation}`,transformedData);
+                console.log(response.data);
+            }
             setMessage(
                 `Resources ${actionType === 'add' ? 'added' : 'updated'} successfully`
             );

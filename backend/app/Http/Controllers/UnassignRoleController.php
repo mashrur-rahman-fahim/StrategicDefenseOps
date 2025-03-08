@@ -40,13 +40,16 @@ class UnassignRoleController extends Controller
 
         DB::beginTransaction();
         try {
-            $manager = $this->unassignRoleService->unassignRole($request->managerEmail, 2, $admin->parent_id);
-
+          
+            $manager = $this->unassignRoleService->unassignRole($request->managerEmail, 2, $admin->id);
+          
             if (! $manager) {
+               
                 DB::rollBack();
 
                 return response()->json(['message' => 'Manager not found or not assigned'], 404);
             }
+         
 
             DB::commit();
 

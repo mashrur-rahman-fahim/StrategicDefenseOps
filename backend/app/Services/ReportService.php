@@ -36,25 +36,51 @@ class ReportService
             }
 
             $prompt = "Generate a concise and well-structured report based only on the provided operation data. The report should include:
-
+4 section eg(breif summary,key insights, operation Data,conclusion)
 Brief Summary (Max 40 Words)  Summarize the operations objective, execution, and outcome in one paragraph.
 Key Insights (3-5 Bullet Points)  Highlight important details, including mission success/failure reasons, resource utilization (vehicles, weapons, personnel, equipment), and any major challenges.
+
+Operation Details:
+
+Name: [Name of the operation]
+
+Status: [Status of the operation]
+
+Start Date: [Start date in YYYY-MM-DD HH:MM:SS format]
+
+End Date: [End date in YYYY-MM-DD HH:MM:SS format]
+
+Budget: [Budget in USD]
+
+Operation Final Status: [Final status of the operation]
+
+Vehicles:
+
+List all vehicles used in the operation with their details (e.g., type, quantity, condition).
+
+Weapons:
+
+List all weapons used in the operation with their details (e.g., type, quantity, condition).
+
+Personnel:
+
+List all personnel involved in the operation with their details (e.g., name, role, status).
+
+Equipment:
+
+List all equipment used in the operation with their details (e.g., type, quantity, condition).
 Final Status & Conclusion (Max 3 Sentences)  State the final status of the operation and provide a short conclusion.
 🔹 Keep the report under 500 words.
 🔹 Do not generate extra information beyond the given data.
 🔹 Use a formal and professional tone.
 
-Operation Data:
-(Include operation details, vehicles, weapons, personnel, and equipment as provided in the data)
 
-Conclusions: Add a conlusion within 50 words
 
-Now, generate the report in a short, structured format";
 
-            $prompt .= "1. A short summary of the operation in no more than 50 words.\n";
 
-            $prompt .= "2. Key insights and performance metrics, such as vehicle,weapon,personnel,equipment details and operation status and generate this by reporting style. Limit the key points to 3-5 bullet points.\n";
-            $prompt .= "The total report length should be under 500 words. Only generate report not other any extra topic and word\n\n";
+Now, generate the report in a  structured format";
+
+            
 
             $prompt .= "Operation Details:\n";
            
@@ -66,7 +92,7 @@ Now, generate the report in a short, structured format";
             $prompt .= 'Budget: '.($report['operation']->budget ?? 'Not provided')."\n";
             $prompt .= 'operation final status:'.($data['operation_status']);
             $prompt .= "\nVehicle Details:\n";
-
+        
             if (count($report['vehicle']) > 0) {
 
                 foreach ($report['vehicle'] as $vehicle) {

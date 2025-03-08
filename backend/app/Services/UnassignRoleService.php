@@ -8,9 +8,13 @@ use Illuminate\Support\Facades\DB;
 class UnassignRoleService
 {
     public function unassignRole(string $email, int $roleId, ?int $parentId = null): ?User
+
     {
+      
         $tempUser = DB::selectOne('select * from users where email=? and parent_id=? ', [$email, $parentId]);
+      
         $tempUser = User::find($tempUser->id);
+       
         if (! $tempUser) {
             return null;
         }

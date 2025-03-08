@@ -39,6 +39,15 @@ class ResourceServices
         if ($user->role_id == 2 && $user->parent_id != null) {
             $userId = $user->parent_id;
         }
+        if($user->role_id==4 && $user->parent_id!=null){
+            $user=$user->parent_id;
+            $user=User::find($userId);
+            if($user->parent_id!=null){
+            $userId=$user->parent_id;}
+            else{
+                return [0,[]];
+            }
+        }
         $weapon = $this->weaponService->getAllWeapons($userId);
         $vehicle = $this->vehicleService->getAllVehicles($userId);
         $equipment = $this->equipmentService->getAllEquipment($userId);
