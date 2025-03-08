@@ -67,7 +67,11 @@ class AuditLogController extends Controller
                 )
             ', [$user->id, $user->id]);
         } else {
-
+            return DB::select('
+                SELECT * 
+                FROM activity_log 
+                WHERE user_id = ?
+            ', [$user->id]);
         }
     }
 }
