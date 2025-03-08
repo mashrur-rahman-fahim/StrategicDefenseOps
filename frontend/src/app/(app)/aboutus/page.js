@@ -2,6 +2,7 @@
 
 import React from 'react';
 import Layout from '@/components/layout';
+import { useAuth } from '@/hooks/auth';
 
 const teamMembers = [
     {
@@ -31,6 +32,7 @@ const teamMembers = [
 ];
 
 export default function AboutUs() {
+    useAuth({middleware:'auth'})
     const handleContactClick = (email) => {
         const gmailUrl = `https://mail.google.com/mail/?view=cm&to=${email}`;
         window.open(gmailUrl, '_blank');
@@ -38,75 +40,87 @@ export default function AboutUs() {
 
     return (
         <Layout>
-            <div className="font-sans">
-                {/* About Section */}
-                <div
-                    className="about-section text-center py-20 px-12 text-white bg-cover bg-center relative"
-                    style={{
-                        backgroundImage: "url('/aboutus.jpg')",
-                        backgroundSize: 'cover',
-                        backgroundPosition: 'center',
-                        filter: 'brightness(80%)',
-                        position: 'relative',
-                        padding: '60px',
-                        textAlign: 'center',
-                        minHeight: '50vh',
-                    }}
-                >
-                    <div 
-                        id="about-us-text" 
-                        className="bg-black bg-opacity-75 text-white p-8 border border-gray-400 rounded-lg overflow-auto max-h-96"
-                        style={{ scrollbarWidth: 'none', WebkitOverflowScrolling: 'touch' }}
-                    >
-                        <h1 className="text-5xl font-bold mb-6">About Us</h1>
-                        <p className="text-xl mb-6">
-                            Welcome to our centralized defense operations management system, a powerful web-based solution designed to enhance efficiency, security, and transparency in defense operations. Our platform streamlines resource allocation, optimizes operational planning, and delivers real-time insights to facilitate informed decision-making.
-                        </p>
-                        <p className="text-xl mb-6">
-                            Built with Laravel and MySQL, our system ensures secure access, seamless coordination, and comprehensive analytics, empowering defense teams to manage large-scale operations with precision and agility. Our goal is to revolutionize the management of defense operations by centralizing resource tracking, real-time updates, and detailed reporting.
-                        </p>
-                        <p className="text-xl">
-                            This platform is tailored for defense operations teams, military command centers, and resource management units that require an advanced, secure, and reliable system to manage operations, track resources, and generate insightful reports.
-                        </p>
+            <div className="font-sans bg-gray-50 pt-16"> {/* Added pt-16 to create space for navbar */}
+                {/* About Section - Redesigned */}
+                <div className="max-w-6xl mx-auto px-4 py-16">
+                    <div className="rounded-2xl overflow-hidden shadow-xl">
+                        <div className="relative">
+                            {/* Background image with gradient overlay */}
+                            <div className="h-80 w-full relative">
+                                <div 
+                                    className="absolute inset-0 bg-cover bg-center"
+                                    style={{ backgroundImage: "url('/aboutus.jpg')" }}
+                                ></div>
+                                <div className="absolute inset-0 bg-gradient-to-r from-blue-800 to-purple-900 opacity-75"></div>
+                            </div>
+                            
+                            {/* Content container - positioned for better visibility */}
+                            <div className="absolute inset-0 flex items-center justify-center p-6">
+                                <div className="text-center text-white">
+                                    <h1 className="text-5xl font-bold mb-6">About Us</h1>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        {/* About text content */}
+                        <div className="bg-white p-8 md:p-10">
+                            <div className="max-w-4xl mx-auto space-y-6">
+                                <p className="text-lg text-gray-700 leading-relaxed">
+                                    Welcome to our centralized defense operations management system, a powerful web-based solution designed to enhance efficiency, security, and transparency in defense operations. Our platform streamlines resource allocation, optimizes operational planning, and delivers real-time insights to facilitate informed decision-making.
+                                </p>
+                                <p className="text-lg text-gray-700 leading-relaxed">
+                                    Built with Laravel and MySQL, our system ensures secure access, seamless coordination, and comprehensive analytics, empowering defense teams to manage large-scale operations with precision and agility.
+                                </p>
+                                <p className="text-lg text-gray-700 leading-relaxed">
+                                    This platform is tailored for defense operations teams, military command centers, and resource management units that require an advanced, secure, and reliable system.
+                                </p>
+                            </div>
+                        </div>
                     </div>
                 </div>
 
-                {/* Team Section */}
-                <h2 className="text-center text-4xl font-semibold mt-16 mb-12">Our Team</h2>
-                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8 px-12">
-                    {teamMembers.map((member, index) => (
-                        <div
-                            key={index}
-                            className="card bg-white shadow-xl rounded-3xl overflow-hidden"
-                            style={{ boxShadow: '0 6px 12px 0 rgba(0, 0, 0, 0.3)', margin: '12px' }}
-                        >
-                            <img
-                                src={member.image}
-                                alt={member.name}
-                                className="w-full h-72 object-cover"
-                            />
-                            <div className="container p-6 text-center">
-                                <h2 className="text-2xl font-bold text-black">{member.name}</h2>
-                                <p className="text-gray-600 mb-3">{member.position}</p>
-                                <p className="text-blue-500 mb-5">{member.email}</p>
-                                <button
-                                    onClick={() => handleContactClick(member.email)}
-                                    className="button w-full py-3 bg-black text-white rounded-lg hover:bg-gray-700"
-                                    style={{
-                                        border: 'none',
-                                        outline: '0',
-                                        display: 'inline-block',
-                                        padding: '10px',
-                                        textAlign: 'center',
-                                        cursor: 'pointer',
-                                        width: '100%',
-                                    }}
+                {/* Team Section - Redesigned */}
+                <div className="bg-gray-100 py-16">
+                    <div className="max-w-6xl mx-auto px-4">
+                        <h2 className="text-center text-4xl font-bold mb-16 text-gray-800">Our Team</h2>
+                        
+                        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8">
+                            {teamMembers.map((member, index) => (
+                                <div
+                                    key={index}
+                                    className="bg-white rounded-xl overflow-hidden shadow-lg hover:shadow-xl transition-all duration-300 transform hover:-translate-y-2"
                                 >
-                                    Contact
-                                </button>
-                            </div>
+                                    <div className="p-6 flex flex-col items-center">
+                                        {/* Circular profile image */}
+                                        <div className="w-36 h-36 rounded-full overflow-hidden border-4 border-blue-500 shadow-md mb-6">
+                                            <img
+                                                src={member.image}
+                                                alt={member.name}
+                                                className="w-full h-full object-cover"
+                                            />
+                                        </div>
+                                        
+                                        {/* Member details */}
+                                        <h3 className="text-xl font-bold text-gray-800 mb-1">{member.name}</h3>
+                                        <p className="text-blue-600 font-medium mb-1">{member.position}</p>
+                                        <p className="text-gray-500 text-sm mb-6">{member.email}</p>
+                                        
+                                        {/* Contact button */}
+                                        <button
+                                            onClick={() => handleContactClick(member.email)}
+                                            className="w-full py-3 bg-blue-600 text-white rounded-lg transition-colors duration-300 hover:bg-blue-700 font-medium flex items-center justify-center space-x-2"
+                                        >
+                                            <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
+                                                <path d="M2.003 5.884L10 9.882l7.997-3.998A2 2 0 0016 4H4a2 2 0 00-1.997 1.884z" />
+                                                <path d="M18 8.118l-8 4-8-4V14a2 2 0 002 2h12a2 2 0 002-2V8.118z" />
+                                            </svg>
+                                            <span>Contact</span>
+                                        </button>
+                                    </div>
+                                </div>
+                            ))}
                         </div>
-                    ))}
+                    </div>
                 </div>
             </div>
         </Layout>

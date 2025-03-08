@@ -35,22 +35,19 @@ const Navbar = ({ toggleSidebar, logout }) => {
     }, []);
 
     useEffect(() => {
-        if (!user) return;
-
+        if (!user) return; 
+    
         const fetchLogs = async () => {
             try {
                 const response = await axios.get(
-                    `${process.env.NEXT_PUBLIC_BACKEND_URL}/api/notifications/${user}`,
+                    `${process.env.NEXT_PUBLIC_BACKEND_URL}/api/notifications/${user}`
                 );
-
+    
                 const sortedLogs = response.data
-                    .filter((log) => log.log_name !== "user_details_access")
-                    .sort(
-                        (a, b) =>
-                            new Date(b.created_at) - new Date(a.created_at),
-                    )
-                    .slice(0, 2);
-
+                    .filter(log => log.log_name !== 'user_details_access') 
+                    .sort((a, b) => new Date(b.created_at) - new Date(a.created_at))
+                    .slice(0, 2); 
+    
                 setLogs(sortedLogs);
             } catch (err) {
                 setError(err.response?.data?.error || "Failed to fetch logs");
@@ -58,13 +55,14 @@ const Navbar = ({ toggleSidebar, logout }) => {
                 setLoading(false);
             }
         };
-
-        fetchLogs();
-
+    
+        fetchLogs(); 
+    
         const interval = setInterval(fetchLogs, 10000);
-
-        return () => clearInterval(interval);
+    
+        return () => clearInterval(interval); 
     }, [user]);
+    
 
     const [dropdownPosition, setDropdownPosition] = useState({
         top: 0,
@@ -92,23 +90,25 @@ const Navbar = ({ toggleSidebar, logout }) => {
     return (
         <header className="bg-white shadow-md py-4 px-6">
             <nav className="flex items-center justify-between max-w-screen-xl mx-auto">
-
-                <div className="relative w-full">
-
+                {/* Left side container - fixed width */}
+                <div className="flex items-center space-x-4 w-1/3">
                     <button
                         ref={sidebarButtonRef}
-                        className="text-2xl text-gray-600 hover:text-black focus:outline-none fixed top-7 left-7"
+                        className="text-2xl text-gray-600 hover:text-black focus:outline-none"
                         onClick={toggleSidebar}
                     >
                         ☰
                     </button>
-
-                    <h1 className="text-xl font-semibold text-gray-800 mx-auto">
+                    <h1 className="text-xl font-semibold text-gray-800 truncate">
                         StrategicDefenseOps
                     </h1>
                 </div>
 
-                <div className="flex items-center space-x-4">
+                {/* Empty middle section to push buttons to the right */}
+                <div className="flex-1"></div>
+
+                {/* Right side container - fixed position */}
+                <div className="flex items-center space-x-4 w-1/3 justify-end">
                     <button
                         ref={menuButtonRef}
                         className="bg-white text-gray-700 border border-gray-300 px-5 py-2 rounded-lg transition-colors duration-300 ease-in-out hover:bg-black hover:text-gray-700 dropdown-hover-effect"
@@ -116,32 +116,6 @@ const Navbar = ({ toggleSidebar, logout }) => {
                     >
                         Notifications
                     </button>
-
-                    {isDropdownOpen && (
-                        <div
-                            ref={dropdownRef}
-                            className="absolute bg-white border border-gray-300 rounded-lg shadow-lg p-4 w-48"
-                            style={{
-                                top: `${dropdownPosition.top}px`,
-                                left: `${dropdownPosition.left}px`,
-                            }}
-                        >
-                            {logs.length > 0 ? (
-                                logs.map((log, index) => (
-                                    <p
-                                        key={index}
-                                        className="text-sm text-gray-700"
-                                    >
-                                        {log.description}
-                                    </p>
-                                ))
-                            ) : (
-                                <p className="text-sm text-gray-500">
-                                    No notifications
-                                </p>
-                            )}
-                        </div>
-                    )}
 
                     <button
                         className="bg-white text-gray-700 border border-gray-300 px-5 py-2 rounded-lg transition-colors duration-300 ease-in-out hover:bg-black hover:text-gray-700 custom-hover-effect"
@@ -151,6 +125,32 @@ const Navbar = ({ toggleSidebar, logout }) => {
                     </button>
                 </div>
             </nav>
+
+            {isDropdownOpen && (
+                <div
+                    ref={dropdownRef}
+                    className="fixed bg-white border border-gray-300 rounded-lg shadow-lg p-4 w-48 z-10"
+                    style={{
+                        top: `${dropdownPosition.top}px`,
+                        left: `${dropdownPosition.left}px`,
+                    }}
+                >
+                    {logs.length > 0 ? (
+                        logs.map((log, index) => (
+                            <p
+                                key={index}
+                                className="text-sm text-gray-700"
+                            >
+                                {log.description}
+                            </p>
+                        ))
+                    ) : (
+                        <p className="text-sm text-gray-500">
+                            No notifications
+                        </p>
+                    )}
+                </div>
+            )}
 
             {showLogoutPrompt && (
                 <div className="fixed inset-0 bg-gray-600 bg-opacity-50 flex justify-center items-center z-50">

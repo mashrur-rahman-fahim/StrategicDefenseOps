@@ -5,13 +5,11 @@ import { motion } from 'framer-motion';
 import { useRouter } from 'next/navigation';
 
 export default function Home() {
-  
   const router = useRouter(); 
 
-  const handleClick = () => {
-    router.push('/login'); };
+  const handleLogin = () => router.push('/login');
+  const handleAbout = () => router.push('/about-us');
 
-  
   return (
     <div className="bg-gray-100 text-gray-900 min-h-screen">
       {/* Hero Section */}
@@ -31,75 +29,40 @@ export default function Home() {
           className="relative z-10 max-w-3xl p-6"
         >
           <h1 className="text-5xl font-bold text-white">
-            Elite Forces Training
+            Strategic Defense Operations
           </h1>
           <p className="mt-4 text-lg text-gray-200">
-            Preparing the next generation of warriors with cutting-edge military
-            training.
+            Centralized platform for modern defense coordination and resource management
           </p>
-          <Button onClick={handleClick} className="mt-6 bg-blue-500 hover:bg-blue-600 text-white px-6 py-3 rounded-xl shadow-lg">
-            Enroll Now
+          <Button onClick={handleLogin} className="mt-6 bg-blue-500 hover:bg-blue-600 text-white px-6 py-3 rounded-xl shadow-lg">
+            Get Started
           </Button>
         </motion.div>
       </section>
 
-      {/* Scrolling Animations Section */}
+      {/* Features Section */}
       <section className="py-20 px-6 bg-lightblue-100 text-center">
         <h2 className="text-4xl font-bold text-gray-900 mb-12">
-          Our Training Programs
+          System Features
         </h2>
         <div className="space-y-12">
           {[
             {
               img: 'https://res.cloudinary.com/dv97iagt7/image/upload/v1741464104/training1_tjk93g.jpg',
-              title: 'Tactical Combat',
-              desc: 'Master close-quarters combat techniques.',
+              title: 'Operations Dashboard',
+              desc: 'Real-time tracking of all defense operations with weather and location updates',
             },
             {
               img: 'https://res.cloudinary.com/dv97iagt7/image/upload/v1741464100/training2_ilrqd9.jpg',
-              title: 'Survival Skills',
-              desc: 'Learn essential survival tactics in extreme conditions.',
+              title: 'Resource Management',
+              desc: 'Optimize allocation of personnel, vehicles, and equipment',
             },
             {
               img: 'https://res.cloudinary.com/dv97iagt7/image/upload/v1741464123/training3_g7jg9t.jpg',
-              title: 'Advanced Weaponry',
-              desc: 'Train with cutting-edge military technology.',
+              title: 'Role-based Access',
+              desc: 'Four-tier user roles with granular permissions control',
             },
-            {
-              img: 'https://res.cloudinary.com/dv97iagt7/image/upload/v1741464099/training4_f4bz4s.jpg',
-              title: 'Navigation Training',
-              desc: 'Master map reading and navigation skills.',
-            },
-            {
-              img: 'https://res.cloudinary.com/dv97iagt7/image/upload/v1741464120/training5_efyget.jpg',
-              title: 'Sniper Training',
-              desc: 'Sharpen your precision shooting skills.',
-            },
-            {
-              img: 'https://res.cloudinary.com/dv97iagt7/image/upload/v1741464119/training6_rxtf6k.jpg',
-              title: 'Paratrooper Drills',
-              desc: 'Train for aerial insertions and extractions.',
-            },
-            {
-              img: 'https://res.cloudinary.com/dv97iagt7/image/upload/v1741464107/training7_zm8rxz.jpg',
-              title: 'Cyber Warfare',
-              desc: 'Learn digital combat and security measures.',
-            },
-            {
-              img: 'https://res.cloudinary.com/dv97iagt7/image/upload/v1741464106/training8_ydk2up.jpg',
-              title: 'Explosives Handling',
-              desc: 'Master safe handling and deployment of explosives.',
-            },
-            {
-              img: 'https://res.cloudinary.com/dv97iagt7/image/upload/v1741464109/training9_jb0owh.jpg',
-              title: 'Maritime Operations',
-              desc: 'Operate effectively in naval combat scenarios.',
-            },
-            {
-              img: 'https://res.cloudinary.com/dv97iagt7/image/upload/v1741464113/training10_aroe86.jpg',
-              title: 'Hand-to-Hand Combat',
-              desc: 'Excel in close combat and self-defense techniques.',
-            },
+            // Add more features as needed
           ].map((item, index) => (
             <motion.div
               key={index}
@@ -129,27 +92,27 @@ export default function Home() {
         </div>
       </section>
 
-      {/* Alternate Scroll Animation */}
+      {/* Core Capabilities Section */}
       <section className="py-20 bg-gray-100 text-center">
         <h2 className="text-4xl font-bold text-gray-900 mb-12">
-          Elite Missions
+          Core Capabilities
         </h2>
         <div className="space-y-12">
           {[
             {
               img: 'https://res.cloudinary.com/dv97iagt7/image/upload/v1741467712/mission1_ua1cwd.jpg',
-              title: 'Recon Missions',
-              desc: 'Gather intelligence from high-risk areas.',
+              title: 'Audit Logs',
+              desc: 'Complete transaction history with advanced filtering',
             },
             {
               img: 'https://res.cloudinary.com/dv97iagt7/image/upload/v1741467712/mission2_w9evse.jpg',
-              title: 'Rescue Operations',
-              desc: 'Save hostages and stranded soldiers in combat zones.',
+              title: 'Real-time Notifications',
+              desc: 'Instant alerts for critical system events and updates',
             },
             {
               img: 'https://res.cloudinary.com/dv97iagt7/image/upload/v1741467714/mission3_oth5d5.jpg',
-              title: 'Covert Ops',
-              desc: 'Execute classified operations under deep cover.',
+              title: 'Advanced Analytics',
+              desc: 'Generate detailed reports with visual data representations',
             },
           ].map((item, index) => (
             <motion.div
@@ -182,12 +145,15 @@ export default function Home() {
 
       {/* CTA Section */}
       <section className="py-20 bg-blue-900 text-white text-center">
-        <h2 className="text-4xl font-bold">Ready to Join?</h2>
-        <p className="mt-4 text-lg" >
-          Sign up today and become part of the elite.
+        <h2 className="text-4xl font-bold">Ready to Transform Defense Management?</h2>
+        <p className="mt-4 text-lg">
+          Join elite defense teams optimizing their operations through centralized control
         </p>
-        <Button onClick={handleClick} className="mt-6 bg-white text-blue-600 px-6 py-3 rounded-xl shadow-lg hover:bg-gray-200">
-          Get Started
+        <Button onClick={handleLogin} className="mt-6 bg-white text-blue-600 px-6 py-3 rounded-xl shadow-lg hover:bg-gray-200">
+          Access System
+        </Button>
+        <Button onClick={handleAbout} className="mt-6 ml-[10px] bg-white text-blue-600 px-6 py-3 rounded-xl shadow-lg hover:bg-gray-200">
+          About Our Platform
         </Button>
       </section>
     </div>

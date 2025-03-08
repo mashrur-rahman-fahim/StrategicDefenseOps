@@ -172,17 +172,17 @@ const Page = () => {
                         </button>
 
                         {/* OR Divider */}
-                        <div className="text-center text-white my-3 font-bold">
+                        {/* <div className="text-center text-white my-3 font-bold">
                             or
-                        </div>
+                        </div> */}
 
                         {/* Google Button */}
-                        <button
+                        {/* <button
                             onClick={handleGoogleLogin}
                             className="w-full bg-black text-white py-2 rounded-md font-bold"
                         >
                             Continue with Google
-                        </button>
+                        </button> */}
 
                         {/* Already have an account? */}
                         <p className="text-center mt-3">
