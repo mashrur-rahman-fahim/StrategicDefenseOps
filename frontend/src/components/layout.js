@@ -22,7 +22,8 @@ export default function Layout({ children }) {
             "/report": "reports",
             "/resources": "resources",
             "/chatbot": "chatbot",
-            "/auditlog" : "auditlog"
+            "/auditlog" : "auditlog",
+            "/notifications" : "notifications",
         };
         setSelectedItem(routeToItemMap[pathname] || "");
     }, [pathname]);
@@ -43,6 +44,7 @@ export default function Layout({ children }) {
             resources: "/resources",
             chatbot: "/chatbot",
             auditlog: "/auditlog",
+            notifications : "/notifications",
         };
 
         const route = routes[item.toLowerCase()];
