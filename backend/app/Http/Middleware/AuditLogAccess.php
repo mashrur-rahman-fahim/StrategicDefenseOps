@@ -68,7 +68,20 @@ class AuditLogAccess
                 )
             ', [$user->id, $user->id, $user->id]);
         } elseif ($user->role_id == 2) {
-
+            // Manager can view their own logs, and logs of their direct subordinates (Operators, Viewers)
+            return DB::select('
+                SELECT * 
+                FROM activity_log 
+                WHERE user_id = ?
+                UNION
+                SELECT * 
+                FROM activity_log 
+                WHERE user_id IN (
+                    SELECT id 
+                    FROM users 
+                    WHERE parent_id = ?
+                )
+            ', [$user->id, $user->id]);
         } else {
 
         }
