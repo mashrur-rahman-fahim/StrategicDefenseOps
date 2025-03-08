@@ -16,7 +16,7 @@ const Page = () => {
         <div
             className="min-h-screen flex items-center justify-center bg-gray-900 text-gray-300 p-6 w-full"
             style={{
-                backgroundImage: `url('/verify3.jpg')`,
+                backgroundImage: `url('https://res.cloudinary.com/dv97iagt7/image/upload/v1741466088/verify3_xx6ry6.jpg')`,
                 backgroundSize: 'cover',
                 backgroundPosition: 'center',
             }}
