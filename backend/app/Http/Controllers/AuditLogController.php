@@ -53,7 +53,19 @@ class AuditLogController extends Controller
                 )
             ', [$user->id, $user->id, $user->id]);
         } elseif ($user->role_id == 2) {
-
+            return DB::select('
+                SELECT * 
+                FROM activity_log 
+                WHERE user_id = ?
+                UNION
+                SELECT * 
+                FROM activity_log 
+                WHERE user_id IN (
+                    SELECT id 
+                    FROM users 
+                    WHERE parent_id = ?
+                )
+            ', [$user->id, $user->id]);
         } else {
 
         }
