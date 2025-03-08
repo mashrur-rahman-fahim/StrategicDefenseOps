@@ -5,6 +5,7 @@ import Link from 'next/link';
 import { useAuth } from '@/hooks/auth';
 import { useRouter } from 'next/navigation';
 import AuthSessionStatus from '@/app/(auth)/AuthSessionStatus';
+import { FiHome } from 'react-icons/fi';
 
 const Login = () => {
     const router = useRouter();
@@ -50,7 +51,16 @@ const Login = () => {
     return (
         <div className="flex h-screen w-screen">
             {/* Left Side - Form */}
-            <div className="flex-1 bg-[#446158] flex items-center justify-center p-6 md:p-10 rounded-r-xl">
+            <div className="flex-1 bg-[#446158] flex items-center justify-center p-6 md:p-10 rounded-r-xl relative">
+                {/* Home Navigation Icon */}
+                <Link 
+                    href="/" 
+                    className="absolute top-4 left-4 text-white hover:text-gray-200 transition-colors"
+                    title="Return to Home"
+                >
+                    <FiHome className="w-8 h-8" />
+                </Link>
+
                 <div className="w-full max-w-lg">
                     <h2 className="text-4xl font-bold text-black font-[Stencil] text-center">
                         LOGIN
@@ -94,7 +104,7 @@ const Login = () => {
                         )}
 
                         {/* Forgot Password */}
-                        <div className="text-right mt-3  ">
+                        <div className="text-right mt-3">
                             <Link
                                 href="/forgot-password"
                                 className="text-white underline"
