@@ -91,7 +91,7 @@ const Navbar = ({ toggleSidebar, logout }) => {
     return (
         <header className="bg-white shadow-md py-4 px-6">
             <nav className="flex items-center justify-between max-w-screen-xl mx-auto">
-                <div className="flex items-center space-x-4">
+                <div className="flex items-center space-x-4 flex-1">
                     <button
                         ref={sidebarButtonRef}
                         className="text-2xl text-gray-600 hover:text-black focus:outline-none"

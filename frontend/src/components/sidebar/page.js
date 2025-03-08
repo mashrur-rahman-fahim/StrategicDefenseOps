@@ -30,7 +30,8 @@ const Sidebar = ({ isOpen, toggleSidebar, selectedItem, handleNavigation, menuBu
                 isOpen &&
                 sidebarRef.current &&
                 !sidebarRef.current.contains(event.target) &&
-                !menuButtonRef?.current?.contains(event.target) 
+                menuButton && // Check if menuButton exists
+                !menuButton.contains(event.target) // Exclude the "three dots" button
             ) {
                 toggleSidebar();
             }
@@ -40,8 +41,7 @@ const Sidebar = ({ isOpen, toggleSidebar, selectedItem, handleNavigation, menuBu
         return () => {
             document.removeEventListener("mousedown", handleClickOutside);
         };
-    }, [isOpen, toggleSidebar, menuButtonRef]);
-
+    }, [isOpen, toggleSidebar]);
     useEffect(() => {
         const fetchUserDetails = async () => {
             try {
