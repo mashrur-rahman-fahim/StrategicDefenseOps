@@ -132,7 +132,7 @@ const Sidebar = ({
                     "AuditLog",
                     "Notifications",
                     "Chatbot",
-                    "LandingPage",
+                   
                 ].map((item) => (
                     <div
                         key={item}
