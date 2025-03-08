@@ -125,3 +125,7 @@ Route::get('/role-view', [RoleViewController::class, 'roleView'])->middleware('a
 Route::put('/update-profile', [ProfileController::class, 'updateProfile'])->middleware('auth:sanctum');
 
 Route::delete('/delete-profile', [ProfileController::class, 'deleteProfile'])->middleware('auth:sanctum');
+
+Route::put('/edit-report/{operationId}', [ReportController::class, 'editReport'])->middleware('auth:sanctum');
+Route::delete('/edit-report/{operationId}',[ReportController::class, 'deleteReport'])->middleware('auth:sanctum');
+Route::get('/view-report/{operationId}',[ReportController::class,'viewReport'])->middleware('auth:sanctum');

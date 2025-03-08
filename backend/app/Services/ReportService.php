@@ -2,7 +2,9 @@
 
 namespace App\Services;
 
+use App\Models\Report;
 use Exception;
+use Illuminate\Support\Facades\DB;
 
 class ReportService
 {
@@ -18,6 +20,10 @@ class ReportService
     {
 
         try {
+            $existReport=DB::selectOne('select * from reports where operation_id=?',[$operationId]);
+            if($existReport){
+                return false;
+            }
             $operationResources = $this->operationResourcesService->getOperationResource($operationId, $userId);
 
             if (! $operationResources) {
@@ -139,5 +145,30 @@ Now, generate the report in a short, structured format";
 
             return false;
         }
+    }
+    public function viewReport($operationId){
+        $report=DB::selectOne('select * from reports where operation_id=? ',[$operationId]);
+        if($report){return $report;}
+        return false;
+    }
+    public function editReport($data,$operationId){
+        $report=DB::selectOne('select * from reports where operation_id=? ',[$operationId]);
+        if(!$report){return false;}
+        $report=Report::find($report->id);
+        $response=$report->update($data);
+        if(!$response){
+            return false;
+        }
+        return true;
+    }
+    public function deleteReport($operationId){
+        $report=DB::selectOne('select * from reports where operation_id=?',[$operationId]);
+        if(!$report){return false;}
+        $report=Report::find($report->id);
+        $response=$report->delete();
+        if(!$response){
+            return false;
+        }
+        return true;
     }
 }
