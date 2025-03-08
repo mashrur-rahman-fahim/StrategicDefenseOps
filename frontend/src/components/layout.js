@@ -22,6 +22,7 @@ export default function Layout({ children }) {
             "/report": "reports",
             "/resources": "resources",
             "/chatbot": "chatbot",
+            "/auditlog" : "auditlog"
         };
         setSelectedItem(routeToItemMap[pathname] || "");
     }, [pathname]);
@@ -41,6 +42,7 @@ export default function Layout({ children }) {
             reports: "/report",
             resources: "/resources",
             chatbot: "/chatbot",
+            auditlog: "/auditlog",
         };
 
         const route = routes[item.toLowerCase()];
