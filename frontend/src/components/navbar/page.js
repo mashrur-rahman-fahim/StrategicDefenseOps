@@ -8,16 +8,31 @@ const Navbar = ({ toggleSidebar, logout }) => {
     const [isLoggingOut, setIsLoggingOut] = useState(false)
     const [user, setUser] = useState(null)
 
-    const sidebarButtonRef = useRef(null) // Ref for sidebar toggle
-    const menuButtonRef = useRef(null) // Ref for Notifications button
-    const dropdownRef = useRef(null) // Ref for dropdown menu
-    const sidebarRef = useRef(null) // Assuming there's a sidebar element
+    const sidebarButtonRef = useRef(null) 
+    const menuButtonRef = useRef(null) 
+    const dropdownRef = useRef(null) 
+    const sidebarRef = useRef(null) 
     const [logs, setLogs] = useState([])
     const [loading, setLoading] = useState(true)
     const [error, setError] = useState(null)
 
     useEffect(() => {
-        if (!user) return // Ensure user is provided
+        const fetchUserDetails = async () => {
+            try {
+                const response = await axios.get(`${process.env.NEXT_PUBLIC_BACKEND_URL}/api/user`)
+                setUser(response.data.id || null)
+            } catch (error) {
+                console.error('Error fetching user details:', error)
+            } finally {
+                setLoading(false)
+            }
+        }
+
+        fetchUserDetails()
+    }, [])
+
+    useEffect(() => {
+        if (!user) return 
 
         const fetchLogs = async () => {
             try {
@@ -38,23 +53,22 @@ const Navbar = ({ toggleSidebar, logout }) => {
     const [dropdownPosition, setDropdownPosition] = useState({ top: 0, left: 0 })
 
     useEffect(() => {
-        // Update the dropdown position when the button is clicked
         if (menuButtonRef.current && isDropdownOpen) {
             const rect = menuButtonRef.current.getBoundingClientRect()
             setDropdownPosition({
-                top: rect.bottom, // position below the button
-                left: rect.left,  // align with the button horizontally
+                top: rect.bottom, 
+                left: rect.left,  
             })
         }
-    }, [isDropdownOpen]) // Recalculate the position when the dropdown opens
+    }, [isDropdownOpen]) 
 
     useEffect(() => {
         const handleClickOutside = (event) => {
             if (
                 sidebarRef.current &&
                 !sidebarRef.current.contains(event.target) &&
-                menuButtonRef.current && // Ensure menuButtonRef is not null
-                !menuButtonRef.current.contains(event.target) // Check only if menuButtonRef.current exists
+                menuButtonRef.current && 
+                !menuButtonRef.current.contains(event.target) 
             ) {
                 toggleSidebar()
             }
