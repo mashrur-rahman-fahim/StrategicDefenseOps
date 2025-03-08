@@ -206,7 +206,7 @@ const Page = () => {
                 <div
                     className="absolute inset-0 bg-cover bg-center"
                     style={{
-                        backgroundImage: `url('/registration1.jpg')`,
+                        backgroundImage: `url('https://res.cloudinary.com/dv97iagt7/image/upload/v1741466241/registration1_erndw1.jpg')`,
                         backgroundSize: 'cover',
                         backgroundPosition: 'center',
                     }}
