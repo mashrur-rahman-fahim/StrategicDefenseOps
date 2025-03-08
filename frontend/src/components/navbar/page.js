@@ -35,19 +35,22 @@ const Navbar = ({ toggleSidebar, logout }) => {
     }, []);
 
     useEffect(() => {
-        if (!user) return; 
-    
+        if (!user) return;
+
         const fetchLogs = async () => {
             try {
                 const response = await axios.get(
-                    `${process.env.NEXT_PUBLIC_BACKEND_URL}/api/notifications/${user}`
+                    `${process.env.NEXT_PUBLIC_BACKEND_URL}/api/notifications/${user}`,
                 );
-    
+
                 const sortedLogs = response.data
-                    .filter(log => log.log_name !== 'user_details_access') 
-                    .sort((a, b) => new Date(b.created_at) - new Date(a.created_at))
-                    .slice(0, 2); 
-    
+                    .filter((log) => log.log_name !== "user_details_access")
+                    .sort(
+                        (a, b) =>
+                            new Date(b.created_at) - new Date(a.created_at),
+                    )
+                    .slice(0, 2);
+
                 setLogs(sortedLogs);
             } catch (err) {
                 setError(err.response?.data?.error || "Failed to fetch logs");
@@ -55,15 +58,13 @@ const Navbar = ({ toggleSidebar, logout }) => {
                 setLoading(false);
             }
         };
-    
-        fetchLogs(); 
-    
+
+        fetchLogs();
+
         const interval = setInterval(fetchLogs, 10000);
-    
-        return () => clearInterval(interval); 
+
+        return () => clearInterval(interval);
     }, [user]);
-    
-    
 
     const [dropdownPosition, setDropdownPosition] = useState({
         top: 0,
@@ -91,15 +92,18 @@ const Navbar = ({ toggleSidebar, logout }) => {
     return (
         <header className="bg-white shadow-md py-4 px-6">
             <nav className="flex items-center justify-between max-w-screen-xl mx-auto">
-                <div className="flex items-center space-x-4 flex-1">
+
+                <div className="relative w-full">
+
                     <button
                         ref={sidebarButtonRef}
-                        className="text-2xl text-gray-600 hover:text-black focus:outline-none"
+                        className="text-2xl text-gray-600 hover:text-black focus:outline-none fixed top-7 left-7"
                         onClick={toggleSidebar}
                     >
                         ☰
                     </button>
-                    <h1 className="text-xl font-semibold text-gray-800">
+
+                    <h1 className="text-xl font-semibold text-gray-800 mx-auto">
                         StrategicDefenseOps
                     </h1>
                 </div>
