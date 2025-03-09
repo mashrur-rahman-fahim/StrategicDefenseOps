@@ -165,29 +165,32 @@ const Sidebar = ({
                     </Form>
                 </Modal.Body>
                 <Modal.Footer>
-                    <div className="d-flex justify-content-between w-100">
-                        <Button
-                            variant="danger"
-                            onClick={handleDeleteProfile}
-                        >
-                            {loading ? "Deleting..." : "Delete Profile"}
-                        </Button>
-                        <div>
-                            <Button
-                                variant="secondary"
-                                onClick={() => setShowModal(false)}
-                            >
-                                Close
-                            </Button>
-                            <Button
-                                variant="primary"
-                                onClick={handleSaveChanges}
-                            >
-                                {loading ? "Saving..." : "Save Changes"}
-                            </Button>
-                        </div>
-                    </div>
-                </Modal.Footer>
+  <div className="d-flex flex-column flex-md-row gap-2 w-100">
+    <Button
+      variant="danger"
+      onClick={handleDeleteProfile}
+      className="w-100 w-md-auto"
+    >
+      {loading ? "Deleting..." : "Delete"}
+    </Button>
+    <div className="d-flex gap-2 w-100 justify-content-md-end">
+      <Button
+        variant="secondary"
+        onClick={() => setShowModal(false)}
+        className="flex-grow-1 flex-md-grow-0"
+      >
+        Close
+      </Button>
+      <Button
+        variant="primary"
+        onClick={handleSaveChanges}
+        className="flex-grow-1 flex-md-grow-0"
+      >
+        {loading ? "Saving..." : "Save"}
+      </Button>
+    </div>
+  </div>
+</Modal.Footer>
             </Modal>
         </div>
     );

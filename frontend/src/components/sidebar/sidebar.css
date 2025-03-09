@@ -43,6 +43,20 @@
     text-align: center;
     margin-bottom: 20px;
 }
+.modal-content {
+    max-width: 95vw;
+    margin: 0 auto;
+  }
+  
+  /* Improve button touch targets on mobile */
+  .btn {
+    min-height: 44px;
+  }
+  
+  /* Responsive modal padding */
+  .modal-body, .modal-footer {
+    padding: 1rem;
+  }
 
 .profile-pic {
     width: 80px;
@@ -177,3 +191,9 @@
         font-size: 16px;
     }
 }
+
+@media (min-width: 768px) {
+    .modal-body, .modal-footer {
+      padding: 1.5rem;
+    }
+  }
