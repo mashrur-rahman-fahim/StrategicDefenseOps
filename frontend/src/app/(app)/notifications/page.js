@@ -5,7 +5,7 @@ import Layout from '@/components/layout'
 import axios from '@/lib/axios'
 import Notification from '@/components/Notification'
 
-const Notifications= () => {
+const Notifications = () => {
     const [loading, setLoading] = useState(true)
     const [user, setUser] = useState(null)
 
@@ -30,12 +30,14 @@ const Notifications= () => {
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ duration: 0.3 }}
-                className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-8"
+                className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-4 sm:py-8"
             >
                 <div className="space-y-6">
-                   
+                    <h1 className="text-2xl sm:text-3xl font-bold text-gray-900 px-2 sm:px-0">
+                        Security Center
+                    </h1>
                     {loading ? (
-                        <div className="h-64 bg-gray-100 animate-pulse rounded-xl" />
+                        <div className="h-48 sm:h-64 bg-gray-100 animate-pulse rounded-xl" />
                     ) : (
                         user && <Notification user={user} />
                     )}
