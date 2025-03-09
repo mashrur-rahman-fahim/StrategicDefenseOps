@@ -13,7 +13,7 @@ export default function Chatbot() {
     const [messages, setMessages] = useState([]);
     const [input, setInput] = useState('');
     const [loading, setLoading] = useState(false);
-    const [theme, setTheme] = useState('dark'); // 'light' or 'dark'
+    const [theme, setTheme] = useState('light'); // 'light' or 'dark'
     const [model] = useState('default'); // Model selection
     const abortControllerRef = useRef(null);
     const chatHistoryRef = useRef(null);
