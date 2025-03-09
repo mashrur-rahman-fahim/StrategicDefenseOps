@@ -33,9 +33,7 @@ const Notifications = () => {
                 className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-4 sm:py-8"
             >
                 <div className="space-y-6">
-                    <h1 className="text-2xl sm:text-3xl font-bold text-gray-900 px-2 sm:px-0">
-                        Security Center
-                    </h1>
+                   
                     {loading ? (
                         <div className="h-48 sm:h-64 bg-gray-100 animate-pulse rounded-xl" />
                     ) : (
