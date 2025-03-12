@@ -23,7 +23,7 @@ class OllamaService
         try {
             $response = $this->client->post('https://rdl84gw0-11434.asse.devtunnels.ms/api/generate', [
                 'json' => [
-                    'model' => 'llama3.2:1b',
+                    'model' => 'qwen2.5:1.5b',
                     'prompt' => $prompt,
                     'stream' => false,
                     'options' => ['temperature' => 0.6],

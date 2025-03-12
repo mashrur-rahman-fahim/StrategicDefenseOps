@@ -38,7 +38,7 @@ RUN sed -ri -e 's!/var/www/!${APACHE_DOCUMENT_ROOT}!g' /etc/apache2/apache2.conf
 RUN a2enmod rewrite
 
 # Expose port 80
-EXPOSE 443
+EXPOSE 80
 
 # Start Apache
 CMD ["apache2-foreground"]
