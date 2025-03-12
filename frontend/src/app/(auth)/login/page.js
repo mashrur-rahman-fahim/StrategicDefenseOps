@@ -20,6 +20,7 @@ const Login = () => {
     const [errors, setErrors] = useState([]);
     const [status, setStatus] = useState(null);
     const [showPassword, setShowPassword] = useState(false);
+    const [isLoading, setIsLoading] = useState(false);
 
     useEffect(() => {
         if (router.reset?.length > 0 && errors.length === 0) {
@@ -31,25 +32,36 @@ const Login = () => {
 
     const submitForm = async (event) => {
         event.preventDefault();
-        login({
+        setIsLoading(true); // Start loading
+        await login({
             email,
             password,
             remember: shouldRemember,
             setErrors,
             setStatus,
         });
+        setIsLoading(false); // Stop loading
     }
 
     const handleGoogleLogin = async () => {
         try {
+            setIsLoading(true); // Start loading
             window.location.href = `http://127.0.0.1:8000/auth/google`;
         } catch (error) {
             console.error('Google login error:', error);
+            setIsLoading(false); // Stop loading in case of error
         }
     };
 
     return (
         <div className="flex h-screen w-screen">
+            {/* Loading Screen */}
+            {isLoading && (
+                <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+                    <div className="text-white text-2xl">Loading...</div>
+                </div>
+            )}
+
             {/* Left Side - Form */}
             <div className="flex-1 bg-[#446158] flex items-center justify-center p-6 md:p-10 rounded-r-xl relative">
                 {/* Home Navigation Icon */}
@@ -135,8 +147,11 @@ const Login = () => {
                         </div>
 
                         {/* Login Button */}
-                        <button className="w-full bg-black text-white py-2 rounded-md mt-3 font-bold">
-                            Login
+                        <button 
+                            className="w-full bg-black text-white py-2 rounded-md mt-3 font-bold"
+                            disabled={isLoading} // Disable button while loading
+                        >
+                            {isLoading ? 'Logging in...' : 'Login'}
                         </button>
 
                         {/* OR Divider */}
@@ -148,6 +163,7 @@ const Login = () => {
                         {/* <button
                             onClick={handleGoogleLogin}
                             className="w-full bg-black text-white py-2 rounded-md font-bold"
+                            disabled={isLoading} // Disable button while loading
                         >
                             Continue with Google
                         </button> */}
