@@ -29,14 +29,25 @@ use App\Http\Controllers\NotificationController;
 |
 */
 use Illuminate\Support\Facades\DB;
-Route::get('/check-cert', function () {
-    $path = '/app/backend/storage/certs/isrgrootx1.pem';
-    if (file_exists($path)) {
-        return 'Certificate file exists. Size: ' . filesize($path) . ' bytes.';
-    } else {
-        return 'Certificate file NOT found at ' . $path;
+
+
+Route::get('/find-cert', function () {
+    $pathsToCheck = [
+        env('MYSQL_ATTR_SSL_CA'),
+        '/app/isrgrootx1.pem',
+        '/app/backend/storage/certs/isrgrootx1.pem',
+        '/etc/secrets/isrgrootx1.pem',
+    ];
+
+    foreach ($pathsToCheck as $path) {
+        if ($path && file_exists($path)) {
+            return "Certificate found at: $path (size: " . filesize($path) . " bytes)";
+        }
     }
+
+    return 'Certificate file not found in checked paths.';
 });
+
 
 
 Route::get('/db-test', function () {
