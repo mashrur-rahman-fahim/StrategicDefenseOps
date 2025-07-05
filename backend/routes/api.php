@@ -28,6 +28,17 @@ use App\Http\Controllers\NotificationController;
 | is assigned the "api" middleware group. Enjoy building your API!
 |
 */
+use Illuminate\Support\Facades\DB;
+
+Route::get('/db-test', function () {
+    try {
+        DB::connection()->getPdo();
+        return '✅ DB connection successful';
+    } catch (\Exception $e) {
+        return '❌ DB connection failed: ' . $e->getMessage();
+    }
+});
+
 
 // Role Assignment/Unassignment :
 Route::middleware('auth:sanctum')->group(function () {

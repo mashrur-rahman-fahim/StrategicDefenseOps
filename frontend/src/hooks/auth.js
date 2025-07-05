@@ -60,7 +60,7 @@ export const useAuth = ({ middleware, redirectIfAuthenticated } = {}) => {
               
                 const token = response.data.token;
                 localStorage.setItem("api_token", token);
-                
+                toast.success("Logged in successfully");
                 mutate();
             })
             .catch((error) => {
