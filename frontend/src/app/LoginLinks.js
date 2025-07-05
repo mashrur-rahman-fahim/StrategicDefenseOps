@@ -1,10 +1,11 @@
-'use client';
-
-import Link from 'next/link';
-import { useAuth } from '@/hooks/auth';
+"use client";
+import React, { useEffect } from "react";
+import Link from "next/link";
+import { useAuth } from "@/hooks/auth";
 
 const LoginLinks = () => {
-    const { user } = useAuth({ middleware: 'guest' });
+    const { user } = useAuth({ middleware: "guest" });
+   
 
     return (
         <div className="hidden fixed top-0 right-0 px-6 py-4 sm:block">
@@ -34,6 +35,6 @@ const LoginLinks = () => {
             )}
         </div>
     );
-}
+};
 
 export default LoginLinks;

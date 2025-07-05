@@ -1,5 +1,5 @@
 'use client';
-
+import React from 'react';
 import { useState, useEffect } from 'react';
 import Link from 'next/link';
 import { useAuth } from '@/hooks/auth';
@@ -43,15 +43,15 @@ const Login = () => {
         setIsLoading(false); // Stop loading
     }
 
-    const handleGoogleLogin = async () => {
-        try {
-            setIsLoading(true); // Start loading
-            window.location.href = `http://127.0.0.1:8000/auth/google`;
-        } catch (error) {
-            console.error('Google login error:', error);
-            setIsLoading(false); // Stop loading in case of error
-        }
-    };
+    // const handleGoogleLogin = async () => {
+    //     try {
+    //         setIsLoading(true); // Start loading
+    //         window.location.href = `http://127.0.0.1:8000/auth/google`;
+    //     } catch (error) {
+    //         console.error('Google login error:', error);
+    //         setIsLoading(false); // Stop loading in case of error
+    //     }
+    // };
 
     return (
         <div className="flex h-screen w-screen">
