@@ -21,9 +21,9 @@ class OllamaService
     {
         set_time_limit(500);
         try {
-            $response = $this->client->post('https://0jdflfmx-11434.asse.devtunnels.ms/api/generate', [
+            $response = $this->client->post('http://localhost:11434/api/generate', [
                 'json' => [
-                    'model' => 'llama3.2:3b',
+                    'model' => 'gemma:2b',
                     'prompt' => $prompt,
                     'stream' => false,
                     'options' => ['temperature' => 0.6],
