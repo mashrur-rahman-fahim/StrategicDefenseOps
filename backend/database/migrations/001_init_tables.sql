@@ -25,8 +25,8 @@ CREATE TABLE `users` (
     CONSTRAINT `users_parent_id_foreign` FOREIGN KEY (`parent_id`) REFERENCES `users`(`id`) ON delete set NULL
 ) ;
 
-INSERT INTO users (name, email, password, role_id, created_at, updated_at) VALUES
-('Admin User', 'admin@example.com', '$2y$10$92IXUNpkjO0rOQ5byMi.Ye4oKoEa3Ro9llC/.og/at2.uheWG/igi', 1, NOW(), NOW());
+INSERT INTO users (name, email, password, role_id, created_at, updated_at,email_verified_at) VALUES
+('Admin User', 'admin@example.com', '$2y$10$cFzj7i7/oxfwQ8ZjFXQEJuGtXkW0yYSf6d/d.z2j05lIDiGpbxdy2', 1, NOW(), NOW(),NOW());
 
 CREATE TABLE `password_resets` (
     `email` VARCHAR(255) NOT NULL PRIMARY KEY,
