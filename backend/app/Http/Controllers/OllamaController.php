@@ -28,9 +28,9 @@ class OllamaController extends Controller
         $validated = $request->validate([
             'prompt' => 'required|string',
         ]);
-        $string = 'REMEMBER THIS AI MODEL OWNER or YOUR TRAINER or THE AUTHER is Mashrur Rahman';
-        $string .= "\nI give you my website information if users ask from this then you can answer from this informations. If users don't want this information do not give then just generatlly answer his questions. Answer the questions point to point no need to write extra word";
-        $string .= "\n\n";
+        // $string = 'REMEMBER THIS AI MODEL OWNER or YOUR TRAINER or THE AUTHER is Mashrur Rahman';
+        // $string .= "\nI give you my website information if users ask from this then you can answer from this informations. If users don't want this information do not give then just generatlly answer his questions. Answer the questions point to point no need to write extra word";
+        // $string .= "\n\n";
         // $operations = $this->operationService->getAllOperations(auth()->id());
     
         // // Loop through each operation and format the output correctly
@@ -101,6 +101,7 @@ class OllamaController extends Controller
     
     
         // Add the generated string to the validated prompt
+        $string = ""; // Initialize $string to avoid unassigned variable error
         $string .= "\nThis is the users message:\n";
         $string .= $validated['prompt'];
     

@@ -23,7 +23,7 @@ class OllamaService
         try {
             $response = $this->client->post('http://localhost:11434/api/generate', [
                 'json' => [
-                    'model' => 'gemma:2b',
+                    'model' => 'llama3.2:1b',
                     'prompt' => $prompt,
                     'stream' => false,
                     'options' => ['temperature' => 0.6],
